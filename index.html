@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Noise | Graphic Design for the Underground</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">VISUAL<span>NOISE</span></a>
+            <ul class="nav-links">
+                <li><a href="#work">Work</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>VISUAL NOISE FOR THE UNDERGROUND</h1>
+            <p>High-End Merch & Branding für die Heavy Metal Szene.</p>
+            <a href="#work" class="btn">Explore Work</a>
+        </div>
+    </header>
+
+    <section id="work" class="section">
+        <div class="container">
+            <h2 class="section-title">Selected Projects</h2>
+
+            <div class="filter-controls">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="apparel">Apparel</button>
+                <button class="filter-btn" data-filter="print">Print</button>
+                <button class="filter-btn" data-filter="branding">Branding</button>
+            </div>
+
+            <div class="gallery-grid" id="gallery">
+                <div class="project-card" data-category="apparel" data-id="0">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=800" alt="T-Shirt Design">
+                    </div>
+                    <div class="card-info">
+                        <h3>Wacken Tour 2026</h3>
+                        <span>Apparel</span>
+                    </div>
+                </div>
+                <div class="project-card" data-category="print" data-id="1">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&q=80&w=800" alt="Festival Poster">
+                    </div>
+                    <div class="card-info">
+                        <h3>Void Ritual Poster</h3>
+                        <span>Print</span>
+                    </div>
+                </div>
+                <div class="project-card" data-category="branding" data-id="2">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80&w=800" alt="Industrial Branding">
+                    </div>
+                    <div class="card-info">
+                        <h3>Iron Forge Identity</h3>
+                        <span>Branding</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section bg-alt">
+        <div class="container narrow">
+            <h2 class="section-title">The Craftsman</h2>
+            <div class="about-text">
+                <p>Zwischen dröhnenden Verstärkern und präzisem Design fühle ich mich zu Hause. Seit über einem Jahrzehnt gestalte ich visuelle Identitäten, die so laut sind wie die Musik selbst.</p>
+                <p>Mein Fokus liegt auf taktilen Erlebnissen: Von der Haptik eines hochwertigen Siebdrucks bis hin zur Intensität eines Festival-Branding-Konzepts. Ich kenne die Szene, weil ich Teil von ihr bin.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section">
+        <div class="container narrow">
+            <h2 class="section-title">Get in Touch</h2>
+            <form id="contact-form" class="contact-form">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-block">Send Transmission</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="modal" id="projectModal">
+        <span class="modal-close">&times;</span>
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="modalImg" src="" alt="Detail View">
+                <div class="modal-text">
+                    <span id="modalCat" class="accent-text uppercase">Category</span>
+                    <h2 id="modalTitle">Project Title</h2>
+                    <p id="modalDesc">Project description goes here...</p>
+                    <div class="modal-meta" id="modalMeta"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

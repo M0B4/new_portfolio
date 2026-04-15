@@ -1,35 +1,43 @@
+// detail.js
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. ID aus der URL holen
+    // 1. ID aus der URL holen (z.B. ?id=wacken)
     const params = new URLSearchParams(window.location.search);
     const projectId = params.get('id');
 
-    // 2. Daten für diese ID finden
+    // 2. Das passende Projekt in der data.js finden
     const project = projectData.find(p => p.id === projectId);
 
+    // Falls kein Projekt gefunden wurde, zurück zur Startseite
     if (!project) {
-        window.location.href = 'index.html'; // Zurück, falls ID falsch
+        window.location.href = 'index.html';
         return;
     }
 
-    // 3. Seite befüllen
+    // 3. Inhalte in die Seite schreiben
     document.title = `${project.title} | Visual Noise`;
     document.getElementById('detailTitle').innerText = project.title;
     document.getElementById('detailCat').innerText = project.category;
     document.getElementById('detailDesc').innerText = project.description;
     document.getElementById('detailMeta').innerText = project.details;
 
-    // Hero Background
-    document.getElementById('detailHero').style.backgroundImage =
-        `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('${project.heroImage}')`;
+    // Hero-Hintergrund setzen
+    const hero = document.getElementById('detailHero');
+    if (hero) {
+        hero.style.backgroundImage = `linear-gradient(rgba(5,5,5,0.7), rgba(5,5,5,1)), url('${project.heroImage}')`;
+    }
 
-    // 4. Sub-Projekte laden (Die eigentlichen Arbeiten)
+    // 4. Sub-Projekte (die eigentlichen Bilder) laden
     const grid = document.getElementById('subProjectGrid');
-    grid.innerHTML = project.subProjects.map(sub => `
-        <div class="sub-card">
-            <img src="${sub.img}" alt="${sub.title}" class="zoom-img">
-            <div class="sub-info">
-                <h4>${sub.title}</h4>
+    if (grid && project.subProjects) {
+        grid.innerHTML = project.subProjects.map(sub => `
+            <div class="sub-card">
+                <div class="sub-card-img">
+                    <img src="${sub.img}" alt="${sub.title}" loading="lazy">
+                </div>
+                <div class="sub-card-info">
+                    <h4>${sub.title}</h4>
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
 });

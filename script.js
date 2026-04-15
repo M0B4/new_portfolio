@@ -1,21 +1,29 @@
 // Projekt-Daten für das Modal
 const projectData = [{
-        title: "Wacken Tour 2026",
-        category: "Apparel",
-        desc: "Exklusives T-Shirt Design für die Mainstage. Fokus auf industrielle Typografie und handgezeichnete Illustrationen.",
-        meta: "Kunde: Wacken Open Air | Medium: 5-Farben Siebdruck"
+        id: 0,
+        title: "Wacken Open Air 2026",
+        category: "branding",
+        client: "Wacken",
+        thumbnail: "wacken-main.jpg", // Das Bild für die Galerie
+        desc: "Ganzheitliche Betreuung der Merch-Linie. Von der ersten Skizze bis zum fertigen Siebdruck.",
+        // Hier liegen die einzelnen Unterprojekte:
+        collection: [
+            { img: "wacken-shirt-1.jpg", title: "Main Stage Shirt" },
+            { img: "wacken-poster.jpg", title: "Limited Festival Poster" },
+            { img: "wacken-band.jpg", title: "Official Wristband Design" }
+        ]
     },
     {
-        title: "Void Ritual Poster",
-        category: "Print",
-        desc: "Limitiertes Gig-Poster für die Europa-Tour. Gedruckt auf 300g ungestrichenem Papier für eine raue Haptik.",
-        meta: "Auflage: 100 Stück | Format: A2 Siebdruck"
-    },
-    {
-        title: "Iron Forge Identity",
-        category: "Branding",
-        desc: "Ganzheitliches Corporate Design für eine Metal-Schmiede. Logo, Typografie und Web-Assets.",
-        meta: "Umfang: Brand Guide, Social Media, Web"
+        id: 1,
+        title: "DLRG Prototyping",
+        category: "3d-print",
+        client: "DLRG",
+        thumbnail: "dlrg-3d.jpg",
+        desc: "Entwicklung und 3D-Druck von funktionalen Gehäuseteilen für Rettungsausrüstung.",
+        collection: [
+            { img: "dlrg-model-1.jpg", title: "Gehäuse-Prototyp" },
+            { img: "dlrg-model-2.jpg", title: "Detailansicht Mechanik" }
+        ]
     }
 ];
 

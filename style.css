@@ -1,12 +1,12 @@
 /* --- CSS VARIABLES (The Dark Canvas Branding) --- */
 :root {
-    --bg-color: #050505;
-    --card-color: #121212;
+    --bg-color: #030303; /* Noch tieferes Schwarz */
+    --card-color: #0d0d0d; /* Dunklere Karten für mehr Kontrast zur Textur */
     --accent-color: #8b0000;
     --accent-hover: #b00000;
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
-    --border-color: #252525;
+    --border-color: #1a1a1a;
     --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --spacing: 1rem;
 }
@@ -28,8 +28,10 @@ html {
 
 body {
     background-color: var(--bg-color);
-    /* TEXTUR 1: Carbon Fibre Pattern */
-    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    /* TEXTUR 1: Carbon Fibre + Vignette (Radial Gradient macht die Textur in der Mitte heller) */
+    background-image: 
+        radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%),
+        url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
@@ -38,7 +40,7 @@ body {
     position: relative;
 }
 
-/* TEXTUR 2: Analog Noise Overlay */
+/* TEXTUR 2: Aggressiveres Analog Noise Overlay */
 body::before {
     content: "";
     position: fixed;
@@ -48,7 +50,8 @@ body::before {
     height: 100%;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.03;
+    /* Deckkraft von 0.03 auf 0.08 erhöht für deutlich mehr "Dreck" */
+    opacity: 0.08; 
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
@@ -83,22 +86,20 @@ h1, h2, h3, h4, .logo {
     padding-left: 1.2rem;
 }
 
-@media (min-width: 768px) {
-    .section-title { font-size: 3rem; }
+.bg-alt { 
+    background-color: rgba(13, 13, 13, 0.8); /* Leicht transparent, um Textur durchzulassen */
+    backdrop-filter: blur(5px);
 }
 
-.bg-alt { background-color: var(--card-color); }
-.accent-text { color: var(--accent-color); font-weight: bold; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; }
-
-/* --- NAVIGATION & HAMBURGER --- */
+/* --- NAVIGATION --- */
 .navbar {
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
-    background: rgba(5, 5, 5, 0.95);
+    background: rgba(3, 3, 3, 0.95);
     border-bottom: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
 }
 
 .nav-container {
@@ -138,7 +139,6 @@ h1, h2, h3, h4, .logo {
     border: none;
     gap: 6px;
     z-index: 1001;
-    padding: 5px;
 }
 
 .hamburger .bar {
@@ -150,7 +150,6 @@ h1, h2, h3, h4, .logo {
 
 @media (max-width: 768px) {
     .hamburger { display: flex; }
-
     .nav-links {
         position: fixed;
         top: 0;
@@ -162,12 +161,8 @@ h1, h2, h3, h4, .logo {
         justify-content: center;
         align-items: center;
         transition: 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
-        z-index: 1000;
     }
-
     .nav-links.active { right: 0; }
-    .nav-links a { font-size: 1.8rem; margin: 1rem 0; }
-
     .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
     .hamburger.active .bar:nth-child(2) { opacity: 0; }
     .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -186,6 +181,7 @@ h1, h2, h3, h4, .logo {
     font-size: clamp(2.2rem, 10vw, 5rem);
     line-height: 1;
     position: relative;
+    /* Glitch Animation */
     animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
@@ -214,19 +210,19 @@ h1, h2, h3, h4, .logo {
 
 @keyframes glitch-anim {
     0% { transform: translate(0); }
-    20% { transform: translate(-3px, 3px); }
-    40% { transform: translate(-3px, -3px); }
-    60% { transform: translate(3px, 3px); }
-    80% { transform: translate(3px, -3px); }
+    20% { transform: translate(-4px, 4px); }
+    40% { transform: translate(-4px, -4px); }
+    60% { transform: translate(4px, 4px); }
+    80% { transform: translate(4px, -4px); }
     100% { transform: translate(0); }
 }
 
 @keyframes glitch-anim-pseudo {
     0% { visibility: visible; transform: translate(0); }
-    20% { transform: translate(-8px, -4px); }
-    40% { transform: translate(8px, 4px); }
-    60% { transform: translate(-4px, 8px); }
-    80% { transform: translate(4px, -8px); }
+    20% { transform: translate(-12px, -6px); }
+    40% { transform: translate(12px, 6px); }
+    60% { transform: translate(-6px, 12px); }
+    80% { transform: translate(6px, -12px); }
     100% { visibility: hidden; transform: translate(0); }
 }
 
@@ -293,7 +289,7 @@ h1, h2, h3, h4, .logo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(100%);
+    filter: grayscale(100%) contrast(1.1);
     transition: var(--transition);
 }
 
@@ -303,7 +299,7 @@ h1, h2, h3, h4, .logo {
 }
 
 .project-card:hover .card-image img {
-    filter: grayscale(0%);
+    filter: grayscale(0%) contrast(1.2);
     transform: scale(1.05);
 }
 
@@ -317,7 +313,7 @@ h1, h2, h3, h4, .logo {
     .card-info span { font-size: 0.75rem; }
 }
 
-/* --- DETAIL PAGE & SUB-PROJECTS --- */
+/* --- DETAIL PAGE --- */
 .detail-hero {
     height: 50vh;
     background-size: cover;
@@ -325,7 +321,21 @@ h1, h2, h3, h4, .logo {
     display: flex;
     align-items: flex-end;
     padding: 0 var(--spacing) 3rem var(--spacing);
+    position: relative;
 }
+
+/* Dunkler Verlauf über Hero-Bilder für bessere Lesbarkeit */
+.detail-hero::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, var(--bg-color), transparent);
+}
+
+.detail-hero .container { position: relative; z-index: 2; }
 
 .sub-project-grid {
     display: grid;
@@ -349,11 +359,11 @@ h1, h2, h3, h4, .logo {
 
 .sub-card img {
     width: 100%;
-    filter: grayscale(20%);
+    filter: grayscale(10%) contrast(1.1);
     transition: var(--transition);
 }
 
-.sub-card:hover img { filter: grayscale(0%); }
+.sub-card:hover img { filter: grayscale(0%) contrast(1.2); }
 
 /* --- FORMS & BUTTONS --- */
 .contact-form {
@@ -365,11 +375,13 @@ h1, h2, h3, h4, .logo {
 .contact-form input, .contact-form textarea {
     width: 100%;
     padding: 1.2rem;
-    background: #0a0a0a;
+    background: #080808;
     border: 1px solid var(--border-color);
     color: white;
     font-family: inherit;
 }
+
+.contact-form input:focus { outline: none; border-color: var(--accent-color); }
 
 .btn {
     padding: 1.2rem 2rem;
@@ -383,4 +395,4 @@ h1, h2, h3, h4, .logo {
     transition: var(--transition);
 }
 
-.btn:hover { background: var(--accent-hover); }
+.btn:hover { background: var(--accent-hover); box-shadow: 0 0 15px rgba(139, 0, 0, 0.4); }

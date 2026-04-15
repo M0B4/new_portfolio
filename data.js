@@ -16,8 +16,8 @@ const projectData = [{
         id: "dlrg",
         title: "DLRG Search & Rescue",
         category: "3d-print",
-        thumbnail: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1000",
-        heroImage: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1600",
+        thumbnail: "images/dlrg.webp",
+        heroImage: "images/dlrg.webp",
         description: "Entwicklung von funktionalen Gehäuse-Prototypen für maritime Rettungssensoren.",
         details: "Material: Carbon-PETG | Technik: 3D-Druck | Kunde: DLRG",
         subProjects: [

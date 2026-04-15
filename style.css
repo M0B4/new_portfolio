@@ -114,10 +114,20 @@ h4,
     text-decoration: none;
     color: white;
     z-index: 1001;
+    display: flex;
+    /* Sorgt für eine saubere Grundlinie */
+    align-items: baseline;
+    gap: 2px;
 }
 
 .logo span {
     color: var(--accent-color);
+    /* OPTICAL FIX: */
+    font-size: 1.05em;
+    /* 5% größer als der Rest */
+    font-weight: 700;
+    /* Etwas fetter, um das "Strahlen" des Weiß auszugleichen */
+    letter-spacing: 0.5px;
 }
 
 .nav-links {
@@ -206,6 +216,12 @@ h4,
     line-height: 1;
     position: relative;
     animation: glitch-anim 0.2s ease-out 1.2s;
+}
+
+.hero h1 span {
+    font-size: 1.03em;
+    /* Minimal größer */
+    color: var(--accent-color);
 }
 
 .hero h1::before,

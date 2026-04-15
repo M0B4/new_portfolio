@@ -1,8 +1,7 @@
 /* --- CSS VARIABLES (The Dark Canvas Branding) --- */
 
 :root {
-    --bg-color: #070707;
-    /* Minimal heller, damit die Textur nicht "absäuft" */
+    --bg-color: #030303;
     --card-color: #0d0d0d;
     --accent-color: #8b0000;
     --accent-hover: #b00000;
@@ -34,11 +33,11 @@ html {
 
 body {
     background-color: var(--bg-color);
-    /* TEXTUR-UPGRADE: Spotlight + Carbon Fibre + Blend Mode */
-    /* Der erste Gradient fungiert als "Lichtquelle", die das Carbon-Muster anstrahlt */
-    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.4) 70%, rgba(0, 0, 0, 0.9) 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-    /* Overlay sorgt dafür, dass die hellen Stellen der Textur betont werden */
-    background-blend-mode: overlay;
+    /* ULTRA-SMOOTH VIGNETTE (STEPLESS GRADIENT EASING) */
+    /* Wir nutzen viele Stopps, um die mathematische Kurve des Lichts zu glätten */
+    background-image: radial-gradient( circle at center, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.04) 15%, rgba(255, 255, 255, 0.02) 35%, rgba(0, 0, 0, 0.2) 60%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    /* Soft-Light sorgt für einen organischen Übergang zwischen Textur und Licht */
+    background-blend-mode: soft-light;
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
@@ -84,9 +83,8 @@ h4,
 }
 
 .bg-alt {
-    background-color: rgba(13, 13, 13, 0.7);
-    /* Leicht transparent für Textur-Durchsicht */
-    backdrop-filter: blur(5px);
+    background-color: rgba(13, 13, 13, 0.6);
+    backdrop-filter: blur(8px);
 }
 
 
@@ -97,7 +95,7 @@ h4,
     top: 0;
     width: 100%;
     z-index: 1000;
-    background: rgba(3, 3, 3, 0.9);
+    background: rgba(3, 3, 3, 0.92);
     border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(15px);
 }
@@ -313,7 +311,7 @@ h4,
 }
 
 
-/* --- GALLERY GRID (2-column mobile) --- */
+/* --- GALLERY GRID --- */
 
 .gallery-grid {
     display: grid;
@@ -356,7 +354,7 @@ h4,
     transform: translateY(-5px);
 }
 
-.project-card:hover .card-image img {
+.project-card:hover img {
     filter: grayscale(0%) contrast(1.2);
     transform: scale(1.05);
 }
@@ -410,7 +408,7 @@ h4,
     left: 0;
     width: 100%;
     height: 60%;
-    background: linear-gradient(to top, var(--bg-color), transparent);
+    background: linear-gradient(to top, #030303, transparent);
 }
 
 .detail-hero .container {

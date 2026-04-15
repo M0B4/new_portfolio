@@ -1,5 +1,4 @@
-/* --- CSS VARIABLES (The Dark Canvas) --- */
-
+/* --- CSS VARIABLES (The Dark Canvas Branding) --- */
 :root {
     --bg-color: #050505;
     --card-color: #121212;
@@ -13,14 +12,10 @@
 }
 
 @media (min-width: 768px) {
-     :root {
-        --spacing: 2rem;
-    }
+    :root { --spacing: 2rem; }
 }
 
-
 /* --- RESET & BASE --- */
-
 * {
     margin: 0;
     padding: 0;
@@ -33,26 +28,34 @@ html {
 
 body {
     background-color: var(--bg-color);
+    /* TEXTUR 1: Carbon Fibre Pattern */
+    background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
 }
 
-h1,
-h2,
-h3,
-h4,
-.logo {
+/* TEXTUR 2: Analog Noise Overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+h1, h2, h3, h4, .logo {
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
 }
 
 .container {
@@ -70,9 +73,7 @@ img {
 }
 
 @media (min-width: 768px) {
-    .section {
-        padding: 100px 0;
-    }
+    .section { padding: 100px 0; }
 }
 
 .section-title {
@@ -83,26 +84,13 @@ img {
 }
 
 @media (min-width: 768px) {
-    .section-title {
-        font-size: 3rem;
-    }
+    .section-title { font-size: 3rem; }
 }
 
-.bg-alt {
-    background-color: var(--card-color);
-}
-
-.accent-text {
-    color: var(--accent-color);
-    font-weight: bold;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-}
-
+.bg-alt { background-color: var(--card-color); }
+.accent-text { color: var(--accent-color); font-weight: bold; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; }
 
 /* --- NAVIGATION & HAMBURGER --- */
-
 .navbar {
     position: fixed;
     top: 0;
@@ -122,16 +110,8 @@ img {
     margin: 0 auto;
 }
 
-.logo {
-    font-size: 1.4rem;
-    text-decoration: none;
-    color: white;
-    z-index: 1001;
-}
-
-.logo span {
-    color: var(--accent-color);
-}
+.logo { font-size: 1.4rem; text-decoration: none; color: white; z-index: 1001; }
+.logo span { color: var(--accent-color); }
 
 .nav-links {
     display: flex;
@@ -148,12 +128,7 @@ img {
     transition: var(--transition);
 }
 
-.nav-links a:hover {
-    color: var(--accent-color);
-}
-
-
-/* Hamburger Menu Icon */
+.nav-links a:hover { color: var(--accent-color); }
 
 .hamburger {
     display: none;
@@ -174,9 +149,8 @@ img {
 }
 
 @media (max-width: 768px) {
-    .hamburger {
-        display: flex;
-    }
+    .hamburger { display: flex; }
+
     .nav-links {
         position: fixed;
         top: 0;
@@ -187,49 +161,76 @@ img {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+        transition: 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
         z-index: 1000;
     }
-    .nav-links.active {
-        right: 0;
-    }
-    .nav-links a {
-        font-size: 1.8rem;
-        margin: 1rem 0;
-    }
-    /* Animation to X */
-    .hamburger.active .bar:nth-child(1) {
-        transform: translateY(8px) rotate(45deg);
-    }
-    .hamburger.active .bar:nth-child(2) {
-        opacity: 0;
-    }
-    .hamburger.active .bar:nth-child(3) {
-        transform: translateY(-8px) rotate(-45deg);
-    }
+
+    .nav-links.active { right: 0; }
+    .nav-links a { font-size: 1.8rem; margin: 1rem 0; }
+
+    .hamburger.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .hamburger.active .bar:nth-child(2) { opacity: 0; }
+    .hamburger.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
 }
 
-
-/* --- HERO SECTION --- */
-
+/* --- HERO & GLITCH EFFECT --- */
 .hero {
-    height: 70vh;
+    height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://www.transparenttextures.com/patterns/dark-matter.png');
 }
 
 .hero h1 {
     font-size: clamp(2.2rem, 10vw, 5rem);
     line-height: 1;
-    margin-bottom: 1rem;
+    position: relative;
+    animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
+.hero h1::before,
+.hero h1::after {
+    content: "VISUAL NOISE FOR THE UNDERGROUND";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+}
+
+.hero h1::before {
+    color: var(--accent-color);
+    z-index: -1;
+    animation: glitch-anim-pseudo 0.4s ease-out 1.2s;
+}
+
+.hero h1::after {
+    color: white;
+    z-index: -2;
+    animation: glitch-anim-pseudo 0.4s ease-out 1.3s;
+}
+
+@keyframes glitch-anim {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 3px); }
+    40% { transform: translate(-3px, -3px); }
+    60% { transform: translate(3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+    100% { transform: translate(0); }
+}
+
+@keyframes glitch-anim-pseudo {
+    0% { visibility: visible; transform: translate(0); }
+    20% { transform: translate(-8px, -4px); }
+    40% { transform: translate(8px, 4px); }
+    60% { transform: translate(-4px, 8px); }
+    80% { transform: translate(4px, -8px); }
+    100% { visibility: hidden; transform: translate(0); }
+}
 
 /* --- FILTER CONTROLS --- */
-
 .filter-controls {
     display: flex;
     gap: 1.2rem;
@@ -239,9 +240,7 @@ img {
     scrollbar-width: none;
 }
 
-.filter-controls::-webkit-scrollbar {
-    display: none;
-}
+.filter-controls::-webkit-scrollbar { display: none; }
 
 .filter-btn {
     background: none;
@@ -256,15 +255,12 @@ img {
     transition: var(--transition);
 }
 
-.filter-btn.active,
-.filter-btn:hover {
+.filter-btn.active, .filter-btn:hover {
     color: white;
     border-bottom-color: var(--accent-color);
 }
 
-
 /* --- GALLERY GRID (2-column mobile fix) --- */
-
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -311,38 +307,17 @@ img {
     transform: scale(1.05);
 }
 
-.card-info {
-    padding: 0.8rem;
-}
-
-.card-info h3 {
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-    color: white;
-}
-
-.card-info span {
-    color: var(--accent-color);
-    font-size: 0.65rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+.card-info { padding: 0.8rem; }
+.card-info h3 { font-size: 0.95rem; margin-bottom: 0.2rem; color: white; }
+.card-info span { color: var(--accent-color); font-size: 0.65rem; font-weight: bold; text-transform: uppercase; }
 
 @media (min-width: 768px) {
-    .card-info {
-        padding: 1.5rem;
-    }
-    .card-info h3 {
-        font-size: 1.3rem;
-    }
-    .card-info span {
-        font-size: 0.75rem;
-    }
+    .card-info { padding: 1.5rem; }
+    .card-info h3 { font-size: 1.3rem; }
+    .card-info span { font-size: 0.75rem; }
 }
 
-
-/* --- DETAIL PAGE --- */
-
+/* --- DETAIL PAGE & SUB-PROJECTS --- */
 .detail-hero {
     height: 50vh;
     background-size: cover;
@@ -372,29 +347,28 @@ img {
     padding: 1rem;
 }
 
+.sub-card img {
+    width: 100%;
+    filter: grayscale(20%);
+    transition: var(--transition);
+}
+
+.sub-card:hover img { filter: grayscale(0%); }
 
 /* --- FORMS & BUTTONS --- */
-
 .contact-form {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.contact-form input,
-.contact-form textarea {
+.contact-form input, .contact-form textarea {
     width: 100%;
     padding: 1.2rem;
     background: #0a0a0a;
     border: 1px solid var(--border-color);
     color: white;
     font-family: inherit;
-    transition: var(--transition);
-}
-
-.contact-form input:focus {
-    outline: none;
-    border-color: var(--accent-color);
 }
 
 .btn {
@@ -409,6 +383,4 @@ img {
     transition: var(--transition);
 }
 
-.btn:hover {
-    background: var(--accent-hover);
-}
+.btn:hover { background: var(--accent-hover); }

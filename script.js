@@ -59,28 +59,19 @@ const filterBtns = document.querySelectorAll('.filter-btn');
  * RENDER GALLERY
  * Erstellt die HTML-Karten basierend auf dem projectData Array
  */
-function renderGallery(filter = 'all') {
-    gallery.innerHTML = ''; // Clear gallery
-
-    const filteredProjects = filter === 'all' ?
-        projectData :
-        projectData.filter(p => p.category === filter);
-
-    filteredProjects.forEach(project => {
-        const card = document.createElement('div');
-        card.className = 'project-card';
-        card.innerHTML = `
+// In deiner script.js für die index.html:
+function renderGallery() {
+    gallery.innerHTML = projectData.map(p => `
+        <a href="detail.html?id=${p.id}" class="project-card">
             <div class="card-image">
-                <img src="${project.thumbnail}" alt="${project.title}" loading="lazy">
+                <img src="${p.thumbnail || p.heroImage}" alt="${p.title}">
             </div>
             <div class="card-info">
-                <h3>${project.title}</h3>
-                <span>${project.category}</span>
+                <h3>${p.title}</h3>
+                <span>${p.category}</span>
             </div>
-        `;
-        card.addEventListener('click', () => openModal(project.id));
-        gallery.appendChild(card);
-    });
+        </a>
+    `).join('');
 }
 
 /**

@@ -153,6 +153,62 @@ h3,
     font-size: 1.2rem;
 }
 
+.detail-hero {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 5rem;
+}
+
+.large-text {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.meta-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+.sub-project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 2rem;
+}
+
+.sub-card {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+}
+
+.sub-card img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(20%);
+    transition: var(--transition);
+}
+
+.sub-card:hover img {
+    filter: grayscale(0%);
+}
+
+.back-link {
+    color: white;
+    text-decoration: none;
+    font-family: 'Oswald';
+    letter-spacing: 2px;
+}
+
+.back-link:hover {
+    color: var(--accent-color);
+}
+
 
 /* Gallery */
 

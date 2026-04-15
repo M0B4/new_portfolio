@@ -4,7 +4,7 @@ const projectData = [{
         title: "Wacken Open Air 2026",
         category: "branding",
         client: "Wacken",
-        thumbnail: "wacken-main.jpg", // Das Bild für die Galerie
+        thumbnail: "images/woa/woa_26_main.webp", // Das Bild für die Galerie
         desc: "Ganzheitliche Betreuung der Merch-Linie. Von der ersten Skizze bis zum fertigen Siebdruck.",
         // Hier liegen die einzelnen Unterprojekte:
         collection: [

@@ -1,100 +1,64 @@
-// Projekt-Daten für das Modal
 const projectData = [{
         id: 0,
-        title: "Wacken Open Air 2026",
+        title: "Wacken 2026",
         category: "branding",
-        client: "Wacken",
-        thumbnail: "images/woa/woa_26_main.webp", // Das Bild für die Galerie
-        desc: "Ganzheitliche Betreuung der Merch-Linie. Von der ersten Skizze bis zum fertigen Siebdruck.",
-        // Hier liegen die einzelnen Unterprojekte:
+        thumbnail: "images/woa/woa_26_main.webp", // Dieses Bild erscheint in der Galerie
+        desc: "Komplettes Merch-Paket für das Wacken 2026.",
         collection: [
-            { img: "wacken-shirt-1.jpg", title: "Main Stage Shirt" },
-            { img: "wacken-poster.jpg", title: "Limited Festival Poster" },
-            { img: "wacken-band.jpg", title: "Official Wristband Design" }
+            "images/wacken-shirt.jpg",
+            "images/wacken-poster.jpg",
+            "images/wacken-wristband.jpg"
         ]
     },
     {
         id: 1,
-        title: "DLRG Prototyping",
+        title: "DLRG 3D-Druck",
         category: "3d-print",
-        client: "DLRG",
-        thumbnail: "dlrg-3d.jpg",
-        desc: "Entwicklung und 3D-Druck von funktionalen Gehäuseteilen für Rettungsausrüstung.",
-        collection: [
-            { img: "dlrg-model-1.jpg", title: "Gehäuse-Prototyp" },
-            { img: "dlrg-model-2.jpg", title: "Detailansicht Mechanik" }
-        ]
+        thumbnail: "images/dlrg-cover.jpg",
+        desc: "Technische Prototypen für Rettungsausrüstung.",
+        collection: ["images/dlrg-detail-1.jpg"]
     }
 ];
 
-document.addEventListener('DOMContentLoaded', () => {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const projects = document.querySelectorAll('.project-card');
+// Funktion, um die Galerie beim Laden der Seite zu bauen
+function renderGallery() {
+    const gallery = document.getElementById('gallery');
+    gallery.innerHTML = projectData.map(project => `
+        <div class="project-card" data-category="${project.category}" onclick="openModal(${project.id})">
+            <div class="card-image">
+                <img src="${project.thumbnail}" alt="${project.title}">
+            </div>
+            <div class="card-info">
+                <h3>${project.title}</h3>
+                <span>${project.category}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Modal öffnen und Kollektion anzeigen
+function openModal(id) {
+    const project = projectData[id];
     const modal = document.getElementById('projectModal');
-    const closeModal = document.querySelector('.modal-close');
 
-    // --- Filter Logik ---
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Aktiven Button stylen
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    // Hauptbild im Modal ist das erste aus der Kollektion oder das Thumbnail
+    document.getElementById('modalImg').src = project.collection[0] || project.thumbnail;
+    document.getElementById('modalTitle').innerText = project.title;
+    document.getElementById('modalDesc').innerText = project.desc;
 
-            const filterValue = btn.getAttribute('data-filter');
-
-            projects.forEach(project => {
-                if (filterValue === 'all' || project.getAttribute('data-category') === filterValue) {
-                    project.style.display = 'block';
-                    // Kleiner Delay für Fade-In Effekt
-                    setTimeout(() => project.style.opacity = '1', 10);
-                } else {
-                    project.style.opacity = '0';
-                    setTimeout(() => project.style.display = 'none', 400);
-                }
-            });
-        });
-    });
-
-    // --- Modal Logik ---
-    projects.forEach(project => {
-        project.addEventListener('click', () => {
-            const id = project.getAttribute('data-id');
-            const data = projectData[id];
-            const imgSrc = project.querySelector('img').src;
-
-            // Modal füllen
-            document.getElementById('modalImg').src = imgSrc;
-            document.getElementById('modalTitle').innerText = data.title;
-            document.getElementById('modalCat').innerText = data.category;
-            document.getElementById('modalDesc').innerText = data.desc;
-            document.getElementById('modalMeta').innerText = data.meta;
-
-            // Modal anzeigen
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Scrollen verhindern
-        });
-    });
-
-    closeModal.addEventListener('click', () => {
-        modal.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    });
-
-    // Schließen bei Klick außerhalb des Modals
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-    });
-
-    // --- Simple Form Handling ---
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Transmission received. Stay heavy!');
-            contactForm.reset();
-        });
+    // Wenn es mehrere Bilder gibt, erstelle eine kleine Thumbnail-Leiste im Modal
+    const metaContainer = document.getElementById('modalMeta');
+    if (project.collection.length > 1) {
+        metaContainer.innerHTML = project.collection.map(img => `
+            <img src="${img}" onclick="document.getElementById('modalImg').src='${img}'" 
+                 style="width:60px; height:60px; object-fit:cover; cursor:pointer; border:1px solid #252525;">
+        `).join('');
+    } else {
+        metaContainer.innerHTML = "";
     }
-});
+
+    modal.classList.add('active');
+}
+
+// Initialer Aufruf
+document.addEventListener('DOMContentLoaded', renderGallery);

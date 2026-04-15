@@ -224,23 +224,41 @@ h4,
     }
 }
 
+
+/* --- GALLERY GRID FIX --- */
+
 .project-card {
+    display: block;
+    /* WICHTIG: Macht den Link zum Container */
+    text-decoration: none;
+    /* Entfernt das unschöne Blau/Unterstreichen */
+    color: white;
+    /* Verhindert die Standard-Linkfarbe */
     background: var(--card-color);
     border: 1px solid var(--border-color);
-    text-decoration: none;
-    color: white;
     overflow: hidden;
     transition: var(--transition);
-    display: block;
+}
+
+.project-card:hover {
+    text-decoration: none;
+    /* Sicherstellen, dass nichts erscheint */
+    color: white;
+    outline: 2px solid var(--accent-color);
+    transform: translateY(-5px);
 }
 
 .card-image {
     width: 100%;
     aspect-ratio: 4/5;
     overflow: hidden;
+    background-color: #000;
+    /* Platzhalter, falls Bild lädt */
 }
 
 .card-image img {
+    display: block;
+    /* Entfernt Lücken unter dem Bild */
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -248,18 +266,10 @@ h4,
     transition: var(--transition);
 }
 
-.project-card:hover {
-    outline: 2px solid var(--accent-color);
-    transform: translateY(-5px);
-}
-
-.project-card:hover .card-image img {
-    filter: grayscale(0%);
-    transform: scale(1.05);
-}
-
-.card-info {
-    padding: 1.5rem;
+.card-info h3 {
+    color: white;
+    /* Explizit Weiß für die Überschrift */
+    margin-top: 0;
 }
 
 

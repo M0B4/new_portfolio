@@ -14,19 +14,20 @@ function renderGallery(filter = 'all') {
         projectData.filter(p => p.category === filter);
 
     filtered.forEach(project => {
-        const card = document.createElement('a');
-        card.href = `detail.html?id=${project.id}`;
-        card.className = 'project-card';
-
-        card.innerHTML = `
-            <div class="card-image">
-                <img src="${project.thumbnail}" alt="${project.title}" loading="lazy">
-            </div>
-            <div class="card-info">
-                <h3>${project.title}</h3>
-                <span>${project.category}</span>
-            </div>
-        `;
+                // In der renderGallery Funktion:
+                const card = document.createElement('a');
+                card.href = `detail.html?id=${project.id}`;
+                card.className = 'project-card';
+                card.innerHTML = `
+                <div class="card-image">
+                    <img src="${project.thumbnail}" alt="${project.title}">
+                </div>
+                <div class="card-info">
+                     <h3>${project.title}</h3>
+                     <span>${project.category}</span>
+    </div>
+`;
+                `;
         gallery.appendChild(card);
     });
 }

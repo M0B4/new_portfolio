@@ -34,7 +34,12 @@ const projectData = [{
         details: "Material: Carbon-PETG | Technik: 3D-Druck | Kunde: DLRG",
         subProjects: [
             { img: "mid/mid_80s.jpg", title: "Gehäuse-Prototyp V1" },
-            { img: "mid/mid_acdc.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_i.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_ii.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_iii.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_iv.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_v.jpg", title: "Belastungstest-Modell" }
+            { img: "mid/mid_acdc.jpg", title: "Belastungstest-Modell" },
+            { img: "mid/mid_i.jpg", title: "Belastungstest-Modell" },
+            { img: "mid/mid_ii.jpg", title: "Belastungstest-Modell" },
+            { img: "mid/mid_iii.jpg", title: "Belastungstest-Modell" },
+            { img: "mid/mid_iv.jpg", title: "Belastungstest-Modell" },
+            { img: "mid/mid_v.jpg", title: "Belastungstest-Modell" }
         ]
     }
 ];

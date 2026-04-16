@@ -1,7 +1,7 @@
 const projectData = [{
         id: "wacken",
         title: "Wacken Open Air 2026",
-        category: "merchandise",
+        category: "clothing",
         thumbnail: "images/woa/woa_26_main.webp",
         heroImage: "images/woa/woa_26_main.webp",
         description: "Ganzheitliche Betreuung der Merch-Linie. Fokus auf industrielle Typografie und handgezeichnete Illustrationen.",
@@ -28,7 +28,7 @@ const projectData = [{
     {
         id: "metal:im_dorf",
         title: "Metal im Dorf",
-        category: "branding",
+        category: "poster",
         thumbnail: "images/mid.webp",
         heroImage: "images/mid.webp",
         description: "Branding und Merchandisefür alle Hauptfestivals und Nebenevents.",

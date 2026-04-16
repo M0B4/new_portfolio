@@ -15,10 +15,30 @@ const projects = [{
     },
     {
         id: "zippo",
-        title: "Wacken Zippo 'Burning Strong Since'",
+        title: "Wacken Zippo 'Burning Strong Since 1990'",
         category: "various",
         previewImage: "images/various/zippo.webp"
     },
+    {
+        id: "hbn_27",
+        title: "Headbangers Night 2027 Poster",
+        category: "poster",
+        previewImage: "images/poster/hbn_27.webp"
 
+    },
+    {
+        id: "fma_band",
+        title: "Full Metal Army Camping Bändchen 2026",
+        category: "branding",
+        previewImage: "images/poster/fma_band.webp"
+
+    },
+    {
+        id: "mid_maiden",
+        title: "Metal im Dorf Iron Maiden Covernight Poster",
+        category: "poster",
+        previewImage: "images/poster/maiden.webp"
+
+    },
     // Du kannst hier beliebig viele Projekte hinzufügen
 ];

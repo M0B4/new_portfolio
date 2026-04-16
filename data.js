@@ -1,26 +1,23 @@
 const projects = [{
         id: "project-wacken",
-        title: "Wacken Clothing Line",
+        title: "Wacken 2026 Temple",
         category: "clothing",
-        previewImage: "images/clothing/temple_combi.webp",
-        description: "Brutale Merchandising-Kollektion für das größte Metal-Festival der Welt. Fokus auf Typografie und Haltbarkeit.",
-        images: ["images/wacken-1.jpg", "images/wacken-2.jpg", "images/wacken-3.jpg"]
+        previewImage: "images/clothing/temple_combi.webp"
+
+
     },
     {
-        id: "project-poster-1",
-        title: "Event Poster Series",
+        id: "mid_v",
+        title: "Metal im Dorf V Poster",
         category: "poster",
-        previewImage: "images/poster-preview.jpg",
-        description: "Druckgeprüfte Poster-Designs für internationale Touren und Einzelshows.",
-        images: ["images/poster-1.jpg", "images/poster-2.jpg"]
+        previewImage: "images/poster/mid_v.webp"
+
     },
     {
-        id: "project-3d",
-        title: "Industrial 3D Parts",
-        category: "3d-print",
-        previewImage: "images/3d-preview.jpg",
-        description: "Hochpräzise technische Bauteile für industrielle Anwendungen. Druck- und stressgetestet.",
-        images: ["images/3d-1.jpg", "images/3d-2.jpg"]
+        id: "zippo",
+        title: "Wacken Zippo 'Burning Strong Since'",
+        category: "various",
+        previewImage: "images/various/zippo.webp"
     },
     {
         id: "project-3d",

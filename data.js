@@ -40,7 +40,7 @@ const projectData = [{
             { img: "images/mid/mid_ii.jpg", title: "Belastungstest-Modell" },
             { img: "images/mid/mid_iii.jpg", title: "Belastungstest-Modell" },
             { img: "images/mid/mid_iv.jpg", title: "Belastungstest-Modell" },
-            { img: "mid/mid_v.jpg", title: "Belastungstest-Modell" }
+            { img: "images/mid/mid_v.jpg", title: "Belastungstest-Modell" }
         ]
     }
 ];

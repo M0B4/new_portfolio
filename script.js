@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
 
-    // 1. Initialisierung
+    // 1. Initialisierung der Galerie
     function initGallery() {
         if (!galleryGrid || typeof projects === 'undefined') return;
 
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         attachListeners();
     }
 
-    // 2. Filter
+    // 2. Filter Logik
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             filterButtons.forEach(b => b.classList.remove('active'));
@@ -60,16 +60,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
     }
 
-    closeBtn.addEventListener('click', () => {
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    }
 
-    // 4. Mobile Nav
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
-    });
+    // 4. Mobile Nav Logik (Hamburger & Auto-Close)
+    if (hamburger && navLinks) {
+        // Öffnen/Schließen per Klick auf den Hamburger
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // NEU: Menü schließen, wenn ein Link geklickt wird
+        const navItems = navLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+    }
 
     initGallery();
 });

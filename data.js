@@ -24,7 +24,8 @@ const projectData = [{
             { img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80", title: "Gehäuse-Prototyp V1" },
             { img: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80", title: "Belastungstest-Modell" }
         ]
-    } {
+    },
+    {
         id: "metal:im_dorf",
         title: "Metal im Dorf",
         category: "branding",

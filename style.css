@@ -1,10 +1,11 @@
-/* --- CSS VARIABLES --- */
+/* --- CSS VARIABLES (The Deep Teal Branding) --- */
 
 :root {
     --bg-color: #030303;
     --card-color: #0d0d0d;
     --accent-color: #004d4d;
-    --accent-hover: #b00000;
+    /* Dein Deep Teal */
+    --accent-hover: #006666;
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
     --border-color: #1a1a1a;
@@ -19,7 +20,7 @@
 }
 
 
-/* --- RESET & BACKGROUND --- */
+/* --- RESET & BASE --- */
 
 * {
     margin: 0;
@@ -33,7 +34,9 @@ html {
 
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient( circle at center, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.04) 15%, rgba(0, 0, 0, 0.2) 60%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    /* ULTRA-SMOOTH VIGNETTE & CARBON TEXTURE */
+    background-image: radial-gradient( circle at center, rgba(0, 77, 77, 0.08) 0%, /* Subtiler Teal-Schimmer im Zentrum */
+    rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-blend-mode: soft-light;
     background-attachment: fixed;
     color: var(--text-primary);
@@ -54,7 +57,6 @@ h4,
 
 .container {
     max-width: 1400px;
-    /* Breiter für das 4-Spalten-Grid */
     margin: 0 auto;
     padding: 0 var(--spacing);
 }
@@ -63,8 +65,21 @@ h4,
     padding: 80px 0;
 }
 
+@media (min-width: 768px) {
+    .section {
+        padding: 120px 0;
+    }
+}
 
-/* --- NAVIGATION --- */
+.section-title {
+    font-size: 2.2rem;
+    margin-bottom: 2.5rem;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1.2rem;
+}
+
+
+/* --- NAVIGATION & LOGO (OPTICAL FIX) --- */
 
 .navbar {
     position: fixed;
@@ -97,6 +112,7 @@ h4,
 .logo span {
     color: var(--accent-color);
     font-size: 1.05em;
+    /* Optical Fix: Größer um Farbgewicht auszugleichen */
     font-weight: 700;
 }
 
@@ -120,7 +136,61 @@ h4,
 }
 
 
-/* --- HERO SECTION (With your Image) --- */
+/* Hamburger Menu */
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    gap: 6px;
+    z-index: 1001;
+}
+
+.hamburger .bar {
+    width: 28px;
+    height: 2px;
+    background-color: white;
+    transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    }
+    .nav-links.active {
+        right: 0;
+    }
+    .nav-links a {
+        font-size: 1.8rem;
+        margin: 1rem 0;
+    }
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}
+
+
+/* --- HERO SECTION & GLITCH --- */
 
 .hero {
     height: 85vh;
@@ -130,7 +200,8 @@ h4,
     text-align: center;
     position: relative;
     overflow: hidden;
-    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('1000153292.jpg');
+    /* Layering: Vignette -> Carbon -> Foto */
+    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
     background-size: auto, auto, cover;
     background-position: center;
     background-attachment: fixed;
@@ -139,24 +210,48 @@ h4,
 
 .hero h1 {
     font-size: clamp(2.5rem, 8vw, 6rem);
+    line-height: 1;
     position: relative;
     animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
+.hero h1::before,
+.hero h1::after {
+    content: "HEAVY DESIGN. DEEP IMPACT.";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+}
 
-/* --- THE MAIN GRID (Desktop & Mobile) --- */
+.hero h1::before {
+    color: var(--accent-color);
+    z-index: -1;
+    animation: glitch-anim-pseudo 0.4s ease-out 1.2s;
+}
+
+.hero h1::after {
+    color: white;
+    z-index: -2;
+    animation: glitch-anim-pseudo 0.4s ease-out 1.3s;
+}
+
+
+/* --- MAIN GALLERY GRID (4 Spalten Desktop) --- */
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* 2 Spalten Mobile */
+    /* Mobile: 2 Spalten */
     gap: 0.75rem;
 }
 
 @media (min-width: 1024px) {
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr);
-        /* 4 Spalten auf Desktop */
+        /* Desktop: 4 Spalten */
         gap: 1.5rem;
     }
 }
@@ -191,10 +286,11 @@ h4,
 
 .project-card:hover img {
     filter: grayscale(0%) contrast(1.1);
+    transform: scale(1.05);
 }
 
 .card-info {
-    padding: 1rem;
+    padding: 1.2rem;
 }
 
 .card-info h3 {
@@ -210,12 +306,12 @@ h4,
 }
 
 
-/* --- DETAIL PAGE GRID --- */
+/* --- DETAIL PAGE GRID (3 Spalten Desktop) --- */
 
 .sub-project-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    /* Auch hier 2 Spalten Mobile */
+    /* Mobile: 2 Spalten */
     gap: 1rem;
     margin-top: 2rem;
 }
@@ -223,8 +319,8 @@ h4,
 @media (min-width: 1024px) {
     .sub-project-grid {
         grid-template-columns: repeat(3, 1fr);
-        /* 3 Spalten Detailansicht Desktop */
-        gap: 2rem;
+        /* Desktop: 3 Spalten */
+        gap: 2.5rem;
     }
 }
 
@@ -234,9 +330,15 @@ h4,
     padding: 0.5rem;
 }
 
+@media (min-width: 768px) {
+    .sub-card {
+        padding: 1rem;
+    }
+}
+
 .sub-card img {
     width: 100%;
-    filter: grayscale(10%);
+    filter: grayscale(15%);
     transition: var(--transition);
 }
 
@@ -245,7 +347,7 @@ h4,
 }
 
 
-/* --- GLITCH ANIMATION --- */
+/* --- ANIMATIONS --- */
 
 @keyframes glitch-anim {
     0% {
@@ -268,8 +370,25 @@ h4,
     }
 }
 
+@keyframes glitch-anim-pseudo {
+    0% {
+        visibility: visible;
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-12px, -6px);
+    }
+    40% {
+        transform: translate(12px, 6px);
+    }
+    100% {
+        visibility: hidden;
+        transform: translate(0);
+    }
+}
 
-/* --- BUTTONS & FORMS --- */
+
+/* --- FORMS & BUTTONS --- */
 
 .btn {
     padding: 1.2rem 2rem;
@@ -280,9 +399,26 @@ h4,
     text-transform: uppercase;
     cursor: pointer;
     font-weight: bold;
+    transition: var(--transition);
 }
 
 .btn:hover {
     background: var(--accent-hover);
-    box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(0, 77, 77, 0.4);
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1.2rem;
+    background: #080808;
+    border: 1px solid var(--border-color);
+    color: white;
+    font-family: inherit;
+    margin-bottom: 1rem;
+}
+
+.contact-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
 }

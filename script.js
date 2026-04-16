@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- 1. ELEMENTE AUS DEM HTML HOLEN ---
     const galleryGrid = document.querySelector('.gallery-grid');
     const overlay = document.querySelector('.project-overlay');
     const overlayContent = document.querySelector('.overlay-content');
@@ -8,15 +9,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
 
-    // --- 1. INITIALISIERUNG DER GALERIE ---
-    // Diese Funktion baut die Projektkarten beim Laden der Seite zusammen
-    function initGallery() {
-        if (!galleryGrid || typeof projects === 'undefined') return;
+    console.log("DOM geladen. Starte Initialisierung...");
 
+    // --- 2. INITIALISIERUNG DER GALERIE ---
+    function initGallery() {
+        // Prüfen, ob die Datenquelle 'projects' überhaupt existiert
+        if (typeof projects === 'undefined') {
+            console.error("FEHLER: 'projects' ist nicht definiert. Check deine data.js!");
+            return;
+        }
+
+        console.log("Daten gefunden. Anzahl der Projekte:", projects.length);
+
+        if (!galleryGrid) {
+            console.error("FEHLER: Container '.gallery-grid' wurde im HTML nicht gefunden!");
+            return;
+        }
+
+        // Falls das Array leer ist, zeigen wir eine kleine Meldung
+        if (projects.length === 0) {
+            galleryGrid.innerHTML = "<p>Keine Projekte in der data.js gefunden.</p>";
+            return;
+        }
+
+        // Projekte ins HTML schreiben
         galleryGrid.innerHTML = projects.map(project => `
             <div class="project-card ${project.category}" data-id="${project.id}">
                 <div class="card-image">
-                    <img src="${project.previewImage}" alt="${project.title}">
+                    <img src="${project.previewImage}" alt="${project.title}" onerror="this.src='https://via.placeholder.com/400x500?text=Bild+fehlt'">
                 </div>
                 <div class="card-info">
                     <h3>${project.title}</h3>
@@ -25,14 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `).join('');
 
-        // Event-Listener für die neu erstellten Karten hinzufügen
+        console.log("Galerie erfolgreich befüllt.");
         attachCardListeners();
     }
 
-    // --- 2. FILTER LOGIK ---
+    // --- 3. FILTER LOGIK ---
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Aktiven Button-Style umschalten
             filterButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -42,17 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
             projectCards.forEach(card => {
                 if (filterValue === 'all' || card.classList.contains(filterValue)) {
                     card.style.display = 'block';
-                    // Kleiner Fade-In Effekt
-                    card.style.opacity = '0';
                     setTimeout(() => card.style.opacity = '1', 10);
                 } else {
                     card.style.display = 'none';
                 }
             });
+            console.log("Filter angewendet:", filterValue);
         });
     });
 
-    // --- 3. OVERLAY / MODAL LOGIK ---
+    // --- 4. OVERLAY / MODAL LOGIK ---
     function attachCardListeners() {
         const cards = document.querySelectorAll('.project-card');
         cards.forEach(card => {
@@ -68,17 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function openOverlay(data) {
-        // Generiere das HTML für die Detailansicht (Unterprojekte/Bilder)
         const imagesHTML = data.images.map(img => `
             <div class="sub-card">
-                <img src="${img}" alt="${data.title}">
+                <img src="${img}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Detailbild+fehlt'">
             </div>
         `).join('');
 
         overlayContent.innerHTML = `
             <div class="container">
                 <h2 class="section-title">${data.title}</h2>
-                <p style="margin-bottom: 3rem; color: var(--text-secondary); max-width: 800px; font-size: 1.1rem;">
+                <p style="margin-bottom: 3rem; color: var(--text-secondary); max-width: 800px;">
                     ${data.description}
                 </p>
                 <div class="sub-project-grid">
@@ -88,42 +105,27 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         overlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Scrollen der Hauptseite verhindern
+        document.body.style.overflow = 'hidden';
     }
-
-    // Schließen Funktionen
-    closeBtn.addEventListener('click', closeOverlay);
-
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) closeOverlay();
-    });
 
     function closeOverlay() {
         overlay.classList.remove('active');
         document.body.style.overflow = 'auto';
     }
 
-    // --- 4. MOBILE NAVIGATION ---
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navLinks.classList.toggle('active');
+    if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+    if (overlay) overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeOverlay();
     });
 
-    // Menü schließen wenn ein Link geklickt wird
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navLinks.classList.remove('active');
+    // --- 5. MOBILE NAVIGATION ---
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
         });
-    });
+    }
 
-    // Escape-Taste schließt das Overlay
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.classList.contains('active')) {
-            closeOverlay();
-        }
-    });
-
-    // Start der Galerie
+    // --- START ---
     initGallery();
 });

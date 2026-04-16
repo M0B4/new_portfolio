@@ -1,34 +1,26 @@
 const projects = [{
-        id: "project-1",
-        title: "Wacken Merch Collection",
+        id: "project-wacken",
+        title: "Wacken Clothing Line",
         category: "clothing",
-        previewImage: "images/wacken-shirt-preview.jpg", // Pfad zu deinem Vorschaubild
-        description: "Brutales Shirt-Design für das größte Metal-Festival. Fokus auf Dark-Art und Siebdruck-Optimierung.",
-        images: [
-            "images/wacken-shirt-1.jpg",
-            "images/wacken-shirt-2.jpg",
-            "images/wacken-shirt-detail.jpg"
-        ]
+        previewImage: "images/wacken-preview.jpg",
+        description: "Brutale Merchandising-Kollektion für das größte Metal-Festival der Welt. Fokus auf Typografie und Haltbarkeit.",
+        images: ["images/wacken-1.jpg", "images/wacken-2.jpg", "images/wacken-3.jpg"]
     },
     {
-        id: "project-2",
-        title: "Technical Engineering Part",
+        id: "project-poster-1",
+        title: "Event Poster Series",
+        category: "poster",
+        previewImage: "images/poster-preview.jpg",
+        description: "Druckgeprüfte Poster-Designs für internationale Touren und Einzelshows.",
+        images: ["images/poster-1.jpg", "images/poster-2.jpg"]
+    },
+    {
+        id: "project-3d",
+        title: "Industrial 3D Parts",
         category: "3d-print",
-        previewImage: "images/3d-print-preview.jpg",
-        description: "Hochpräziser 3D-Druck für industrielle Anwendungen. Druckgeprüft und belastbar.",
-        images: [
-            "images/3d-part-1.jpg",
-            "images/3d-part-2.jpg"
-        ]
-    },
-    {
-        id: "project-3",
-        title: "Festival Stage Design",
-        category: "event",
-        previewImage: "images/event-preview.jpg",
-        description: "Visuelles Konzept für Mainstage-Bespielung. Kombination aus Licht und Grafik.",
-        images: [
-            "images/event-1.jpg"
-        ]
+        previewImage: "images/3d-preview.jpg",
+        description: "Hochpräzise technische Bauteile für industrielle Anwendungen. Druck- und stressgetestet.",
+        images: ["images/3d-1.jpg", "images/3d-2.jpg"]
     }
+    // Du kannst hier beliebig viele Projekte hinzufügen
 ];

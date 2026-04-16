@@ -5,11 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HEAVY DESIGN | DEEP IMPACT</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -18,13 +16,11 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="#" class="logo">DEIN<span>NAME</span></a>
-
             <ul class="nav-links">
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="#about">About Me</a></li>
+                <li><a href="#portfolio">Work</a></li>
+                <li><a href="#about">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
-
             <button class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -36,28 +32,25 @@
     <header class="hero">
         <div class="container">
             <h1>HEAVY DESIGN. DEEP IMPACT.</h1>
-            <p style="margin-top: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px;">
-                Vom Moshpit in die Tiefe. Visuelle Identitäten mit Substanz.
-            </p>
+            <p class="hero-subline">Vom Moshpit in die Tiefe. Visuelle Gewalt mit technischer Präzision.</p>
         </div>
     </header>
 
     <section class="partners-ribbon">
         <div class="container">
-            <h4 style="text-align: center; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 2rem; letter-spacing: 3px; opacity: 0.8;">TRUSTED BY</h4>
+            <h4 class="partner-title">TRUSTED BY</h4>
             <div class="logo-grid">
-                <img src="images/logos/woa.webp" alt="Wacken Open Air">
-                <img src="images/logos/mid.webp" alt="Metal im Dorf">
-                <img src="images/logos/fmh.png" alt="Full Metal Holiday">
-                <img src="images/logos/foundation.png" alt="Wacken Foundation">
+                <img src="images/logo-placeholder.png" alt="Partner 1">
+                <img src="images/logo-placeholder.png" alt="Partner 2">
+                <img src="images/logo-placeholder.png" alt="Partner 3">
+                <img src="images/logo-placeholder.png" alt="Partner 4">
             </div>
         </div>
     </section>
 
     <section id="portfolio" class="section">
         <div class="container">
-            <h2 class="section-title">Work</h2>
-
+            <h2 class="section-title">Portfolio</h2>
             <div class="filter-controls">
                 <button class="filter-btn active" data-filter="all">All</button>
                 <button class="filter-btn" data-filter="event">Event Design</button>
@@ -66,29 +59,24 @@
                 <button class="filter-btn" data-filter="3d-print">3D-Printing</button>
                 <button class="filter-btn" data-filter="various">Varied</button>
             </div>
-
-            <div class="gallery-grid">
-            </div>
+            <div class="gallery-grid"></div>
         </div>
     </section>
 
-    <section id="about" class="section" style="background: rgba(13, 13, 13, 0.4);">
-        <div class="container" style="max-width: 800px; text-align: center;">
-            <h2 class="section-title" style="border: none; padding: 0;">Behind the Lens & Screen</h2>
-            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-top: 2rem;">
-                Ich bewege mich dort, wo rohe Energie auf technische Präzision trifft. Ob im Schlamm der Festival-Gräben, unter der Wasseroberfläche beim Tauchen oder am Rechner bei der Entwicklung von High-End Prints. Mein Design ist für die gemacht, die keine Angst
-                vor dem Druck haben.
-            </p>
+    <section id="about" class="section bg-alt">
+        <div class="container narrow">
+            <h2 class="section-title">Behind the Screen</h2>
+            <p>Ich bewege mich dort, wo rohe Energie auf technische Präzision trifft. Mein Design ist für die gemacht, die keine Angst vor dem Druck haben – egal ob vor der Stage oder 30 Meter unter Wasser.</p>
         </div>
     </section>
 
     <section id="contact" class="section">
-        <div class="container" style="max-width: 800px;">
+        <div class="container narrow">
             <h2 class="section-title">Contact</h2>
             <form class="contact-form">
                 <input type="text" placeholder="NAME / BRAND" required>
                 <input type="email" placeholder="EMAIL" required>
-                <textarea rows="5" placeholder="PROJEKTANFRAGE / NACHRICHT" required></textarea>
+                <textarea rows="5" placeholder="PROJEKTANFRAGE" required></textarea>
                 <button type="submit" class="btn">Send Message</button>
             </form>
         </div>
@@ -96,8 +84,7 @@
 
     <div class="project-overlay">
         <button class="close-overlay">CLOSE [X]</button>
-        <div class="overlay-content">
-        </div>
+        <div class="overlay-content"></div>
     </div>
 
     <script src="data.js"></script>

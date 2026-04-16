@@ -31,16 +31,23 @@ const projectData = [{
         category: "branding",
         thumbnail: "images/mid.webp",
         heroImage: "images/mid.webp",
-        description: "Entwicklung von funktionalen Gehäuse-Prototypen für maritime Rettungssensoren.",
-        details: "Material: Carbon-PETG | Technik: 3D-Druck | Kunde: DLRG",
+        description: "Branding und Merchandisefür alle Hauptfestivals und Nebenevents.",
+        details: "Produkte: Flyer, Karten, Bändchen, Shirts, Social-Media Beiträge | Software: Photoshop, Illustrator | Kunde: Metal im Dorf",
         subProjects: [
-            { img: "images/mid/mid_80s.jpg", title: "Gehäuse-Prototyp V1" },
-            { img: "images/mid/mid_acdc.jpg", title: "Belastungstest-Modell" },
-            { img: "images/mid/mid_i.jpg", title: "Belastungstest-Modell" },
-            { img: "images/mid/mid_ii.jpg", title: "Belastungstest-Modell" },
-            { img: "images/mid/mid_iii.jpg", title: "Belastungstest-Modell" },
-            { img: "images/mid/mid_iv.jpg", title: "Belastungstest-Modell" },
-            { img: "images/mid/mid_v.jpg", title: "Belastungstest-Modell" }
+            { img: "images/mid/mid_v.jpg", title: "Festival Poster" },
+            { img: "images/mid/mid_iv.jpg", title: "Festival Poster" },
+            { img: "images/mid/mid_iii.jpg", title: "Festival Poster" },
+            { img: "images/mid/mid_ii.jpg", title: "Festival Poster" },
+            { img: "images/mid/mid_i.jpg", title: "Festival Poster" },
+            { img: "images/mid/mid_ozzy.jpg", title: "Covernight Poster" },
+            { img: "images/mid/mid_80s.jpg", title: "Covernight Poster" },
+            { img: "images/mid/mid_acdc.jpg", title: "Covernight Poster" },
+            { img: "images/mid/mid_onkelz.jpg", title: "Covernight Poster" },
+
+
+
+
+
         ]
     }
 ];

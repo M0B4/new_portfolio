@@ -33,7 +33,7 @@ html {
 
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient( circle at center, rgba(0, 77, 77, 0.08) 0%, rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    background-image: radial-gradient(circle at center, rgba(0, 77, 77, 0.08) 0%, rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-blend-mode: soft-light;
     background-attachment: fixed;
     color: var(--text-primary);
@@ -59,25 +59,11 @@ h4,
 }
 
 .section {
-    padding: 60px 0;
-    /* Etwas gestrafft */
-}
-
-@media (min-width: 768px) {
-    .section {
-        padding: 100px 0;
-    }
-}
-
-.section-title {
-    font-size: 2.2rem;
-    margin-bottom: 2.5rem;
-    border-left: 4px solid var(--accent-color);
-    padding-left: 1.2rem;
+    padding: 80px 0;
 }
 
 
-/* --- NAVIGATION & ALIGNMENT --- */
+/* --- NAVIGATION --- */
 
 .navbar {
     position: fixed;
@@ -93,7 +79,7 @@ h4,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem var(--spacing);
+    padding: 1rem var(--spacing);
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -136,7 +122,8 @@ h4,
 /* --- HERO SECTION --- */
 
 .hero {
-    height: 85vh;
+    height: 80vh;
+    /* Etwas reduziert für schnellere Sichtbarkeit der Work */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -157,9 +144,7 @@ h4,
 }
 
 .hero h1 {
-    font-size: clamp(2.5rem, 8vw, 6rem);
-    line-height: 1.1;
-    position: relative;
+    font-size: clamp(2.2rem, 8vw, 6rem);
     animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
@@ -177,11 +162,11 @@ h4,
 }
 
 
-/* --- SLIM PARTNER SECTION (Update) --- */
+/* --- COMPACT PARTNER SECTION --- */
 
 .partners-ribbon {
     padding: 20px 0;
-    /* Dünnerer Streifen auf Desktop */
+    /* Massiv reduziert von 40px */
     background: rgba(10, 10, 10, 0.8);
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
@@ -191,46 +176,28 @@ h4,
     text-align: center;
     font-size: 0.6rem;
     color: var(--text-secondary);
-    margin-bottom: 15px;
-    /* Weniger Abstand zum Titel */
-    letter-spacing: 4px;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
     opacity: 0.5;
 }
 
 .logo-grid {
     display: flex;
     justify-content: center;
-    /* Zentriert die Logos */
+    /* Zentriert für einen kompakten Look */
     align-items: center;
     flex-wrap: wrap;
-    gap: 2.5rem;
+    gap: 1.5rem;
+    /* Weniger Abstand */
 }
 
 .logo-grid img {
-    height: 30px;
-    /* Kleinere Logos auf Desktop */
-    filter: grayscale(100%) brightness(2);
+    height: 25px;
+    /* Kleiner als vorher */
+    width: auto;
+    filter: grayscale(100%) brightness(1.5);
     opacity: 0.4;
     transition: var(--transition);
-}
-
-@media (max-width: 768px) {
-    .partners-ribbon {
-        padding: 12px 0;
-        /* Extrem flach auf Mobile */
-    }
-    .partner-title {
-        margin-bottom: 10px;
-        font-size: 0.5rem;
-    }
-    .logo-grid {
-        gap: 1.5rem;
-        /* Engeres Grid auf Mobile */
-    }
-    .logo-grid img {
-        height: 20px;
-        /* Sehr dezente Logos auf Mobile */
-    }
 }
 
 .logo-grid img:hover {
@@ -238,16 +205,29 @@ h4,
     opacity: 1;
 }
 
+@media (max-width: 768px) {
+    .partners-ribbon {
+        padding: 15px 0;
+    }
+    .logo-grid {
+        gap: 1rem;
+    }
+    .logo-grid img {
+        height: 18px;
+    }
+    /* Sehr dezent auf Mobile */
+}
+
 
 /* --- FILTER CONTROLS --- */
 
 .filter-controls {
     display: flex;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    gap: 1rem;
+    margin: 3rem 0 2rem 0;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
 }
 
 .filter-controls::-webkit-scrollbar {
@@ -265,10 +245,10 @@ h4,
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-family: 'Oswald', sans-serif;
+    font-family: 'Oswald';
     text-transform: uppercase;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem;
     white-space: nowrap;
     border-bottom: 2px solid transparent;
     transition: var(--transition);
@@ -281,7 +261,7 @@ h4,
 }
 
 
-/* --- PROJECT GRID (COLOR) --- */
+/* --- PROJECT GRID --- */
 
 .gallery-grid {
     display: grid;
@@ -323,18 +303,17 @@ h4,
 }
 
 .card-info {
-    padding: 1.2rem;
+    padding: 1rem;
 }
 
 .card-info h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: white;
-    margin-bottom: 0.3rem;
 }
 
 .card-info span {
     color: var(--accent-color);
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: bold;
 }
 
@@ -352,7 +331,7 @@ h4,
 }
 
 .hamburger .bar {
-    width: 30px;
+    width: 28px;
     height: 2px;
     background: white;
     transition: var(--transition);
@@ -373,13 +352,13 @@ h4,
         justify-content: center;
         align-items: center;
         transition: 0.5s;
-        gap: 3rem;
+        gap: 2.5rem;
     }
     .nav-links.active {
         right: 0;
     }
     .nav-links a {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     .hamburger.active .bar:nth-child(1) {
         transform: translateY(8px) rotate(45deg);
@@ -402,16 +381,7 @@ h4,
         transform: translate(0);
     }
     20% {
-        transform: translate(-4px, 4px);
-    }
-    40% {
-        transform: translate(-4px, -4px);
-    }
-    60% {
-        transform: translate(4px, 4px);
-    }
-    80% {
-        transform: translate(4px, -4px);
+        transform: translate(-3px, 3px);
     }
     100% {
         transform: translate(0);
@@ -423,15 +393,8 @@ h4,
         visibility: visible;
         transform: translate(0);
     }
-    20% {
-        transform: translate(-12px, -6px);
-    }
-    40% {
-        transform: translate(12px, 6px);
-    }
     100% {
         visibility: hidden;
-        transform: translate(0);
     }
 }
 
@@ -441,15 +404,15 @@ h4,
 .contact-form input,
 .contact-form textarea {
     width: 100%;
-    padding: 1.2rem;
+    padding: 1rem;
     background: #080808;
     border: 1px solid var(--border-color);
     color: white;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .btn {
-    padding: 1.2rem 2.5rem;
+    padding: 1rem 2rem;
     background: var(--accent-color);
     color: white;
     border: none;
@@ -462,5 +425,5 @@ h4,
 
 .btn:hover {
     background: var(--accent-hover);
-    box-shadow: 0 0 20px rgba(0, 77, 77, 0.4);
+    box-shadow: 0 0 15px rgba(0, 77, 77, 0.3);
 }

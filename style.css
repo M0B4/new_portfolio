@@ -4,7 +4,6 @@
     --bg-color: #030303;
     --card-color: #0d0d0d;
     --accent-color: #004d4d;
-    /* Dein Deep Teal */
     --accent-hover: #006666;
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
@@ -34,7 +33,6 @@ html {
 
 body {
     background-color: var(--bg-color);
-    /* ULTRA-SMOOTH VIGNETTE & CARBON TEXTURE */
     background-image: radial-gradient( circle at center, rgba(0, 77, 77, 0.08) 0%, rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-blend-mode: soft-light;
     background-attachment: fixed;
@@ -96,7 +94,6 @@ h4,
     align-items: center;
     padding: 1.2rem var(--spacing);
     max-width: 1400px;
-    /* Zentriert den Namen bündig zum Content */
     margin: 0 auto;
 }
 
@@ -135,7 +132,7 @@ h4,
 }
 
 
-/* --- HERO SECTION (Header Bild & Glitch) --- */
+/* --- HERO SECTION --- */
 
 .hero {
     height: 85vh;
@@ -149,14 +146,12 @@ h4,
     background-size: auto, auto, cover;
     background-position: center;
     background-attachment: fixed;
-    /* Desktop-Parallax */
     background-blend-mode: multiply;
 }
 
 @media (max-width: 1024px) {
     .hero {
         background-attachment: scroll;
-        /* Mobile Zoom-Fix */
     }
 }
 
@@ -167,8 +162,7 @@ h4,
     animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
-.hero h1::before,
-.hero h1::after {
+.hero h1::before {
     content: "HEAVY DESIGN. DEEP IMPACT.";
     position: absolute;
     top: 0;
@@ -176,9 +170,6 @@ h4,
     width: 100%;
     height: 100%;
     visibility: hidden;
-}
-
-.hero h1::before {
     color: var(--accent-color);
     z-index: -1;
     animation: glitch-anim-pseudo 0.4s ease-out 1.2s;
@@ -256,7 +247,7 @@ h4,
 }
 
 
-/* --- PROJECT GRID (NON-CLICKABLE) --- */
+/* --- PROJECT GRID (COLOR VERSION) --- */
 
 .gallery-grid {
     display: grid;
@@ -275,7 +266,6 @@ h4,
     background: var(--card-color);
     border: 1px solid var(--border-color);
     cursor: default;
-    /* Signalisiert: Nicht klickbar */
     overflow: hidden;
     transition: var(--transition);
 }
@@ -283,21 +273,24 @@ h4,
 .card-image {
     aspect-ratio: 4/5;
     overflow: hidden;
+    background: #000;
 }
 
 .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(100%);
+    filter: none;
+    /* Black & White entfernt */
     transition: var(--transition);
 }
 
 
-/* Subtiler Visual-Only Hover */
+/* Visual Hover Upgrade */
 
 .project-card:hover img {
-    filter: grayscale(0%) contrast(1.1);
+    filter: contrast(1.1) saturate(1.2);
+    /* Bild poppt mehr */
     transform: scale(1.05);
 }
 

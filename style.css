@@ -204,11 +204,28 @@ h4,
 /* --- HERO & GLITCH EFFECT --- */
 
 .hero {
-    height: 80vh;
+    height: 85vh;
+    /* Etwas mehr Raum für das Bild */
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    /* LAYERING: 
+       1. Deine stufenlose Vignette (für Lesbarkeit)
+       2. Die Carbon Textur
+       3. Das Foto
+    */
+    background-image: radial-gradient( circle at center, rgba(3, 3, 3, 0.2) 0%, /* Mitten etwas heller lassen */
+    rgba(3, 3, 3, 0.5) 40%, rgba(3, 3, 3, 0.9) 80%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
+    /* Dein hochgeladenes Bild */
+    background-size: auto, auto, cover;
+    background-position: center;
+    background-attachment: fixed;
+    /* Parallax-Effekt beim Scrollen */
+    background-blend-mode: multiply;
+    /* Verschmilzt Foto und Textur brachial */
 }
 
 .hero h1 {

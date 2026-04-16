@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryGrid.innerHTML = projects.map(project => `
             <div class="project-card ${project.category}" data-id="${project.id}">
                 <div class="card-image">
-                    <img src="${project.previewImage}" alt="${project.title}" onerror="this.src='https://via.placeholder.com/400x500?text=Bild+fehlt'">
+                    <img src="${project.previewImage}" alt="${project.title}" ">
                 </div>
                 <div class="card-info">
                     <h3>${project.title}</h3>
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openOverlay(data) {
         const imagesHTML = data.images.map(img => `
             <div class="sub-card">
-                <img src="${img}" alt="${data.title}" onerror="this.src='https://via.placeholder.com/600x400?text=Detailbild+fehlt'">
+                <img src="${img}" alt="${data.title}" ">
             </div>
         `).join('');
 

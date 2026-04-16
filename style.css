@@ -79,11 +79,29 @@ h4,
     backdrop-filter: blur(15px);
 }
 
+
+/* --- NAVIGATION ALIGNMENT --- */
+
 .nav-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1.2rem 2rem;
+    /* HIER DIE ÄNDERUNG: */
+    max-width: 1400px;
+    /* Gleiche Breite wie dein restlicher Content */
+    margin: 0 auto;
+    /* Zentriert den gesamten Nav-Inhalt */
+}
+
+
+/* Optional: Falls du auf ganz großen Bildschirmen noch mehr Abstand willst */
+
+@media (min-width: 1600px) {
+    .nav-container {
+        padding: 1.2rem 0;
+        /* Entfernt das seitliche Padding, da margin:auto greift */
+    }
 }
 
 .logo {

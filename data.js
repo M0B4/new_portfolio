@@ -1,53 +1,34 @@
-const projectData = [{
-        id: "wacken",
-        title: "Wacken Open Air 2026",
+const projects = [{
+        id: "project-1",
+        title: "Wacken Merch Collection",
         category: "clothing",
-        thumbnail: "images/woa/woa_26_main.webp",
-        heroImage: "images/woa/woa_26_main.webp",
-        description: "Ganzheitliche Betreuung der Merch-Linie. Fokus auf industrielle Typografie und handgezeichnete Illustrationen.",
-        details: "Kunde: Wacken Open Air | Technik: Siebdruck | Jahr: 2026",
-        subProjects: [
-            { img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80", title: "Main Stage Artist Shirt" },
-            { img: "https://images.unsplash.com/photo-1514525253344-9914ef2b7d3c?q=80", title: "Official Access Wristband" },
-            { img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80", title: "Limited Edition Festival Poster" }
+        previewImage: "images/wacken-shirt-preview.jpg", // Pfad zu deinem Vorschaubild
+        description: "Brutales Shirt-Design für das größte Metal-Festival. Fokus auf Dark-Art und Siebdruck-Optimierung.",
+        images: [
+            "images/wacken-shirt-1.jpg",
+            "images/wacken-shirt-2.jpg",
+            "images/wacken-shirt-detail.jpg"
         ]
     },
     {
-        id: "dlrg",
-        title: "DLRG Search & Rescue",
+        id: "project-2",
+        title: "Technical Engineering Part",
         category: "3d-print",
-        thumbnail: "images/dlrg.webp",
-        heroImage: "images/dlrg.webp",
-        description: "Entwicklung von funktionalen Gehäuse-Prototypen für maritime Rettungssensoren.",
-        details: "Material: Carbon-PETG | Technik: 3D-Druck | Kunde: DLRG",
-        subProjects: [
-            { img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80", title: "Gehäuse-Prototyp V1" },
-            { img: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80", title: "Belastungstest-Modell" }
+        previewImage: "images/3d-print-preview.jpg",
+        description: "Hochpräziser 3D-Druck für industrielle Anwendungen. Druckgeprüft und belastbar.",
+        images: [
+            "images/3d-part-1.jpg",
+            "images/3d-part-2.jpg"
         ]
     },
     {
-        id: "metal:im_dorf",
-        title: "Metal im Dorf",
-        category: "poster",
-        thumbnail: "images/mid.webp",
-        heroImage: "images/mid.webp",
-        description: "Branding und Merchandisefür alle Hauptfestivals und Nebenevents.",
-        details: "Produkte: Flyer, Karten, Bändchen, Shirts, Social-Media Beiträge | Software: Photoshop, Illustrator | Kunde: Metal im Dorf",
-        subProjects: [
-            { img: "images/mid/mid_v.jpg", title: "Festival Poster" },
-            { img: "images/mid/mid_iv.jpg", title: "Festival Poster" },
-            { img: "images/mid/mid_iii.jpg", title: "Festival Poster" },
-            { img: "images/mid/mid_ii.jpg", title: "Festival Poster" },
-            { img: "images/mid/mid_i.jpg", title: "Festival Poster" },
-            { img: "images/mid/mid_ozzy.jpg", title: "Covernight Poster" },
-            { img: "images/mid/mid_80s.jpg", title: "Covernight Poster" },
-            { img: "images/mid/mid_acdc.jpg", title: "Covernight Poster" },
-            { img: "images/mid/mid_onkelz.jpg", title: "Covernight Poster" },
-
-
-
-
-
+        id: "project-3",
+        title: "Festival Stage Design",
+        category: "event",
+        previewImage: "images/event-preview.jpg",
+        description: "Visuelles Konzept für Mainstage-Bespielung. Kombination aus Licht und Grafik.",
+        images: [
+            "images/event-1.jpg"
         ]
     }
 ];

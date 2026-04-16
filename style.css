@@ -131,7 +131,7 @@ h4,
     position: relative;
     overflow: hidden;
     /* Layering: 1. Vignette, 2. Carbon, 3. Header Foto */
-    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('/images/header.jpg');
+    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
     /* Dein angepasster Pfad */
     background-size: auto, auto, cover;
     background-position: center;

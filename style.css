@@ -4,6 +4,7 @@
     --bg-color: #030303;
     --card-color: #0d0d0d;
     --accent-color: #004d4d;
+    /* Dein Deep Teal */
     --accent-hover: #006666;
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
@@ -33,11 +34,14 @@ html {
 
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient(circle at center, rgba(0, 77, 77, 0.05) 0%, rgba(0, 0, 0, 0.4) 50%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    /* STUFENLOSE VIGNETTE & CARBON TEXTURE */
+    background-image: radial-gradient( circle at center, rgba(0, 77, 77, 0.08) 0%, rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-blend-mode: soft-light;
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
 h1,
@@ -60,8 +64,21 @@ h4,
     padding: 80px 0;
 }
 
+@media (min-width: 768px) {
+    .section {
+        padding: 120px 0;
+    }
+}
 
-/* --- NAVIGATION --- */
+.section-title {
+    font-size: 2.2rem;
+    margin-bottom: 2.5rem;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1.2rem;
+}
+
+
+/* --- NAVIGATION & LOGO --- */
 
 .navbar {
     position: fixed;
@@ -94,11 +111,85 @@ h4,
 .logo span {
     color: var(--accent-color);
     font-size: 1.05em;
+    /* Optical Fix */
     font-weight: 700;
 }
 
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
 
-/* --- HERO SECTION --- */
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    transition: var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--accent-color);
+}
+
+
+/* Hamburger Menu */
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    background: none;
+    border: none;
+    gap: 6px;
+    z-index: 1001;
+}
+
+.hamburger .bar {
+    width: 28px;
+    height: 2px;
+    background-color: white;
+    transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    }
+    .nav-links.active {
+        right: 0;
+    }
+    .nav-links a {
+        font-size: 1.8rem;
+        margin: 1rem 0;
+    }
+    .hamburger.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}
+
+
+/* --- HERO SECTION & GLITCH --- */
 
 .hero {
     height: 85vh;
@@ -108,7 +199,8 @@ h4,
     text-align: center;
     position: relative;
     overflow: hidden;
-    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('1000153292.jpg');
+    /* Layering: Vignette -> Carbon -> Foto */
+    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
     background-size: auto, auto, cover;
     background-position: center;
     background-attachment: fixed;
@@ -117,6 +209,8 @@ h4,
 
 .hero h1 {
     font-size: clamp(2.5rem, 8vw, 6rem);
+    line-height: 1;
+    position: relative;
     animation: glitch-anim 0.2s ease-out 1.2s;
 }
 
@@ -137,8 +231,14 @@ h4,
     animation: glitch-anim-pseudo 0.4s ease-out 1.2s;
 }
 
+.hero h1::after {
+    color: white;
+    z-index: -2;
+    animation: glitch-anim-pseudo 0.4s ease-out 1.3s;
+}
 
-/* --- PARTNER LOGO SECTION (Neu) --- */
+
+/* --- PARTNER LOGO SECTION --- */
 
 .partners-ribbon {
     padding: 40px 0;
@@ -152,17 +252,14 @@ h4,
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 2rem;
-    opacity: 0.6;
-    /* Dezent im Hintergrund */
+    gap: 2.5rem;
+    opacity: 0.5;
 }
 
 .logo-grid img {
-    height: 40px;
-    /* Einheitliche Höhe für Logos */
+    height: 35px;
     width: auto;
     filter: grayscale(100%) brightness(2);
-    /* Monochrome Optik */
     transition: var(--transition);
 }
 
@@ -172,34 +269,42 @@ h4,
     opacity: 1;
 }
 
-@media (max-width: 768px) {
-    .logo-grid img {
-        height: 30px;
-    }
-}
-
 
 /* --- FILTER CONTROLS --- */
 
 .filter-controls {
     display: flex;
     gap: 1.5rem;
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filter-controls::-webkit-scrollbar {
+    display: none;
+}
+
+@media (min-width: 1024px) {
+    .filter-controls {
+        justify-content: center;
+        gap: 2.5rem;
+    }
 }
 
 .filter-btn {
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-family: 'Oswald';
+    font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    white-space: nowrap;
     border-bottom: 2px solid transparent;
     transition: var(--transition);
+    padding: 5px 0;
 }
 
 .filter-btn.active,
@@ -209,17 +314,19 @@ h4,
 }
 
 
-/* --- GRID (4 Spalten Desktop / 2 Mobile) --- */
+/* --- MAIN GALLERY GRID --- */
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    /* Mobile: 2 */
+    gap: 0.75rem;
 }
 
 @media (min-width: 1024px) {
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr);
+        /* Desktop: 4 */
         gap: 1.5rem;
     }
 }
@@ -254,6 +361,7 @@ h4,
 
 .project-card:hover img {
     filter: grayscale(0%) contrast(1.1);
+    transform: scale(1.05);
 }
 
 .card-info {
@@ -270,6 +378,40 @@ h4,
     color: var(--accent-color);
     font-size: 0.7rem;
     font-weight: bold;
+}
+
+
+/* --- DETAIL PAGE GRID --- */
+
+.sub-project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .sub-project-grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* Desktop Detail: 3 */
+        gap: 2.5rem;
+    }
+}
+
+.sub-card {
+    background: var(--card-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+}
+
+.sub-card img {
+    width: 100%;
+    filter: grayscale(15%);
+    transition: var(--transition);
+}
+
+.sub-card:hover img {
+    filter: grayscale(0%);
 }
 
 
@@ -314,10 +456,26 @@ h4,
 }
 
 
-/* --- BUTTONS --- */
+/* --- CONTACT & BUTTONS --- */
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1.2rem;
+    background: #080808;
+    border: 1px solid var(--border-color);
+    color: white;
+    font-family: inherit;
+    margin-bottom: 1.5rem;
+}
+
+.contact-form input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
 
 .btn {
-    padding: 1.2rem 2rem;
+    padding: 1.2rem 2.5rem;
     background: var(--accent-color);
     color: white;
     border: none;
@@ -330,5 +488,5 @@ h4,
 
 .btn:hover {
     background: var(--accent-hover);
-    box-shadow: 0 0 15px rgba(0, 77, 77, 0.4);
+    box-shadow: 0 0 20px rgba(0, 77, 77, 0.4);
 }

@@ -1,13 +1,26 @@
+/* --- CSS VARIABLES (Deep Teal Branding) --- */
+
 :root {
     --bg-color: #030303;
     --card-color: #0d0d0d;
     --accent-color: #004d4d;
+    /* Dein Deep Teal */
     --accent-hover: #006666;
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
     --border-color: #1a1a1a;
     --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --spacing: 1rem;
 }
+
+@media (min-width: 768px) {
+     :root {
+        --spacing: 2rem;
+    }
+}
+
+
+/* --- RESET & BASE --- */
 
 * {
     margin: 0;
@@ -21,11 +34,13 @@ html {
 
 body {
     background-color: var(--bg-color);
-    background-image: radial-gradient(circle at center, rgba(0, 77, 77, 0.05) 0%, rgba(0, 0, 0, 0.4) 50%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+    /* ULTRA-SMOOTH VIGNETTE & CARBON TEXTURE */
+    background-image: radial-gradient( circle at center, rgba(0, 77, 77, 0.08) 0%, rgba(255, 255, 255, 0.02) 20%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.7) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
     background-blend-mode: soft-light;
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
+    line-height: 1.6;
     overflow-x: hidden;
 }
 
@@ -42,32 +57,28 @@ h4,
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 2rem;
-}
-
-.container.narrow {
-    max-width: 800px;
-    text-align: center;
+    padding: 0 var(--spacing);
 }
 
 .section {
-    padding: 100px 0;
+    padding: 80px 0;
 }
 
-.bg-alt {
-    background: rgba(13, 13, 13, 0.5);
-    backdrop-filter: blur(10px);
+@media (min-width: 768px) {
+    .section {
+        padding: 120px 0;
+    }
 }
 
 .section-title {
     font-size: 2.2rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2.5rem;
     border-left: 4px solid var(--accent-color);
     padding-left: 1.2rem;
 }
 
 
-/* NAVIGATION */
+/* --- NAVIGATION & ALIGNMENT --- */
 
 .navbar {
     position: fixed;
@@ -79,29 +90,14 @@ h4,
     backdrop-filter: blur(15px);
 }
 
-
-/* --- NAVIGATION ALIGNMENT --- */
-
 .nav-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 2rem;
-    /* HIER DIE ÄNDERUNG: */
+    padding: 1.2rem var(--spacing);
     max-width: 1400px;
-    /* Gleiche Breite wie dein restlicher Content */
+    /* Zentriert den Namen bündig zum Content */
     margin: 0 auto;
-    /* Zentriert den gesamten Nav-Inhalt */
-}
-
-
-/* Optional: Falls du auf ganz großen Bildschirmen noch mehr Abstand willst */
-
-@media (min-width: 1600px) {
-    .nav-container {
-        padding: 1.2rem 0;
-        /* Entfernt das seitliche Padding, da margin:auto greift */
-    }
 }
 
 .logo {
@@ -122,14 +118,14 @@ h4,
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 2.5rem;
+    gap: 2rem;
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--text-secondary);
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     transition: var(--transition);
 }
@@ -139,7 +135,7 @@ h4,
 }
 
 
-/* HERO SECTION */
+/* --- HERO SECTION (Header Bild & Glitch) --- */
 
 .hero {
     height: 85vh;
@@ -149,11 +145,19 @@ h4,
     text-align: center;
     position: relative;
     overflow: hidden;
-    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.1) 0%, rgba(3, 3, 3, 0.8) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
+    background-image: radial-gradient(circle at center, rgba(3, 3, 3, 0.2) 0%, rgba(3, 3, 3, 0.9) 85%, #030303 100%), url('https://www.transparenttextures.com/patterns/carbon-fibre.png'), url('images/header.jpg');
     background-size: auto, auto, cover;
     background-position: center;
     background-attachment: fixed;
+    /* Desktop-Parallax */
     background-blend-mode: multiply;
+}
+
+@media (max-width: 1024px) {
+    .hero {
+        background-attachment: scroll;
+        /* Mobile Zoom-Fix */
+    }
 }
 
 .hero h1 {
@@ -180,45 +184,13 @@ h4,
     animation: glitch-anim-pseudo 0.4s ease-out 1.2s;
 }
 
-.hero-subline {
-    margin-top: 1.5rem;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 0.9rem;
-}
 
-
-/* --- HERO MOBILE FIX --- */
-
-@media (max-width: 1024px) {
-    .hero {
-        /* Deaktiviert den Fixed-Effekt, der den Zoom-Bug verursacht */
-        background-attachment: scroll !important;
-        /* Optional: Falls das Bild auf Mobile zu klein wirkt, 
-           kannst du hier die Höhe fest pinnen */
-        height: 60vh;
-        background-position: center center;
-    }
-}
-
-
-/* PARTNERS */
+/* --- PARTNER SECTION --- */
 
 .partners-ribbon {
-    padding: 50px 0;
+    padding: 40px 0;
     background: rgba(13, 13, 13, 0.5);
     border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.partner-title {
-    text-align: center;
-    font-size: 0.7rem;
-    color: var(--text-secondary);
-    margin-bottom: 2rem;
-    letter-spacing: 4px;
-    opacity: 0.6;
 }
 
 .logo-grid {
@@ -226,7 +198,7 @@ h4,
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 3rem;
+    gap: 2.5rem;
 }
 
 .logo-grid img {
@@ -239,19 +211,18 @@ h4,
 .logo-grid img:hover {
     filter: grayscale(0%) brightness(1);
     opacity: 1;
-    transform: scale(1.1);
 }
 
 
-/* FILTER & GRID */
+/* --- FILTER CONTROLS --- */
 
 .filter-controls {
     display: flex;
     gap: 1.5rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 
 .filter-controls::-webkit-scrollbar {
@@ -261,7 +232,7 @@ h4,
 @media (min-width: 1024px) {
     .filter-controls {
         justify-content: center;
-        gap: 3rem;
+        gap: 2.5rem;
     }
 }
 
@@ -269,14 +240,13 @@ h4,
     background: none;
     border: none;
     color: var(--text-secondary);
-    font-family: 'Oswald';
+    font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     cursor: pointer;
     font-size: 1rem;
+    white-space: nowrap;
     border-bottom: 2px solid transparent;
     transition: var(--transition);
-    padding-bottom: 5px;
-    white-space: nowrap;
 }
 
 .filter-btn.active,
@@ -284,6 +254,9 @@ h4,
     color: white;
     border-bottom-color: var(--accent-color);
 }
+
+
+/* --- PROJECT GRID (NON-CLICKABLE) --- */
 
 .gallery-grid {
     display: grid;
@@ -294,21 +267,22 @@ h4,
 @media (min-width: 1024px) {
     .gallery-grid {
         grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
+        gap: 1.5rem;
     }
 }
 
 .project-card {
     background: var(--card-color);
     border: 1px solid var(--border-color);
+    cursor: default;
+    /* Signalisiert: Nicht klickbar */
+    overflow: hidden;
     transition: var(--transition);
-    cursor: pointer;
 }
 
 .card-image {
     aspect-ratio: 4/5;
     overflow: hidden;
-    background: #000;
 }
 
 .card-image img {
@@ -319,10 +293,8 @@ h4,
     transition: var(--transition);
 }
 
-.project-card:hover {
-    outline: 2px solid var(--accent-color);
-    transform: translateY(-8px);
-}
+
+/* Subtiler Visual-Only Hover */
 
 .project-card:hover img {
     filter: grayscale(0%) contrast(1.1);
@@ -330,91 +302,28 @@ h4,
 }
 
 .card-info {
-    padding: 1.5rem;
+    padding: 1.2rem;
 }
 
 .card-info h3 {
     font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    color: white;
+    margin-bottom: 0.3rem;
 }
 
 .card-info span {
     color: var(--accent-color);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: bold;
 }
 
 
-/* OVERLAY MODAL */
-
-.project-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(3, 3, 3, 0.98);
-    z-index: 2000;
-    display: none;
-    overflow-y: auto;
-    padding: 100px 0;
-    backdrop-filter: blur(20px);
-}
-
-.project-overlay.active {
-    display: block;
-}
-
-.close-overlay {
-    position: fixed;
-    top: 40px;
-    right: 40px;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    cursor: pointer;
-    font-family: 'Oswald';
-    font-weight: bold;
-}
-
-.sub-project-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-top: 3rem;
-}
-
-@media (min-width: 1024px) {
-    .sub-project-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 3rem;
-    }
-}
-
-.sub-card {
-    background: var(--card-color);
-    border: 1px solid var(--border-color);
-    padding: 10px;
-}
-
-.sub-card img {
-    width: 100%;
-    filter: grayscale(20%);
-    transition: var(--transition);
-}
-
-.sub-card:hover img {
-    filter: grayscale(0%);
-}
-
-
-/* HAMBURGER */
+/* --- HAMBURGER MENU --- */
 
 .hamburger {
     display: none;
     flex-direction: column;
-    gap: 7px;
+    gap: 6px;
     background: none;
     border: none;
     cursor: pointer;
@@ -452,57 +361,20 @@ h4,
         font-size: 2rem;
     }
     .hamburger.active .bar:nth-child(1) {
-        transform: translateY(9px) rotate(45deg);
+        transform: translateY(8px) rotate(45deg);
         background: var(--accent-color);
     }
     .hamburger.active .bar:nth-child(2) {
         opacity: 0;
     }
     .hamburger.active .bar:nth-child(3) {
-        transform: translateY(-9px) rotate(-45deg);
+        transform: translateY(-8px) rotate(-45deg);
         background: var(--accent-color);
     }
 }
 
 
-/* FORMS & BUTTONS */
-
-.contact-form input,
-.contact-form textarea {
-    width: 100%;
-    padding: 1.2rem;
-    background: #080808;
-    border: 1px solid var(--border-color);
-    color: white;
-    margin-bottom: 1.5rem;
-    font-family: inherit;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-
-.btn {
-    padding: 1.2rem 3rem;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    font-family: 'Oswald';
-    cursor: pointer;
-    font-weight: bold;
-    transition: var(--transition);
-    text-transform: uppercase;
-}
-
-.btn:hover {
-    background: var(--accent-hover);
-    box-shadow: 0 0 25px rgba(0, 77, 77, 0.5);
-}
-
-
-/* GLITCH ANIM */
+/* --- ANIMATIONS --- */
 
 @keyframes glitch-anim {
     0% {
@@ -540,4 +412,34 @@ h4,
         visibility: hidden;
         transform: translate(0);
     }
+}
+
+
+/* --- CONTACT --- */
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1.2rem;
+    background: #080808;
+    border: 1px solid var(--border-color);
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.btn {
+    padding: 1.2rem 2.5rem;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    font-family: 'Oswald';
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transition);
+    text-transform: uppercase;
+}
+
+.btn:hover {
+    background: var(--accent-hover);
+    box-shadow: 0 0 20px rgba(0, 77, 77, 0.4);
 }

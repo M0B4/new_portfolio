@@ -2,7 +2,7 @@ const projects = [{
         id: "project-wacken",
         title: "Wacken Clothing Line",
         category: "clothing",
-        previewImage: "images/wacken-preview.jpg",
+        previewImage: "images/clothing/temple_combi.webp",
         description: "Brutale Merchandising-Kollektion für das größte Metal-Festival der Welt. Fokus auf Typografie und Haltbarkeit.",
         images: ["images/wacken-1.jpg", "images/wacken-2.jpg", "images/wacken-3.jpg"]
     },

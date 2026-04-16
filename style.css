@@ -189,6 +189,20 @@ h4,
 }
 
 
+/* --- HERO MOBILE FIX --- */
+
+@media (max-width: 1024px) {
+    .hero {
+        /* Deaktiviert den Fixed-Effekt, der den Zoom-Bug verursacht */
+        background-attachment: scroll !important;
+        /* Optional: Falls das Bild auf Mobile zu klein wirkt, 
+           kannst du hier die Höhe fest pinnen */
+        height: 60vh;
+        background-position: center center;
+    }
+}
+
+
 /* PARTNERS */
 
 .partners-ribbon {

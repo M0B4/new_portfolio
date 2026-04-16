@@ -59,12 +59,13 @@ h4,
 }
 
 .section {
-    padding: 80px 0;
+    padding: 60px 0;
+    /* Etwas gestrafft */
 }
 
 @media (min-width: 768px) {
     .section {
-        padding: 120px 0;
+        padding: 100px 0;
     }
 }
 
@@ -176,27 +177,60 @@ h4,
 }
 
 
-/* --- PARTNER SECTION --- */
+/* --- SLIM PARTNER SECTION (Update) --- */
 
 .partners-ribbon {
-    padding: 40px 0;
-    background: rgba(13, 13, 13, 0.5);
+    padding: 20px 0;
+    /* Dünnerer Streifen auf Desktop */
+    background: rgba(10, 10, 10, 0.8);
     border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.partner-title {
+    text-align: center;
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    /* Weniger Abstand zum Titel */
+    letter-spacing: 4px;
+    opacity: 0.5;
 }
 
 .logo-grid {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    /* Zentriert die Logos */
     align-items: center;
     flex-wrap: wrap;
     gap: 2.5rem;
 }
 
 .logo-grid img {
-    height: 35px;
+    height: 30px;
+    /* Kleinere Logos auf Desktop */
     filter: grayscale(100%) brightness(2);
-    opacity: 0.5;
+    opacity: 0.4;
     transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+    .partners-ribbon {
+        padding: 12px 0;
+        /* Extrem flach auf Mobile */
+    }
+    .partner-title {
+        margin-bottom: 10px;
+        font-size: 0.5rem;
+    }
+    .logo-grid {
+        gap: 1.5rem;
+        /* Engeres Grid auf Mobile */
+    }
+    .logo-grid img {
+        height: 20px;
+        /* Sehr dezente Logos auf Mobile */
+    }
 }
 
 .logo-grid img:hover {
@@ -247,7 +281,7 @@ h4,
 }
 
 
-/* --- PROJECT GRID (COLOR VERSION) --- */
+/* --- PROJECT GRID (COLOR) --- */
 
 .gallery-grid {
     display: grid;
@@ -280,17 +314,11 @@ h4,
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: none;
-    /* Black & White entfernt */
     transition: var(--transition);
 }
 
-
-/* Visual Hover Upgrade */
-
 .project-card:hover img {
-    filter: contrast(1.1) saturate(1.2);
-    /* Bild poppt mehr */
+    filter: contrast(1.1) saturate(1.1);
     transform: scale(1.05);
 }
 

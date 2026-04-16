@@ -1,7 +1,7 @@
 const projectData = [{
         id: "wacken",
         title: "Wacken Open Air 2026",
-        category: "branding",
+        category: "merchandise",
         thumbnail: "images/woa/woa_26_main.webp",
         heroImage: "images/woa/woa_26_main.webp",
         description: "Ganzheitliche Betreuung der Merch-Linie. Fokus auf industrielle Typografie und handgezeichnete Illustrationen.",
@@ -23,6 +23,18 @@ const projectData = [{
         subProjects: [
             { img: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80", title: "Gehäuse-Prototyp V1" },
             { img: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80", title: "Belastungstest-Modell" }
+        ]
+    } {
+        id: "metal:im_dorf",
+        title: "Metal im Dorf",
+        category: "branding",
+        thumbnail: "images/mid.webp",
+        heroImage: "images/mid.webp",
+        description: "Entwicklung von funktionalen Gehäuse-Prototypen für maritime Rettungssensoren.",
+        details: "Material: Carbon-PETG | Technik: 3D-Druck | Kunde: DLRG",
+        subProjects: [
+            { img: "mid/mid_80s.jpg", title: "Gehäuse-Prototyp V1" },
+            { img: "mid/mid_acdc.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_i.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_ii.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_iii.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_iv.jpg", title: "Belastungstest-Modell" } { img: "mid/mid_v.jpg", title: "Belastungstest-Modell" }
         ]
     }
 ];

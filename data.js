@@ -23,14 +23,14 @@ const projects = [{
         id: "hbn_27",
         title: "Headbangers Night 2027 Poster",
         category: "poster",
-        previewImage: "images/poster/hbn_27.webp"
+        previewImage: "images/poster/hbn27.webp"
 
     },
     {
         id: "fma_band",
         title: "Full Metal Army Camping Bändchen 2026",
         category: "branding",
-        previewImage: "images/poster/fma_band.webp"
+        previewImage: "images/branding/fma_band.webp"
 
     },
     {

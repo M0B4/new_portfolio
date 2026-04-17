@@ -29,7 +29,7 @@ const projects = [{
     {
         id: "fma_band",
         title: "Full Metal Army Camping Bändchen 2026",
-        category: "branding",
+        category: "event",
         previewImage: "images/branding/fma_band.webp"
 
     },
@@ -37,6 +37,13 @@ const projects = [{
         id: "mid_maiden",
         title: "Metal im Dorf Iron Maiden Covernight Poster",
         category: "poster",
+        previewImage: "images/poster/maiden.webp"
+
+    },
+    {
+        id: "poseidon",
+        title: "Ausrüstungs und Servicemarker für die komplette Leihausrüstung von Poseidon Roses. Logos für die Schiffe.",
+        category: "3d-print",
         previewImage: "images/poster/maiden.webp"
 
     },

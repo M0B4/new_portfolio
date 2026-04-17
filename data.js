@@ -44,7 +44,7 @@ const projects = [{
         id: "poseidon",
         title: "Ausrüstungs und Servicemarker für die komplette Leihausrüstung von Poseidon Roses. Logos für die Schiffe.",
         category: "3d-print",
-        previewImage: "images/3d-print/poseidon.webp"
+        previewImage: "images/3d_print/poseidon.webp"
 
     },
     // Du kannst hier beliebig viele Projekte hinzufügen

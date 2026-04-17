@@ -27,6 +27,13 @@ const projects = [{
 
     },
     {
+        id: "dlrg",
+        title: "Atemregler Schutzkappen für die DLRG Duisburg.",
+        category: "3d-print",
+        previewImage: "images/3d_print/poseidon.webp"
+
+    },
+    {
         id: "fma_band",
         title: "Full Metal Army Camping Bändchen 2026",
         category: "event",
@@ -42,7 +49,7 @@ const projects = [{
     },
     {
         id: "poseidon",
-        title: "Ausrüstungs und Servicemarker für die komplette Leihausrüstung von Poseidon Roses. Logos für die Schiffe.",
+        title: "Ausrüstungs und Servicemarker für die komplette Leihausrüstung von Poseidon Roses sowie Logos für die Schiffe.",
         category: "3d-print",
         previewImage: "images/3d_print/poseidon.webp"
 

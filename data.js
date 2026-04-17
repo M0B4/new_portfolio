@@ -30,7 +30,7 @@ const projects = [{
         id: "dlrg",
         title: "Atemregler Schutzkappen für die DLRG Duisburg.",
         category: "3d-print",
-        previewImage: "images/3d_print/poseidon.webp"
+        previewImage: "images/3d_print/dlrg.webp"
 
     },
     {

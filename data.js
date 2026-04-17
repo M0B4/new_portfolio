@@ -18,7 +18,7 @@ const projects = [{
         previewImage: "images/various/zippo.webp"
     },
     {
-        id: "project-wacken",
+        id: "wacken_passport",
         title: "Wacken Passport",
         category: "clothing",
         previewImage: "images/clothing/passport.webp"
@@ -36,6 +36,13 @@ const projects = [{
         title: "Atemregler Schutzkappen für die DLRG Duisburg.",
         category: "3d-print",
         previewImage: "images/3d_print/dlrg.webp"
+
+    },
+    {
+        id: "wacken_flags",
+        title: "Wacken World Unites",
+        category: "clothing",
+        previewImage: "images/clothing/flags.webp"
 
     },
     {

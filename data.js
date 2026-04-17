@@ -3,8 +3,6 @@ const projects = [{
         title: "Wacken 2026 Temple",
         category: "clothing",
         previewImage: "images/clothing/temple_combi.webp"
-
-
     },
     {
         id: "mid_v",
@@ -18,6 +16,13 @@ const projects = [{
         title: "Wacken Zippo 'Burning Strong Since 1990'",
         category: "various",
         previewImage: "images/various/zippo.webp"
+    },
+    {
+        id: "project-wacken",
+        title: "Wacken Passport",
+        category: "clothing",
+        previewImage: "images/clothing/passport.webp"
+
     },
     {
         id: "hbn_27",

@@ -1,0 +1,145 @@
+---
+import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import { categoryLabels } from "../../data/site";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.md$/, "") },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+const { Content } = await render(project);
+const data = project.data;
+const categoryLabel = categoryLabels[data.category];
+const relatedProjects = projects.filter((item) => item.id !== project.id && item.data.category === data.category).slice(0, 3);
+const base = import.meta.env.BASE_URL;
+const seoTitle = data.seoTitle ?? `${data.title} | Moritz Barz`;
+const seoDescription = data.seoDescription ?? data.summary;
+const projectStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: data.title,
+  description: seoDescription,
+  creator: {
+    "@type": "Person",
+    name: "Moritz Barz",
+  },
+  dateCreated: data.year,
+  genre: categoryLabel,
+  keywords: data.tags.join(", "),
+};
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} image={data.heroImage.src} structuredData={projectStructuredData}>
+  <Header simple />
+
+  <main>
+    <header class="detail-hero">
+      <Image src={data.heroImage} alt="" widths={[1200, 1800]} sizes="100vw" class="detail-hero-media" loading="eager" decoding="async" aria-hidden="true" />
+      <div class="container detail-hero-inner">
+        <p class="eyebrow">{categoryLabel}</p>
+        <h1>{data.title}</h1>
+        <p>{data.summary}</p>
+        <div class="tag-list" aria-label="Projekt Tags">
+          {data.tags.map((tag) => <span>{tag}</span>)}
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container detail-layout">
+        <article class="project-story">
+          <div class="lead">
+            <Content />
+          </div>
+          <div class="case-study-grid" aria-label="Case Study">
+            <section>
+              <span>Aufgabe</span>
+              <p>{data.challenge}</p>
+            </section>
+            <section>
+              <span>Ansatz</span>
+              <p>{data.approach}</p>
+            </section>
+            <section>
+              <span>Wirkung</span>
+              <p>{data.impact}</p>
+            </section>
+          </div>
+          <div class="project-gallery">
+            {data.gallery.map((item, index) => (
+              <figure class:list={["gallery-item", { "gallery-item-wide": index === 0 }]}>
+                <Image src={item.image} alt={item.title} widths={[900, 1440]} sizes="(min-width: 900px) 70vw, 100vw" loading="lazy" decoding="async" />
+                <figcaption>{item.title}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </article>
+
+        <aside class="project-meta" aria-label="Projektdetails">
+          <dl>
+            <div>
+              <dt>Client</dt>
+              <dd>{data.client}</dd>
+            </div>
+            <div>
+              <dt>Jahr</dt>
+              <dd>{data.year}</dd>
+            </div>
+            <div>
+              <dt>Kategorie</dt>
+              <dd>{categoryLabel}</dd>
+            </div>
+          </dl>
+          <div class="meta-group">
+            <h2>Details</h2>
+            <ul>
+              {data.details.map((detail) => <li>{detail}</li>)}
+            </ul>
+          </div>
+          <div class="meta-group">
+            <h2>Leistungen</h2>
+            <ul>
+              {data.services.map((service) => <li>{service}</li>)}
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    {
+      relatedProjects.length > 0 && (
+        <section class="section related-section">
+          <div class="container">
+            <p class="eyebrow">Mehr in {categoryLabel}</p>
+            <div class="related-grid">
+              {relatedProjects.map((item) => (
+                <a class="related-card" href={`${base}work/${item.id.replace(/\.md$/, "")}/`}>
+                  <Image src={item.data.previewImage} alt={item.data.title} widths={[420, 720]} sizes="(min-width: 900px) 25vw, 100vw" loading="lazy" decoding="async" />
+                  <span>{item.data.shortTitle}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section project-cta-section">
+      <div class="container project-cta">
+        <p class="eyebrow">Naechstes Projekt</p>
+        <h2>Du brauchst etwas mit aehnlicher Wucht?</h2>
+        <p>Schick mir kurz Kontext, Einsatzort und Ziel. Ich helfe dir, daraus ein Motiv, ein System oder ein funktionales Teil zu machen.</p>
+        <a class="btn" href={`${base}#contact`}>Projekt anfragen</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

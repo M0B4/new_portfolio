@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { categoryLabels } from "../data/site";
+
+type Props = {
+  project: CollectionEntry<"work">;
+};
+
+const { project } = Astro.props;
+const data = project.data;
+const slug = project.id.replace(/\.md$/, "");
+const base = import.meta.env.BASE_URL;
+---
+
+<a class="project-card" href={`${base}work/${slug}/`} data-category={data.category} aria-label={`${data.title} ansehen`}>
+  <figure class="card-image">
+    <Image
+      src={data.previewImage}
+      alt={data.title}
+      widths={[420, 720]}
+      sizes="(min-width: 900px) 25vw, 50vw"
+      loading="lazy"
+      decoding="async"
+    />
+  </figure>
+  <div class="card-info">
+    <span>{categoryLabels[data.category]}</span>
+    <h3>{data.shortTitle}</h3>
+    <p>{data.summary}</p>
+  </div>
+</a>

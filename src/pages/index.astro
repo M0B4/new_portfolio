@@ -11,6 +11,26 @@ const categories = Object.entries(categoryLabels);
 const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
 const featuredProjects = projects.slice(0, 3);
 const base = import.meta.env.BASE_URL;
+const projectWorlds = [
+  {
+    label: "Poster Wall",
+    title: "Eventgrafik mit Druck",
+    text: "Plakate, Social Motive und Keyvisuals, die schnell zünden und trotzdem Informationen sauber tragen.",
+    filter: "poster",
+  },
+  {
+    label: "Merch Table",
+    title: "Tragbare Identitaet",
+    text: "Shirts, Baendchen und Festivalobjekte, die nicht wie Nebenprodukte wirken, sondern wie begehrte Erinnerungen.",
+    filter: "clothing",
+  },
+  {
+    label: "Workshop",
+    title: "Funktion trifft Haltung",
+    text: "3D-Prints und Objektgrafik fuer reale Nutzung: markieren, schuetzen, organisieren, wiedererkennen.",
+    filter: "3d-print",
+  },
+];
 const homeStructuredData = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -29,13 +49,18 @@ const homeStructuredData = {
     <header class="hero">
       <Image src={heroSource} alt="" width={1800} height={1013} class="hero-media" loading="eager" decoding="async" aria-hidden="true" />
       <div class="container hero-inner">
-        <p class="eyebrow">Metal Design / Festival Merch / Functional 3D-Print</p>
-        <h1>Heavy Design. Deep Impact.</h1>
-        <p class="hero-subline">Ich entwickle Poster, Merch, Eventgrafik und funktionale 3D-Prints fuer Menschen, die laute Gestaltung und praezise Loesungen brauchen.</p>
+        <p class="eyebrow">Portfolio / Merch / Poster / 3D-Print</p>
+        <h1>Design fuer Dinge, die gesehen werden muessen.</h1>
+        <p class="hero-subline">Ich entwickle Festivalgrafik, Merch, Poster und funktionale 3D-Prints mit Szene-Energie, klarer Hierarchie und echtem Einsatzwert.</p>
         <div class="hero-actions">
-          <a class="btn hero-cta" href="#portfolio">Arbeiten ansehen</a>
-        <a class="btn btn-secondary" href="#contact">Projekt anfragen</a>
+          <a class="btn hero-cta" href="#headliners">Headliner ansehen</a>
+          <a class="btn btn-secondary" href="#portfolio">Alle Projekte</a>
         </div>
+        <dl class="hero-stats" aria-label="Portfolio Schwerpunkte">
+          <div><dt>01</dt><dd>Festival & Event</dd></div>
+          <div><dt>02</dt><dd>Merch & Objektgrafik</dd></div>
+          <div><dt>03</dt><dd>Funktionale 3D-Prints</dd></div>
+        </dl>
       </div>
     </header>
 
@@ -56,14 +81,59 @@ const homeStructuredData = {
       </div>
     </section>
 
-    <section id="portfolio" class="section">
+    <section id="headliners" class="section headliner-section">
       <div class="container">
         <div class="section-heading section-heading-wide">
           <div>
-            <p class="eyebrow">Selected Work</p>
-            <h2 class="section-title">Arbeiten, die Szene und Funktion verbinden.</h2>
+            <p class="eyebrow">Headliner</p>
+            <h2 class="section-title">Die staerksten Arbeiten zuerst.</h2>
           </div>
-          <p>Von Festivalshirts bis Tauchausruestung: Die Projekte sind nicht nur visuelle Oberflaeche, sondern Antworten auf konkrete Einsaetze.</p>
+          <p>Diese Projekte zeigen am besten, worum es geht: laute Gestaltung, klare Funktion und Motive, die auch ausserhalb des Screens funktionieren.</p>
+        </div>
+        <div class="headliner-grid">
+          {featuredProjects.map((project, index) => (
+            <a class:list={["headliner-card", { "headliner-card-primary": index === 0 }]} href={`${base}work/${project.id.replace(/\.md$/, "")}/`}>
+              <Image src={project.data.heroImage} alt={project.data.title} widths={[700, 1100, 1600]} sizes={index === 0 ? "(min-width: 1000px) 58vw, 100vw" : "(min-width: 1000px) 28vw, 100vw"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+              <div class="headliner-content">
+                <span>{String(index + 1).padStart(2, "0")} / {categoryLabels[project.data.category]}</span>
+                <h3>{project.data.shortTitle}</h3>
+                <p>{project.data.impact}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section worlds-section">
+      <div class="container">
+        <div class="section-heading section-heading-wide">
+          <div>
+            <p class="eyebrow">Design Worlds</p>
+            <h2 class="section-title">Drei Buehnen fuer deine Projekte.</h2>
+          </div>
+          <p>Damit die Seite nicht nur Arbeiten sammelt, sondern deine Bandbreite klar lesbar macht: Poster, Merch und funktionale Objekte bekommen je eine eigene Rolle.</p>
+        </div>
+        <div class="worlds-grid">
+          {projectWorlds.map((world) => (
+            <a class="world-card" href="#portfolio" data-world-filter={world.filter}>
+              <span>{world.label}</span>
+              <h3>{world.title}</h3>
+              <p>{world.text}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="section portfolio-section">
+      <div class="container">
+        <div class="section-heading section-heading-wide">
+          <div>
+            <p class="eyebrow">Archive</p>
+            <h2 class="section-title">Alle Projekte im Zugriff.</h2>
+          </div>
+          <p>Das Grid bleibt der Kern der Seite: schnell scannbar, filterbar und direkt auf die Projektseiten fuehrend.</p>
         </div>
         <div class="filter-controls" aria-label="Portfolio filtern">
           {
@@ -81,33 +151,11 @@ const homeStructuredData = {
       </div>
     </section>
 
-    <section class="section spotlight-section">
-      <div class="container">
-        <div class="section-heading section-heading-wide">
-          <div>
-            <p class="eyebrow">Dramaturgie</p>
-            <h2 class="section-title">Drei Richtungen, ein Kern.</h2>
-          </div>
-          <p>Die Arbeiten bewegen sich zwischen lauter Festivalidentitaet, tragbarem Merch und technischen Teilen, die im echten Einsatz bestehen muessen.</p>
-        </div>
-        <div class="spotlight-grid">
-          {featuredProjects.map((project) => (
-            <a class="spotlight-card" href={`${base}work/${project.id.replace(/\.md$/, "")}/`}>
-              <Image src={project.data.heroImage} alt={project.data.title} widths={[520, 900]} sizes="(min-width: 900px) 33vw, 100vw" loading="lazy" decoding="async" />
-              <span>{categoryLabels[project.data.category]}</span>
-              <h3>{project.data.shortTitle}</h3>
-              <p>{project.data.impact}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
     <section id="about" class="section bg-alt">
       <div class="container split-section">
         <div>
           <p class="eyebrow">Persoenlichkeit</p>
-          <h2 class="section-title">Ich denke Gestaltung wie Ausruestung.</h2>
+          <h2 class="section-title">Ich gestalte wie jemand, der die Szene kennt.</h2>
         </div>
         <div class="copy-block">
           <p>
@@ -143,7 +191,7 @@ const homeStructuredData = {
       <div class="container contact-layout">
         <div>
           <p class="eyebrow">Contact</p>
-          <h2 class="section-title">Projekt im Kopf?</h2>
+          <h2 class="section-title">Bereit fuer den naechsten Slot?</h2>
           <p class="contact-copy">Schick mir kurz, worum es geht: Event, Merch, Poster, 3D-Print oder etwas dazwischen. Ich antworte mit Rueckfragen, einer Einschaetzung und dem naechsten sinnvollen Schritt.</p>
           <ul class="contact-notes">
             <li>Ideal fuer Festivals, Bands, Vereine und Tauchprojekte</li>
@@ -172,6 +220,25 @@ const homeStructuredData = {
     const filterButtons = document.querySelectorAll(".filter-btn");
     const projectCards = document.querySelectorAll(".project-card");
     const emptyState = document.querySelector("#empty-state");
+    const worldCards = document.querySelectorAll("[data-world-filter]");
+
+    const applyFilter = (filter) => {
+      let visibleCount = 0;
+
+      filterButtons.forEach((item) => {
+        const isActive = item.getAttribute("data-filter") === filter;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+
+      projectCards.forEach((card) => {
+        const isVisible = filter === "all" || card.getAttribute("data-category") === filter;
+        card.toggleAttribute("hidden", !isVisible);
+        if (isVisible) visibleCount += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visibleCount > 0;
+    };
 
     hamburger?.addEventListener("click", () => {
       const isOpen = hamburger.classList.toggle("active");
@@ -192,21 +259,14 @@ const homeStructuredData = {
     filterButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const filter = button.getAttribute("data-filter");
-        let visibleCount = 0;
+        applyFilter(filter || "all");
+      });
+    });
 
-        filterButtons.forEach((item) => {
-          const isActive = item === button;
-          item.classList.toggle("active", isActive);
-          item.setAttribute("aria-pressed", String(isActive));
-        });
-
-        projectCards.forEach((card) => {
-          const isVisible = filter === "all" || card.getAttribute("data-category") === filter;
-          card.toggleAttribute("hidden", !isVisible);
-          if (isVisible) visibleCount += 1;
-        });
-
-        if (emptyState) emptyState.hidden = visibleCount > 0;
+    worldCards.forEach((card) => {
+      card.addEventListener("click", () => {
+        const filter = card.getAttribute("data-world-filter");
+        applyFilter(filter || "all");
       });
     });
   </script>

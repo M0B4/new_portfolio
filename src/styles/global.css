@@ -272,12 +272,38 @@ h3,
   background: rgba(255, 255, 255, 0.66);
 }
 
+:root[data-theme="light"] .client-logo-mark img,
+:root[data-theme="light"] .client-hero-logo-bg {
+  filter: grayscale(1) invert(1) contrast(1.18) brightness(0.98);
+}
+
+:root[data-theme="light"] .client-card:hover .client-logo-mark img,
+:root[data-theme="light"] .client-card:focus-visible .client-logo-mark img {
+  filter: grayscale(1) invert(1) contrast(1.25) brightness(1.05);
+}
+
+:root[data-theme="light"] .client-card-label,
+:root[data-theme="light"] .client-work-grid .card-info,
+:root[data-theme="light"] .gallery-item figcaption,
+:root[data-theme="light"] .related-card span {
+  color: #f4f0e8;
+}
+
+:root[data-theme="light"] .client-work-grid .card-info h3 {
+  color: #f4f0e8;
+}
+
 :root[data-theme="light"] .btn {
   color: #f8fdff;
 }
 
 :root[data-theme="light"] .btn-secondary {
   background: rgba(255, 255, 255, 0.44);
+  color: var(--accent);
+}
+
+:root[data-theme="light"] .tag-list span {
+  background: rgba(255, 255, 255, 0.64);
   color: var(--accent);
 }
 
@@ -584,6 +610,12 @@ h3,
   padding: clamp(0.85rem, 2vw, 1.55rem) 0 0;
 }
 
+:root[data-theme="light"] .contact-footer {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.72)),
+    rgba(255, 255, 255, 0.38);
+}
+
 .contact-footer .contact-layout {
   align-items: start;
   padding-bottom: clamp(0.85rem, 2vw, 1.45rem);
@@ -645,6 +677,12 @@ h3,
   color: var(--text);
   font-size: 0.85rem;
   padding: 0.48rem 0.6rem;
+}
+
+:root[data-theme="light"] .contact-form input,
+:root[data-theme="light"] .contact-form textarea {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text);
 }
 
 .contact-form textarea {
@@ -979,19 +1017,25 @@ h3,
 }
 
 .related-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   text-decoration: none;
 }
 
 .related-card img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
   object-fit: cover;
 }
 
 .related-card span {
+  position: absolute;
+  inset: auto 0 0;
   display: block;
-  padding: 0.8rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.82));
+  color: #f4f0e8;
+  padding: 1.9rem 0.75rem 0.75rem;
   font-weight: 900;
 }
 

@@ -10,22 +10,27 @@ import { categoryLabels, formspreeEndpoint, partners } from "../data/site";
 const categories = Object.entries(categoryLabels);
 const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
 const featuredProjects = projects.slice(0, 3);
+const portfolioStats = [
+  { value: `${projects.length}`, label: "kuratierte Arbeiten" },
+  { value: "3", label: "Schwerpunkte" },
+  { value: "1", label: "klare Handschrift" },
+];
 const base = import.meta.env.BASE_URL;
 const projectWorlds = [
   {
-    label: "Poster Wall",
+    label: "01 / Poster",
     title: "Eventgrafik mit Druck",
     text: "Plakate, Social Motive und Keyvisuals, die schnell zünden und trotzdem Informationen sauber tragen.",
     filter: "poster",
   },
   {
-    label: "Merch Table",
+    label: "02 / Merch",
     title: "Tragbare Identität",
     text: "Shirts, Bändchen und Festivalobjekte, die nicht wie Nebenprodukte wirken, sondern wie begehrte Erinnerungen.",
     filter: "clothing",
   },
   {
-    label: "Workshop",
+    label: "03 / Objekt",
     title: "Funktion trifft Haltung",
     text: "3D-Prints und Objektgrafik für reale Nutzung: markieren, schützen, organisieren, wiedererkennen.",
     filter: "3d-print",
@@ -48,36 +53,60 @@ const homeStructuredData = {
   <main>
     <header class="hero">
       <Image src={heroSource} alt="" width={1800} height={1013} class="hero-media" loading="eager" decoding="async" aria-hidden="true" />
-      <div class="container hero-inner">
-        <p class="eyebrow">Portfolio / Merch / Poster / 3D-Print</p>
-        <h1>Design für Dinge, die gesehen werden müssen.</h1>
-        <p class="hero-subline">Ich entwickle Festivalgrafik, Merch, Poster und funktionale 3D-Prints mit Szene-Energie, klarer Hierarchie und echtem Einsatzwert.</p>
-        <div class="hero-actions">
-          <a class="btn hero-cta" href="#headliners">Headliner ansehen</a>
-          <a class="btn btn-secondary" href="#portfolio">Alle Projekte</a>
-        </div>
-        <dl class="hero-stats" aria-label="Portfolio Schwerpunkte">
-          <div><dt>01</dt><dd>Festival & Event</dd></div>
-          <div><dt>02</dt><dd>Merch & Objektgrafik</dd></div>
-          <div><dt>03</dt><dd>Funktionale 3D-Prints</dd></div>
-        </dl>
+      <div class="container hero-inner hero-bento">
+        <section class="hero-copy" aria-labelledby="hero-title">
+          <p class="eyebrow">Portfolio für Szene, Bühne und Einsatz</p>
+          <h1 id="hero-title">Arbeiten, die erst wirken und dann bleiben.</h1>
+          <p class="hero-subline">Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert.</p>
+          <div class="hero-actions">
+            <a class="btn hero-cta" href="#portfolio">Portfolio ansehen</a>
+            <a class="btn btn-secondary" href="#contact">Projekt anfragen</a>
+          </div>
+        </section>
+        <aside class="hero-panel" aria-label="Portfolio Überblick">
+          <div class="hero-panel-head">
+            <span>Selected Work</span>
+            <strong>{featuredProjects[0].data.year}</strong>
+          </div>
+          <a class="hero-feature" href={`${base}work/${featuredProjects[0].id.replace(/\.md$/, "")}/`}>
+            <Image src={featuredProjects[0].data.previewImage} alt={featuredProjects[0].data.title} widths={[520, 840]} sizes="(min-width: 900px) 34vw, 100vw" loading="eager" decoding="async" />
+            <span>{categoryLabels[featuredProjects[0].data.category]}</span>
+            <h2>{featuredProjects[0].data.shortTitle}</h2>
+          </a>
+          <dl class="hero-stats" aria-label="Portfolio Kennzahlen">
+            {portfolioStats.map((stat) => (
+              <div>
+                <dt>{stat.value}</dt>
+                <dd>{stat.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </aside>
       </div>
     </header>
 
-    <section class="proof-strip" aria-label="Kurzprofil">
-      <div class="container proof-grid">
-        <p><strong>Wacken Open Air</strong><span>Merchandise und Objektgrafik für Festival-Kontexte.</span></p>
-        <p><strong>DLRG Einsatzmaterial</strong><span>3D-Druckteile, die nicht nur gut aussehen, sondern funktionieren müssen.</span></p>
-        <p><strong>Metal im Dorf</strong><span>Poster und Eventmotive mit Szene-Energie und klarer Lesbarkeit.</span></p>
-      </div>
-    </section>
-
-    <section class="partners-ribbon" aria-labelledby="partner-title">
+    <section id="portfolio" class="section portfolio-section">
       <div class="container">
-        <h2 id="partner-title" class="partner-title">Trusted by</h2>
-        <div class="logo-grid">
-          {partners.map((partner) => <img src={`${base}${partner.logo}`} alt={partner.name} loading="lazy" decoding="async" />)}
+        <div class="section-heading section-heading-wide">
+          <div>
+            <p class="eyebrow">Portfolio</p>
+            <h2 class="section-title">Das Archiv ist die Hauptbühne.</h2>
+          </div>
+          <p>Alle Arbeiten sind schnell scannbar, filterbar und führen direkt in Projektseiten mit Kontext, Ansatz und Wirkung.</p>
         </div>
+        <div class="filter-controls" aria-label="Portfolio filtern">
+          {
+            categories.map(([key, label], index) => (
+              <button class:list={["filter-btn", { active: index === 0 }]} type="button" data-filter={key} aria-pressed={index === 0 ? "true" : "false"}>
+                {label}
+              </button>
+            ))
+          }
+        </div>
+        <div class="gallery-grid" id="project-grid">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+        <p class="empty-state" id="empty-state" hidden>Keine Arbeiten in dieser Kategorie gefunden.</p>
       </div>
     </section>
 
@@ -85,10 +114,10 @@ const homeStructuredData = {
       <div class="container">
         <div class="section-heading section-heading-wide">
           <div>
-            <p class="eyebrow">Headliner</p>
-            <h2 class="section-title">Die stärksten Arbeiten zuerst.</h2>
+            <p class="eyebrow">Bento Auswahl</p>
+            <h2 class="section-title">Drei Arbeiten als Einstieg.</h2>
           </div>
-          <p>Diese Projekte zeigen am besten, worum es geht: laute Gestaltung, klare Funktion und Motive, die auch außerhalb des Screens funktionieren.</p>
+          <p>Eine größere Bühne für Projekte, die die Spannweite zeigen: Festivalwirkung, tragbares Motiv und funktionales Objekt.</p>
         </div>
         <div class="headliner-grid">
           {featuredProjects.map((project, index) => (
@@ -109,10 +138,10 @@ const homeStructuredData = {
       <div class="container">
         <div class="section-heading section-heading-wide">
           <div>
-            <p class="eyebrow">Design Worlds</p>
-            <h2 class="section-title">Drei Bühnen für deine Projekte.</h2>
+            <p class="eyebrow">Arbeitsfelder</p>
+            <h2 class="section-title">Ein Look, mehrere Einsätze.</h2>
           </div>
-          <p>Damit die Seite nicht nur Arbeiten sammelt, sondern deine Bandbreite klar lesbar macht: Poster, Merch und funktionale Objekte bekommen je eine eigene Rolle.</p>
+          <p>Die Kategorien sind bewusst knapp gehalten: Was zählt, ist die Wirkung des Projekts und wie schnell man die passende Arbeit findet.</p>
         </div>
         <div class="worlds-grid">
           {projectWorlds.map((world) => (
@@ -126,28 +155,12 @@ const homeStructuredData = {
       </div>
     </section>
 
-    <section id="portfolio" class="section portfolio-section">
+    <section class="partners-ribbon" aria-labelledby="partner-title">
       <div class="container">
-        <div class="section-heading section-heading-wide">
-          <div>
-            <p class="eyebrow">Archive</p>
-            <h2 class="section-title">Alle Projekte im Zugriff.</h2>
-          </div>
-          <p>Das Grid bleibt der Kern der Seite: schnell scannbar, filterbar und direkt auf die Projektseiten führend.</p>
+        <h2 id="partner-title" class="partner-title">Projekte und Kontexte</h2>
+        <div class="logo-grid">
+          {partners.map((partner) => <img src={`${base}${partner.logo}`} alt={partner.name} loading="lazy" decoding="async" />)}
         </div>
-        <div class="filter-controls" aria-label="Portfolio filtern">
-          {
-            categories.map(([key, label], index) => (
-              <button class:list={["filter-btn", { active: index === 0 }]} type="button" data-filter={key} aria-pressed={index === 0 ? "true" : "false"}>
-                {label}
-              </button>
-            ))
-          }
-        </div>
-        <div class="gallery-grid" id="project-grid">
-          {projects.map((project) => <ProjectCard project={project} />)}
-        </div>
-        <p class="empty-state" id="empty-state" hidden>Keine Arbeiten in dieser Kategorie gefunden.</p>
       </div>
     </section>
 
@@ -190,7 +203,7 @@ const homeStructuredData = {
     <section id="contact" class="section">
       <div class="container contact-layout">
         <div>
-          <p class="eyebrow">Contact</p>
+          <p class="eyebrow">Kontakt</p>
           <h2 class="section-title">Bereit für den nächsten Slot?</h2>
           <p class="contact-copy">Schick mir kurz, worum es geht: Event, Merch, Poster, 3D-Print oder etwas dazwischen. Ich antworte mit Rückfragen, einer Einschätzung und dem nächsten sinnvollen Schritt.</p>
           <ul class="contact-notes">
@@ -208,7 +221,7 @@ const homeStructuredData = {
           <textarea id="message" name="message" rows="5" required></textarea>
           <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" />
           <input type="hidden" name="_subject" value="Neue Projektanfrage über moritzbarz.de" />
-          <button type="submit" class="btn">Send Message</button>
+          <button type="submit" class="btn">Anfrage senden</button>
         </form>
       </div>
     </section>

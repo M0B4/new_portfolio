@@ -1,12 +1,12 @@
 export type ProjectCategory = "event" | "poster" | "clothing" | "3d-print" | "various";
 
 export const categoryLabels: Record<"all" | ProjectCategory, string> = {
-  all: "Alle Projekte",
-  event: "Event Design",
-  poster: "Poster Design",
-  clothing: "Merch & Clothing",
-  "3d-print": "3D-Print Objects",
-  various: "Objects & Specials",
+  all: "Alle",
+  event: "Eventdesign",
+  poster: "Poster",
+  clothing: "Merch",
+  "3d-print": "3D-Print",
+  various: "Objekte",
 };
 
 export const partners = [

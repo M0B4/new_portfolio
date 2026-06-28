@@ -1,0 +1,39 @@
+---
+import { formspreeEndpoint } from "../data/site";
+
+const base = import.meta.env.BASE_URL;
+---
+
+<footer id="contact" class="contact-footer">
+  <div class="container contact-layout">
+    <div class="footer-contact-copy">
+      <p class="kicker" data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</p>
+      <h2 data-i18n-de="Projekt anfragen" data-i18n-en="Start a project">Projekt anfragen</h2>
+      <p data-i18n-de="Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung." data-i18n-en="A short context is enough. I will get back with a clear assessment.">Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung.</p>
+    </div>
+    <form class="contact-form" name="contact" method="POST" action={formspreeEndpoint}>
+      <label for="footer-name">
+        <span data-i18n-de="Name / Brand" data-i18n-en="Name / Brand">Name / Brand</span>
+        <input id="footer-name" name="name" type="text" autocomplete="name" required />
+      </label>
+      <label for="footer-email">
+        <span data-i18n-de="Email" data-i18n-en="Email">Email</span>
+        <input id="footer-email" name="email" type="email" autocomplete="email" required />
+      </label>
+      <label class="contact-message" for="footer-message">
+        <span data-i18n-de="Projekt" data-i18n-en="Project">Projekt</span>
+        <textarea id="footer-message" name="message" rows="2" required></textarea>
+      </label>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" />
+      <input type="hidden" name="_subject" value="Neue Projektanfrage über moritzbarz.de" />
+      <button type="submit" class="btn" data-i18n-de="Senden" data-i18n-en="Send">Senden</button>
+    </form>
+  </div>
+  <div class="container footer-meta">
+    <span>MORITZ<span>BARZ</span></span>
+    <nav aria-label="Footer">
+      <a href={`${base}#contact`} data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a>
+      <a href={`${base}impressum/`} data-i18n-de="Impressum" data-i18n-en="Legal notice">Impressum</a>
+    </nav>
+  </div>
+</footer>

@@ -9,7 +9,7 @@ client: "DLRG Duisburg"
 year: "2026"
 previewImage: "../../assets/3d_print/dlrg.webp"
 heroImage: "../../assets/3d_print/dlrg.webp"
-challenge: "Atemregler müssen im Vereinsalltag schnell geschützt, wiedergefunden und sauber gelagert werden, ohne dass die Lösung im Einsatz stoert."
+challenge: "Atemregler müssen im Vereinsalltag schnell geschützt, wiedergefunden und sauber gelagert werden, ohne dass die Lösung im Einsatz stört."
 approach: "Ich habe eine kompakte Schutzkappe konstruiert, prototypisiert und auf robuste Handhabung sowie passgenauen Sitz ausgelegt."
 impact: "Das Ergebnis ist ein funktionales Teil, das in der Ausrüstung Sinn ergibt: kein Dekor, sondern ein kleines Werkzeug für mehr Ordnung und Schutz."
 details:

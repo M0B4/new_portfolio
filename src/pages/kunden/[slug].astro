@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { categoryLabels } from "../../data/site";
+import { getClientGroups } from "../../lib/clients";
+
+export async function getStaticPaths() {
+  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  const clientGroups = getClientGroups(projects);
+
+  return clientGroups.map((group) => ({
+    params: { slug: group.profile.slug },
+    props: { group },
+  }));
+}
+
+const { group } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const cover = group.projects[0];
+const categories = [...new Set(group.projects.map((project) => categoryLabels[project.data.category]))];
+const seoTitle = `${group.profile.label} | Arbeiten von Moritz Barz`;
+const seoDescription = group.profile.summary;
+const clientStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: `${group.profile.label} Arbeiten`,
+  description: seoDescription,
+  url: new URL(`${base}kunden/${group.profile.slug}/`, Astro.site ?? Astro.url.origin),
+};
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? cover.data.heroImage.src} structuredData={clientStructuredData}>
+  <Header simple />
+
+  <main>
+    <header class="client-hero">
+      <img class="client-hero-logo-bg" src={`${base}${group.profile.logo}`} alt="" loading="eager" decoding="async" aria-hidden="true" />
+      <div class="container client-hero-inner">
+        <div class="client-hero-copy">
+          <p class="eyebrow">{categories.join(" / ")}</p>
+          <h1>{group.profile.label}</h1>
+          <p>{group.profile.intro}</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section client-work-section">
+      <div class="container">
+        <div class="client-work-grid">
+          {group.projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -32,4 +32,4 @@ gallery:
 order: 10
 ---
 
-Ein Merchandise-Motiv für Wacken, das Festivalarchitektur, Heavy-Metal-Ästhetik und tragbare Komposition zusammenführt. Der Fokus lag auf starker Fernwirkung, sauberer Platzierung auf Textilien und einem Motiv, das auch außerhalb des Festivalgeländes funktioniert.
+Ein Merchandise-Motiv für Wacken, das Festivalarchitektur, Heavy-Metal-Ästhetik und tragbare Komposition zusammenführt. Entscheidend waren starke Fernwirkung, saubere Platzierung auf Textilien und ein Motiv, das auch außerhalb des Festivalgeländes funktioniert.

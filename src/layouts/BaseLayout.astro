@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Footer from "../components/Footer.astro";
 
 type Props = {
   title?: string;
@@ -32,6 +33,14 @@ const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <script is:inline>
+      (() => {
+        const theme = localStorage.getItem("theme") || "dark";
+        const language = localStorage.getItem("language") || "de";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.language = language;
+      })();
+    </script>
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#030303" />
     <meta property="og:type" content="website" />
@@ -56,5 +65,53 @@ const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
   </head>
   <body>
     <slot />
+    <Footer />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const getLanguage = () => localStorage.getItem("language") || "de";
+        const getTheme = () => localStorage.getItem("theme") || "dark";
+
+        const applyLanguage = (language) => {
+          root.dataset.language = language;
+          document.documentElement.lang = language;
+          localStorage.setItem("language", language);
+
+          document.querySelectorAll("[data-i18n-de][data-i18n-en]").forEach((element) => {
+            const value = element.dataset[language === "en" ? "i18nEn" : "i18nDe"];
+            if (value) element.textContent = value;
+          });
+
+          document.querySelectorAll("[data-language-toggle]").forEach((button) => {
+            button.textContent = language === "en" ? "DE" : "EN";
+            button.setAttribute("aria-pressed", String(language === "en"));
+            button.setAttribute("aria-label", language === "en" ? "Switch to German" : "Sprache auf Englisch wechseln");
+          });
+        };
+
+        const applyTheme = (theme) => {
+          root.dataset.theme = theme;
+          localStorage.setItem("theme", theme);
+
+          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+            const isLight = theme === "light";
+            button.textContent = isLight ? "●" : "☼";
+            button.setAttribute("aria-pressed", String(isLight));
+            button.setAttribute("aria-label", isLight ? "Dark Mode aktivieren" : "Light Mode aktivieren");
+          });
+        };
+
+        applyLanguage(getLanguage());
+        applyTheme(getTheme());
+
+        document.querySelectorAll("[data-language-toggle]").forEach((button) => {
+          button.addEventListener("click", () => applyLanguage(getLanguage() === "en" ? "de" : "en"));
+        });
+
+        document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+          button.addEventListener("click", () => applyTheme(getTheme() === "light" ? "dark" : "light"));
+        });
+      })();
+    </script>
   </body>
 </html>

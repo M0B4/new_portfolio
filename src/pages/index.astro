@@ -1,46 +1,19 @@
 ---
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
-import heroSource from "../assets/header.jpg";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import { categoryLabels, formspreeEndpoint, partners } from "../data/site";
+import { getClientGroups } from "../lib/clients";
 
-const categories = Object.entries(categoryLabels);
 const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
-const featuredProjects = projects.slice(0, 3);
-const portfolioStats = [
-  { value: `${projects.length}`, label: "kuratierte Arbeiten" },
-  { value: "3", label: "Schwerpunkte" },
-  { value: "1", label: "klare Handschrift" },
-];
+const clientGroups = getClientGroups(projects);
 const base = import.meta.env.BASE_URL;
-const projectWorlds = [
-  {
-    label: "01 / Poster",
-    title: "Eventgrafik mit Druck",
-    text: "Plakate, Social Motive und Keyvisuals, die schnell zünden und trotzdem Informationen sauber tragen.",
-    filter: "poster",
-  },
-  {
-    label: "02 / Merch",
-    title: "Tragbare Identität",
-    text: "Shirts, Bändchen und Festivalobjekte, die nicht wie Nebenprodukte wirken, sondern wie begehrte Erinnerungen.",
-    filter: "clothing",
-  },
-  {
-    label: "03 / Objekt",
-    title: "Funktion trifft Haltung",
-    text: "3D-Prints und Objektgrafik für reale Nutzung: markieren, schützen, organisieren, wiedererkennen.",
-    filter: "3d-print",
-  },
-];
+const clientUrl = (slug: string) => `${base}kunden/${slug}/`;
+
 const homeStructuredData = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
   name: "Moritz Barz",
-  description: "Poster, Merchandise, Eventdesign und funktionale 3D-Prints für Metal, Festivals und Tauchsport.",
+  description: "Portfolio von Moritz Barz: Poster, Merchandise, Eventdesign und funktionale 3D-Prints.",
   url: Astro.site?.toString(),
   areaServed: "DE",
   serviceType: ["Poster Design", "Merchandise Design", "Event Design", "3D-Printing"],
@@ -50,208 +23,60 @@ const homeStructuredData = {
 <BaseLayout structuredData={homeStructuredData}>
   <Header />
 
-  <main>
-    <header class="hero">
-      <Image src={heroSource} alt="" width={1800} height={1013} class="hero-media" loading="eager" decoding="async" aria-hidden="true" />
-      <div class="container hero-inner hero-bento">
-        <section class="hero-copy" aria-labelledby="hero-title">
-          <p class="eyebrow">Portfolio für Szene, Bühne und Einsatz</p>
-          <h1 id="hero-title">Arbeiten, die erst wirken und dann bleiben.</h1>
-          <p class="hero-subline">Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert.</p>
-          <div class="hero-actions">
-            <a class="btn hero-cta" href="#portfolio">Portfolio ansehen</a>
-            <a class="btn btn-secondary" href="#contact">Projekt anfragen</a>
+  <main class="home">
+    <section class="home-hero" aria-labelledby="hero-title">
+      <div class="container hero-layout">
+        <div class="hero-panel">
+          <p class="kicker" data-i18n-de="Portfolio für Szene, Bühne und Einsatz" data-i18n-en="Portfolio for scene, stage and real use">Portfolio für Szene, Bühne und Einsatz</p>
+          <div class="hero-copy">
+            <h1 id="hero-title" data-i18n-de="Arbeiten, die erst wirken und dann bleiben." data-i18n-en="Work that hits first and stays after.">Arbeiten, die erst wirken und dann bleiben.</h1>
+            <p data-i18n-de="Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert." data-i18n-en="Posters, merch, event graphics and functional 3D objects with a hard edge, clear hierarchy and real use.">Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert.</p>
           </div>
-        </section>
-        <aside class="hero-panel" aria-label="Portfolio Überblick">
-          <div class="hero-panel-head">
-            <span>Selected Work</span>
-            <strong>{featuredProjects[0].data.year}</strong>
+          <div class="hero-actions" aria-label="Schnelleinstieg">
+            <a class="btn" href="#portfolio" data-i18n-de="Portfolio ansehen" data-i18n-en="View portfolio">Portfolio ansehen</a>
+            <a class="btn btn-secondary" href="#contact" data-i18n-de="Projekt anfragen" data-i18n-en="Start a project">Projekt anfragen</a>
           </div>
-          <a class="hero-feature" href={`${base}work/${featuredProjects[0].id.replace(/\.md$/, "")}/`}>
-            <Image src={featuredProjects[0].data.previewImage} alt={featuredProjects[0].data.title} widths={[520, 840]} sizes="(min-width: 900px) 34vw, 100vw" loading="eager" decoding="async" />
-            <span>{categoryLabels[featuredProjects[0].data.category]}</span>
-            <h2>{featuredProjects[0].data.shortTitle}</h2>
-          </a>
-          <dl class="hero-stats" aria-label="Portfolio Kennzahlen">
-            {portfolioStats.map((stat) => (
-              <div>
-                <dt>{stat.value}</dt>
-                <dd>{stat.label}</dd>
-              </div>
-            ))}
-          </dl>
-        </aside>
+        </div>
       </div>
-    </header>
+    </section>
 
     <section id="portfolio" class="section portfolio-section">
       <div class="container">
-        <div class="section-heading section-heading-wide">
-          <div>
-            <p class="eyebrow">Portfolio</p>
-            <h2 class="section-title">Das Archiv ist die Hauptbühne.</h2>
-          </div>
-          <p>Alle Arbeiten sind schnell scannbar, filterbar und führen direkt in Projektseiten mit Kontext, Ansatz und Wirkung.</p>
-        </div>
-        <div class="filter-controls" aria-label="Portfolio filtern">
-          {
-            categories.map(([key, label], index) => (
-              <button class:list={["filter-btn", { active: index === 0 }]} type="button" data-filter={key} aria-pressed={index === 0 ? "true" : "false"}>
-                {label}
-              </button>
-            ))
-          }
-        </div>
-        <div class="gallery-grid" id="project-grid">
-          {projects.map((project) => <ProjectCard project={project} />)}
-        </div>
-        <p class="empty-state" id="empty-state" hidden>Keine Arbeiten in dieser Kategorie gefunden.</p>
-      </div>
-    </section>
-
-    <section id="headliners" class="section headliner-section">
-      <div class="container">
-        <div class="section-heading section-heading-wide">
-          <div>
-            <p class="eyebrow">Bento Auswahl</p>
-            <h2 class="section-title">Drei Arbeiten als Einstieg.</h2>
-          </div>
-          <p>Eine größere Bühne für Projekte, die die Spannweite zeigen: Festivalwirkung, tragbares Motiv und funktionales Objekt.</p>
-        </div>
-        <div class="headliner-grid">
-          {featuredProjects.map((project, index) => (
-            <a class:list={["headliner-card", { "headliner-card-primary": index === 0 }]} href={`${base}work/${project.id.replace(/\.md$/, "")}/`}>
-              <Image src={project.data.heroImage} alt={project.data.title} widths={[700, 1100, 1600]} sizes={index === 0 ? "(min-width: 1000px) 58vw, 100vw" : "(min-width: 1000px) 28vw, 100vw"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
-              <div class="headliner-content">
-                <span>{String(index + 1).padStart(2, "0")} / {categoryLabels[project.data.category]}</span>
-                <h3>{project.data.shortTitle}</h3>
-                <p>{project.data.impact}</p>
-              </div>
-            </a>
-          ))}
+        <div class="client-grid" aria-label="Kunden und Kontexte">
+          {clientGroups.map((group, index) => {
+            return (
+              <a class="client-card" href={clientUrl(group.profile.slug)} aria-label={`${group.profile.label} Arbeiten ansehen`}>
+                <figure class="client-logo-mark" aria-hidden="true">
+                  <img src={`${base}${group.profile.logo}`} alt="" loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+                </figure>
+                <span class="client-card-label">{group.profile.label}</span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
 
-    <section class="section worlds-section">
-      <div class="container">
-        <div class="section-heading section-heading-wide">
-          <div>
-            <p class="eyebrow">Arbeitsfelder</p>
-            <h2 class="section-title">Ein Look, mehrere Einsätze.</h2>
-          </div>
-          <p>Die Kategorien sind bewusst knapp gehalten: Was zählt, ist die Wirkung des Projekts und wie schnell man die passende Arbeit findet.</p>
-        </div>
-        <div class="worlds-grid">
-          {projectWorlds.map((world) => (
-            <a class="world-card" href="#portfolio" data-world-filter={world.filter}>
-              <span>{world.label}</span>
-              <h3>{world.title}</h3>
-              <p>{world.text}</p>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <section class="partners-ribbon" aria-labelledby="partner-title">
-      <div class="container">
-        <h2 id="partner-title" class="partner-title">Projekte und Kontexte</h2>
-        <div class="logo-grid">
-          {partners.map((partner) => <img src={`${base}${partner.logo}`} alt={partner.name} loading="lazy" decoding="async" />)}
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="section bg-alt">
-      <div class="container split-section">
-        <div>
-          <p class="eyebrow">Persönlichkeit</p>
-          <h2 class="section-title">Ich gestalte wie jemand, der die Szene kennt.</h2>
-        </div>
-        <div class="copy-block">
+    <section id="about" class="section statement-section">
+      <div class="container statement-layout">
+        <div class="statement-content">
+          <p class="kicker" data-i18n-de="Profil" data-i18n-en="Profile">Profil</p>
+          <h2 data-i18n-de="Visuelle Arbeiten, die draußen funktionieren." data-i18n-en="Visual work built for the real world.">Visuelle Arbeiten, die draußen funktionieren.</h2>
           <p>
-            Ich komme aus der Metalszene und aus dem Tauchen. Beides ist direkter, ehrlicher und anspruchsvoller, als es von außen wirkt. Ein Festivalmotiv muss in Sekunden zünden. Ein 3D-gedrucktes Teil muss passen, halten und im Alltag Sinn ergeben.
+            <span data-i18n-de="Ich verbinde Heavy-Metal-Ästhetik mit klarer Informationshierarchie und sauberer Produktion. Entscheidend ist ein Auftritt, der Charakter hat und trotzdem lesbar, nutzbar und übergabefähig bleibt." data-i18n-en="I combine heavy metal aesthetics with clear information hierarchy and clean production. The goal is work with character that still stays readable, usable and ready to hand over.">Ich verbinde Heavy-Metal-Ästhetik mit klarer Informationshierarchie und sauberer Produktion. Entscheidend ist ein Auftritt, der Charakter hat und trotzdem lesbar, nutzbar und übergabefähig bleibt.</span>
           </p>
-          <p>
-            Genau da arbeite ich gern: an der Stelle, an der Gestaltung nicht dekoriert, sondern etwas klärt. Für Bands, Festivals, Vereine, Tauchbasen und Marken, die eine visuelle Sprache brauchen, die nicht weichgespült klingt.
-          </p>
-          <div class="principle-grid">
-            <span>laut, wenn es laut sein muss</span>
-            <span>präzise, wenn Funktion zählt</span>
-            <span>nah an der Szene statt generisch</span>
-          </div>
         </div>
+        <figure class="statement-portrait" aria-hidden="true">
+          <img src={`${base}images/header.jpg`} alt="" loading="lazy" decoding="async" />
+        </figure>
       </div>
     </section>
 
-    <section class="section process-section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Ablauf</p>
-          <h2 class="section-title">Vom ersten Riff bis zur fertigen Datei.</h2>
-        </div>
-        <ol class="process-list">
-          <li><strong>Kontext klären</strong><span>Worum geht es, wo wird es genutzt, wer muss es verstehen?</span></li>
-          <li><strong>Motiv entwickeln</strong><span>Look, Hierarchie und Funktion werden zusammen gedacht.</span></li>
-          <li><strong>Finalisieren</strong><span>Printdaten, Social Assets oder 3D-Druckdateien gehen sauber raus.</span></li>
-        </ol>
-      </div>
-    </section>
-
-    <section id="contact" class="section">
-      <div class="container contact-layout">
-        <div>
-          <p class="eyebrow">Kontakt</p>
-          <h2 class="section-title">Bereit für den nächsten Slot?</h2>
-          <p class="contact-copy">Schick mir kurz, worum es geht: Event, Merch, Poster, 3D-Print oder etwas dazwischen. Ich antworte mit Rückfragen, einer Einschätzung und dem nächsten sinnvollen Schritt.</p>
-          <ul class="contact-notes">
-            <li>Ideal für Festivals, Bands, Vereine und Tauchprojekte</li>
-            <li>Von Einzelmotiv bis kleiner visueller Serie</li>
-            <li>Direkt, klar und ohne Agenturtheater</li>
-          </ul>
-        </div>
-        <form class="contact-form" name="contact" method="POST" action={formspreeEndpoint}>
-          <label for="name">Name / Brand</label>
-          <input id="name" name="name" type="text" autocomplete="name" required />
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required />
-          <label for="message">Projektanfrage</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
-          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" />
-          <input type="hidden" name="_subject" value="Neue Projektanfrage über moritzbarz.de" />
-          <button type="submit" class="btn">Anfrage senden</button>
-        </form>
-      </div>
-    </section>
   </main>
 
   <script>
     const hamburger = document.querySelector(".hamburger");
     const navLinks = document.querySelector(".nav-links");
-    const filterButtons = document.querySelectorAll(".filter-btn");
-    const projectCards = document.querySelectorAll(".project-card");
-    const emptyState = document.querySelector("#empty-state");
-    const worldCards = document.querySelectorAll("[data-world-filter]");
-
-    const applyFilter = (filter) => {
-      let visibleCount = 0;
-
-      filterButtons.forEach((item) => {
-        const isActive = item.getAttribute("data-filter") === filter;
-        item.classList.toggle("active", isActive);
-        item.setAttribute("aria-pressed", String(isActive));
-      });
-
-      projectCards.forEach((card) => {
-        const isVisible = filter === "all" || card.getAttribute("data-category") === filter;
-        card.toggleAttribute("hidden", !isVisible);
-        if (isVisible) visibleCount += 1;
-      });
-
-      if (emptyState) emptyState.hidden = visibleCount > 0;
-    };
 
     hamburger?.addEventListener("click", () => {
       const isOpen = hamburger.classList.toggle("active");
@@ -266,20 +91,6 @@ const homeStructuredData = {
         navLinks.classList.remove("active");
         hamburger?.setAttribute("aria-expanded", "false");
         hamburger?.setAttribute("aria-label", "Menü öffnen");
-      });
-    });
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const filter = button.getAttribute("data-filter");
-        applyFilter(filter || "all");
-      });
-    });
-
-    worldCards.forEach((card) => {
-      card.addEventListener("click", () => {
-        const filter = card.getAttribute("data-world-filter");
-        applyFilter(filter || "all");
       });
     });
   </script>

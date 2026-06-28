@@ -45,7 +45,7 @@ const projectStructuredData = {
     <header class="detail-hero">
       <Image src={data.heroImage} alt="" widths={[1200, 1800]} sizes="100vw" class="detail-hero-media" loading="eager" decoding="async" aria-hidden="true" />
       <div class="container detail-hero-inner">
-        <p class="eyebrow">{categoryLabel}</p>
+        <p class="eyebrow">{categoryLabel} / {data.year}</p>
         <h1>{data.title}</h1>
         <p>{data.summary}</p>
         <div class="tag-list" aria-label="Projekt Tags">
@@ -60,24 +60,10 @@ const projectStructuredData = {
           <div class="lead">
             <Content />
           </div>
-          <div class="case-study-grid" aria-label="Case Study">
-            <section>
-              <span>Aufgabe</span>
-              <p>{data.challenge}</p>
-            </section>
-            <section>
-              <span>Ansatz</span>
-              <p>{data.approach}</p>
-            </section>
-            <section>
-              <span>Wirkung</span>
-              <p>{data.impact}</p>
-            </section>
-          </div>
           <div class="project-gallery">
-            {data.gallery.map((item, index) => (
-              <figure class:list={["gallery-item", { "gallery-item-wide": index === 0 }]}>
-                <Image src={item.image} alt={item.title} widths={[900, 1440]} sizes="(min-width: 900px) 70vw, 100vw" loading="lazy" decoding="async" />
+            {data.gallery.map((item) => (
+              <figure class="gallery-item">
+                <Image src={item.image} alt={item.title} widths={[620, 900, 1200]} sizes="(min-width: 900px) 34vw, 50vw" loading="lazy" decoding="async" />
                 <figcaption>{item.title}</figcaption>
               </figure>
             ))}
@@ -87,26 +73,26 @@ const projectStructuredData = {
         <aside class="project-meta" aria-label="Projektdetails">
           <dl>
             <div>
-              <dt>Client</dt>
+              <dt data-i18n-de="Client" data-i18n-en="Client">Client</dt>
               <dd>{data.client}</dd>
             </div>
             <div>
-              <dt>Jahr</dt>
+              <dt data-i18n-de="Jahr" data-i18n-en="Year">Jahr</dt>
               <dd>{data.year}</dd>
             </div>
             <div>
-              <dt>Kategorie</dt>
+              <dt data-i18n-de="Kategorie" data-i18n-en="Category">Kategorie</dt>
               <dd>{categoryLabel}</dd>
             </div>
           </dl>
           <div class="meta-group">
-            <h2>Details</h2>
+            <h2 data-i18n-de="Details" data-i18n-en="Details">Details</h2>
             <ul>
               {data.details.map((detail) => <li>{detail}</li>)}
             </ul>
           </div>
           <div class="meta-group">
-            <h2>Leistungen</h2>
+            <h2 data-i18n-de="Leistungen" data-i18n-en="Services">Leistungen</h2>
             <ul>
               {data.services.map((service) => <li>{service}</li>)}
             </ul>
@@ -119,7 +105,7 @@ const projectStructuredData = {
       relatedProjects.length > 0 && (
         <section class="section related-section">
           <div class="container">
-            <p class="eyebrow">Mehr in {categoryLabel}</p>
+            <p class="eyebrow"><span data-i18n-de="Mehr in" data-i18n-en="More in">Mehr in</span> {categoryLabel}</p>
             <div class="related-grid">
               {relatedProjects.map((item) => (
                 <a class="related-card" href={`${base}work/${item.id.replace(/\.md$/, "")}/`}>
@@ -132,14 +118,5 @@ const projectStructuredData = {
         </section>
       )
     }
-
-    <section class="section project-cta-section">
-      <div class="container project-cta">
-        <p class="eyebrow">Nächstes Projekt</p>
-        <h2>Du brauchst etwas mit ähnlicher Wucht?</h2>
-        <p>Schick mir kurz Kontext, Einsatzort und Ziel. Ich helfe dir, daraus ein Motiv, ein System oder ein funktionales Teil zu machen.</p>
-        <a class="btn" href={`${base}#contact`}>Projekt anfragen</a>
-      </div>
-    </section>
   </main>
 </BaseLayout>

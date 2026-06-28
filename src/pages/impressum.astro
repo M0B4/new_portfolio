@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+
+const title = "Impressum | Moritz Barz";
+const description = "Impressum der Portfolio-Website von Moritz Barz.";
+---
+
+<BaseLayout title={title} description={description}>
+  <Header simple />
+
+  <main class="legal-page">
+    <section class="section">
+      <div class="container legal-layout">
+        <p class="kicker">Impressum</p>
+        <div class="legal-content">
+          <h1>Angaben gemäß § 5 DDG</h1>
+          <p>Moritz Barz</p>
+          <p class="legal-muted">Adresse und weitere Pflichtangaben bitte vor Veröffentlichung ergänzen.</p>
+
+          <h2>Kontakt</h2>
+          <p>Kontaktaufnahme über das Formular auf der Startseite.</p>
+
+          <h2>Verantwortlich für den Inhalt</h2>
+          <p>Moritz Barz</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -14,19 +14,27 @@ const base = import.meta.env.BASE_URL;
     </a>
     {
       simple ? (
-        <a class="back-link" href={`${base}#portfolio`}>Zurück zur Arbeit</a>
+        <div class="nav-actions">
+          <a class="back-link" href={`${base}#portfolio`} data-i18n-de="Zur Übersicht" data-i18n-en="Overview">Zur Übersicht</a>
+          <button class="nav-toggle" type="button" data-language-toggle aria-label="Sprache wechseln" aria-pressed="false">EN</button>
+          <button class="nav-toggle nav-toggle-icon" type="button" data-theme-toggle aria-label="Light Mode aktivieren" aria-pressed="false">☼</button>
+        </div>
       ) : (
         <>
           <ul class="nav-links" id="primary-navigation">
-            <li><a href="#portfolio">Portfolio</a></li>
-            <li><a href="#about">Profil</a></li>
-            <li><a href="#contact">Kontakt</a></li>
+            <li><a href="#portfolio" data-i18n-de="Kunden" data-i18n-en="Clients">Kunden</a></li>
+            <li><a href="#about" data-i18n-de="Moritz" data-i18n-en="Moritz">Moritz</a></li>
+            <li><a href="#contact" data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a></li>
           </ul>
-          <button class="hamburger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="primary-navigation">
-            <span class="bar" aria-hidden="true"></span>
-            <span class="bar" aria-hidden="true"></span>
-            <span class="bar" aria-hidden="true"></span>
-          </button>
+          <div class="nav-actions">
+            <button class="nav-toggle" type="button" data-language-toggle aria-label="Sprache wechseln" aria-pressed="false">EN</button>
+            <button class="nav-toggle nav-toggle-icon" type="button" data-theme-toggle aria-label="Light Mode aktivieren" aria-pressed="false">☼</button>
+            <button class="hamburger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="primary-navigation">
+              <span class="bar" aria-hidden="true"></span>
+              <span class="bar" aria-hidden="true"></span>
+              <span class="bar" aria-hidden="true"></span>
+            </button>
+          </div>
         </>
       )
     }

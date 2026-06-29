@@ -24,6 +24,7 @@ const withBase = (path: string) => {
 };
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
+const siteName = "Moritz Barz Portfolio";
 ---
 
 <!doctype html>
@@ -33,6 +34,8 @@ const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+    <meta name="color-scheme" content="dark light" />
     <script is:inline>
       (() => {
         const theme = localStorage.getItem("theme") || "dark";
@@ -44,15 +47,18 @@ const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#030303" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="de_DE" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={absoluteImage} />
+    <meta property="og:image:alt" content={title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteImage} />
-    <meta name="robots" content="index, follow" />
+    <meta name="twitter:image:alt" content={title} />
     <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-icon-180x180.png`} />
     <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
     <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />

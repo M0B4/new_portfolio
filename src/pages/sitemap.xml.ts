@@ -4,7 +4,7 @@ import { getClientGroups } from "../lib/clients";
 export async function GET({ site }: { site?: URL }) {
   const base = site?.toString().replace(/\/$/, "") ?? "https://moritzbarz.de";
   const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
-  const clients = getClientGroups(projects);
+  const clients = getClientGroups(projects, true);
   const urls = [
     { path: "", priority: "1.0" },
     ...clients.map((client) => ({ path: `kunden/${client.profile.slug}/`, priority: "0.8" })),

@@ -10,6 +10,12 @@ type ClientProfile = {
   intro: string;
 };
 
+export type ClientGroup = {
+  profile: ClientProfile;
+  projects: WorkProject[];
+  order: number;
+};
+
 export const clientProfiles: Record<string, ClientProfile> = {
   "Wacken Open Air": {
     slug: "wacken-open-air",
@@ -47,11 +53,25 @@ export const clientProfiles: Record<string, ClientProfile> = {
     intro: "Für Full Metal Army entstehen Arbeiten, die Zugehörigkeit sichtbar machen und als Erinnerungsstück über den Einsatzmoment hinaus funktionieren.",
   },
   "Headbangers Night": {
-    slug: "headbangers-night",
-    label: "Headbangers Night",
+    slug: "metalheads-remigiusland",
+    label: "Metalheads Remigiusland",
     logo: "images/logos/metalheads.webp",
-    summary: "Posterdesign für Clubnächte mit klassischer Metal-Wucht.",
-    intro: "Für Headbangers Night zählt direkte Wirkung: ein Motiv, das laut genug für die Szene ist und trotzdem sauber als Veranstaltungskommunikation funktioniert.",
+    summary: "Eventgrafik und Posterdesign für Metalheads Remigiusland und Headbangers Night.",
+    intro: "Für Metalheads Remigiusland zählt direkte Wirkung: Motive für Clubnächte und Szenekommunikation, die laut genug für Metal sind und trotzdem sauber informieren.",
+  },
+  "Metal Merch": {
+    slug: "metal-merch",
+    label: "Metal Merch",
+    logo: "images/logos/metalmerch.webp",
+    summary: "Merchandise-Kontext für Motive, Produkte und Szene-Artikel.",
+    intro: "Metal Merch steht für Arbeiten rund um Produkte, Motive und Merchandise mit klarer Szene-Anbindung.",
+  },
+  "Full Metal Mayrhofen": {
+    slug: "full-metal-mayrhofen",
+    label: "Full Metal Mayrhofen",
+    logo: "images/logos/fmm.webp",
+    summary: "Festival- und Eventkontext mit alpiner Metal-Kante.",
+    intro: "Full Metal Mayrhofen steht für Festival- und Szenekommunikation mit klarer Heavy-Metal-Prägung.",
   },
 };
 
@@ -71,18 +91,25 @@ export const getClientProfile = (client: string): ClientProfile =>
     intro: "Eine kuratierte Auswahl von Arbeiten mit klarem Fokus auf Wirkung, Lesbarkeit und saubere Umsetzung.",
   };
 
-export const getClientGroups = (projects: WorkProject[]) =>
-  Object.values(
-    projects.reduce<Record<string, { profile: ClientProfile; projects: WorkProject[]; order: number }>>((groups, project) => {
-      const profile = getClientProfile(project.data.client);
-      groups[profile.slug] ??= { profile, projects: [], order: project.data.order };
-      groups[profile.slug].projects.push(project);
-      groups[profile.slug].order = Math.min(groups[profile.slug].order, project.data.order);
-      return groups;
-    }, {}),
-  )
+export const getClientGroups = (projects: WorkProject[], includeEmpty = false) => {
+  const groups = projects.reduce<Record<string, ClientGroup>>((groups, project) => {
+    const profile = getClientProfile(project.data.client);
+    groups[profile.slug] ??= { profile, projects: [], order: project.data.order };
+    groups[profile.slug].projects.push(project);
+    groups[profile.slug].order = Math.min(groups[profile.slug].order, project.data.order);
+    return groups;
+  }, {});
+
+  if (includeEmpty) {
+    Object.values(clientProfiles).forEach((profile, index) => {
+      groups[profile.slug] ??= { profile, projects: [], order: 900 + index };
+    });
+  }
+
+  return Object.values(groups)
     .map((group) => ({
       ...group,
       projects: group.projects.sort((a, b) => a.data.order - b.data.order),
     }))
     .sort((a, b) => a.order - b.order);
+};

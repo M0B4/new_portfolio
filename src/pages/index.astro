@@ -1,13 +1,52 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
+import { categoryLabels, type ProjectCategory } from "../data/site";
 import { getClientGroups } from "../lib/clients";
 
 const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
-const clientGroups = getClientGroups(projects);
+const clientGroups = getClientGroups(projects, true);
 const base = import.meta.env.BASE_URL;
 const clientUrl = (slug: string) => `${base}kunden/${slug}/`;
+const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
+const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
+  poster: {
+    de: "Plakative Motive für Bühne, Club und Festival.",
+    en: "Bold visuals for stages, clubs and festivals.",
+  },
+  clothing: {
+    de: "Merchandise, der als Motiv und Produkt funktioniert.",
+    en: "Merchandise that works as both artwork and product.",
+  },
+  event: {
+    de: "Auftritte mit klarer Hierarchie und Szene-Energie.",
+    en: "Event visuals with clear hierarchy and scene energy.",
+  },
+  "3d-print": {
+    de: "Funktionale Objekte für echte Nutzung.",
+    en: "Functional objects for real use.",
+  },
+  various: {
+    de: "Sonderformate zwischen Grafik, Objekt und Anwendung.",
+    en: "Special formats between graphics, objects and use.",
+  },
+};
+const categoryEntries = categoryOrder
+  .map((category) => {
+    const project = projects.find((item) => item.data.category === category);
+    return project
+      ? {
+          category,
+          project,
+          label: categoryLabels[category],
+          intro: categoryIntros[category],
+          href: `${base}work/${project.id.replace(/\.md$/, "")}/`,
+        }
+      : null;
+  })
+  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 
 const homeStructuredData = {
   "@context": "https://schema.org",
@@ -26,22 +65,23 @@ const homeStructuredData = {
   <main class="home">
     <section class="home-hero" aria-labelledby="hero-title">
       <div class="container hero-layout">
-        <div class="hero-panel">
-          <p class="kicker" data-i18n-de="Portfolio für Szene, Bühne und Einsatz" data-i18n-en="Portfolio for scene, stage and real use">Portfolio für Szene, Bühne und Einsatz</p>
-          <div class="hero-copy">
-            <h1 id="hero-title" data-i18n-de="Arbeiten, die erst wirken und dann bleiben." data-i18n-en="Work that hits first and stays after.">Arbeiten, die erst wirken und dann bleiben.</h1>
-            <p data-i18n-de="Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert." data-i18n-en="Posters, merch, event graphics and functional 3D objects with a hard edge, clear hierarchy and real use.">Poster, Merch, Eventgrafik und funktionale 3D-Objekte mit harter Kante, klarer Hierarchie und echtem Nutzwert.</p>
-          </div>
-          <div class="hero-actions" aria-label="Schnelleinstieg">
-            <a class="btn" href="#portfolio" data-i18n-de="Portfolio ansehen" data-i18n-en="View portfolio">Portfolio ansehen</a>
-            <a class="btn btn-secondary" href="#contact" data-i18n-de="Projekt anfragen" data-i18n-en="Start a project">Projekt anfragen</a>
-          </div>
+        <div class="hero-panel hero-panel-plain">
+          <p class="kicker" data-i18n-de="Moritz Barz / Portfolio" data-i18n-en="Moritz Barz / Portfolio">Moritz Barz / Portfolio</p>
+          <h1 id="hero-title" data-i18n-de="Grafik, Merch und Objekte für laute Kontexte." data-i18n-en="Graphics, merch and objects for loud contexts.">Grafik, Merch und Objekte für laute Kontexte.</h1>
+          <p data-i18n-de="Visuelle Arbeiten für Festivals, Events, Szene-Marken und funktionale Anwendungen: rau im Charakter, sauber in der Umsetzung." data-i18n-en="Visual work for festivals, events, scene brands and functional use: rough in character, precise in execution.">Visuelle Arbeiten für Festivals, Events, Szene-Marken und funktionale Anwendungen: rau im Charakter, sauber in der Umsetzung.</p>
         </div>
       </div>
     </section>
 
-    <section id="portfolio" class="section portfolio-section">
+    <section id="portfolio" class="section portfolio-section" aria-labelledby="client-title">
       <div class="container">
+        <div class="section-heading section-heading-split">
+          <div>
+            <p class="kicker" data-i18n-de="Kunden" data-i18n-en="Clients">Kunden</p>
+            <h2 id="client-title" data-i18n-de="Arbeiten nach Kontext." data-i18n-en="Work by context.">Arbeiten nach Kontext.</h2>
+          </div>
+          <p data-i18n-de="Festival, Clubnacht, Einsatzort oder Community: Der Einstieg führt direkt zu den passenden Projekten." data-i18n-en="Festival, club night, field use or community: each entry leads straight to the matching projects.">Festival, Clubnacht, Einsatzort oder Community: Der Einstieg führt direkt zu den passenden Projekten.</p>
+        </div>
         <div class="client-grid" aria-label="Kunden und Kontexte">
           {clientGroups.map((group, index) => {
             return (
@@ -57,13 +97,31 @@ const homeStructuredData = {
       </div>
     </section>
 
-    <section id="about" class="section statement-section">
+    <section class="section discipline-section" aria-labelledby="discipline-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="kicker" data-i18n-de="Arbeitsarten" data-i18n-en="Fields">Arbeitsarten</p>
+          <h2 id="discipline-title" data-i18n-de="Ein Portfolio, mehrere Formen." data-i18n-en="One portfolio, several forms.">Ein Portfolio, mehrere Formen.</h2>
+        </div>
+        <div class="discipline-grid">
+          {categoryEntries.map((entry) => (
+            <a class="discipline-card" href={entry.href} aria-label={`${entry.label} ansehen`}>
+              <Image src={entry.project.data.previewImage} alt="" widths={[520, 820]} sizes="(min-width: 900px) 20vw, 50vw" loading="lazy" decoding="async" />
+              <span>{entry.label}</span>
+              <p data-i18n-de={entry.intro.de} data-i18n-en={entry.intro.en}>{entry.intro.de}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section statement-section statement-section-compact">
       <div class="container statement-layout">
         <div class="statement-content">
           <p class="kicker" data-i18n-de="Profil" data-i18n-en="Profile">Profil</p>
-          <h2 data-i18n-de="Visuelle Arbeiten, die draußen funktionieren." data-i18n-en="Visual work built for the real world.">Visuelle Arbeiten, die draußen funktionieren.</h2>
+          <h2 data-i18n-de="Gestaltung mit Druck, Kante und Funktion." data-i18n-en="Design with impact, edge and function.">Gestaltung mit Druck, Kante und Funktion.</h2>
           <p>
-            <span data-i18n-de="Ich verbinde Heavy-Metal-Ästhetik mit klarer Informationshierarchie und sauberer Produktion. Entscheidend ist ein Auftritt, der Charakter hat und trotzdem lesbar, nutzbar und übergabefähig bleibt." data-i18n-en="I combine heavy metal aesthetics with clear information hierarchy and clean production. The goal is work with character that still stays readable, usable and ready to hand over.">Ich verbinde Heavy-Metal-Ästhetik mit klarer Informationshierarchie und sauberer Produktion. Entscheidend ist ein Auftritt, der Charakter hat und trotzdem lesbar, nutzbar und übergabefähig bleibt.</span>
+            <span data-i18n-de="Ich gestalte für Orte, an denen Motive schnell greifen müssen: auf Stoff, Plakat, Bühne, Ausrüstung und im Feed." data-i18n-en="I design for places where visuals need to hit fast: on fabric, posters, stages, equipment and feeds.">Ich gestalte für Orte, an denen Motive schnell greifen müssen: auf Stoff, Plakat, Bühne, Ausrüstung und im Feed.</span>
           </p>
         </div>
         <figure class="statement-portrait" aria-hidden="true">

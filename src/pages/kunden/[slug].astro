@@ -8,7 +8,7 @@ import { getClientGroups } from "../../lib/clients";
 
 export async function getStaticPaths() {
   const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
-  const clientGroups = getClientGroups(projects);
+  const clientGroups = getClientGroups(projects, true);
 
   return clientGroups.map((group) => ({
     params: { slug: group.profile.slug },
@@ -31,7 +31,7 @@ const clientStructuredData = {
 };
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? cover.data.heroImage.src} structuredData={clientStructuredData}>
+<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? cover?.data.heroImage.src ?? "images/header.jpg"} structuredData={clientStructuredData}>
   <Header simple />
 
   <main>
@@ -39,7 +39,7 @@ const clientStructuredData = {
       <img class="client-hero-logo-bg" src={`${base}${group.profile.logo}`} alt="" loading="eager" decoding="async" aria-hidden="true" />
       <div class="container client-hero-inner">
         <div class="client-hero-copy">
-          <p class="eyebrow">{categories.join(" / ")}</p>
+          <p class="eyebrow">{categories.length > 0 ? categories.join(" / ") : "Portfolio"}</p>
           <h1>{group.profile.label}</h1>
           <p>{group.profile.intro}</p>
         </div>
@@ -48,9 +48,15 @@ const clientStructuredData = {
 
     <section class="section client-work-section">
       <div class="container">
-        <div class="client-work-grid">
-          {group.projects.map((project) => <ProjectCard project={project} />)}
-        </div>
+        {
+          group.projects.length > 0 ? (
+            <div class="client-work-grid">
+              {group.projects.map((project) => <ProjectCard project={project} />)}
+            </div>
+          ) : (
+            <p class="client-empty-note" data-i18n-de="Arbeiten für diesen Kontext werden noch kuratiert." data-i18n-en="Work for this context is still being curated.">Arbeiten für diesen Kontext werden noch kuratiert.</p>
+          )
+        }
       </div>
     </section>
   </main>

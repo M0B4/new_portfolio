@@ -1,30 +1,36 @@
 ---
 import { Image } from "astro:assets";
-import type { CollectionEntry } from "astro:content";
 import { categoryLabels } from "../data/site";
+import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
-  project: CollectionEntry<"work">;
+  project: PortfolioProject;
 };
 
 const { project } = Astro.props;
-const data = project.data;
+const image = project.previewImage;
 ---
 
-<article class="project-card" data-category={data.category}>
+<article class="project-card" data-category={project.category}>
   <figure class="card-image">
-    <Image
-      src={data.previewImage}
-      alt={data.title}
-      widths={[420, 720]}
-      sizes="(min-width: 900px) 25vw, 50vw"
-      loading="lazy"
-      decoding="async"
-    />
+    {
+      typeof image === "string" ? (
+        <img src={image} alt={project.title} loading="lazy" decoding="async" />
+      ) : (
+        <Image
+          src={image}
+          alt={project.title}
+          widths={[420, 720]}
+          sizes="(min-width: 900px) 25vw, 50vw"
+          loading="lazy"
+          decoding="async"
+        />
+      )
+    }
   </figure>
   <div class="card-info">
-    <span>{categoryLabels[data.category]} / {data.year}</span>
-    <h3>{data.shortTitle}</h3>
-    <p>{data.summary}</p>
+    <span>{categoryLabels[project.category]} / {project.year}</span>
+    <h3>{project.shortTitle}</h3>
+    <p>{project.summary}</p>
   </div>
 </article>

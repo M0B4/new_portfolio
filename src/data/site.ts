@@ -1,4 +1,6 @@
-export type ProjectCategory = "event" | "poster" | "clothing" | "3d-print" | "various";
+import type { ProjectCategory } from "../lib/projects";
+
+export type { ProjectCategory };
 
 export const categoryLabels: Record<"all" | ProjectCategory, string> = {
   all: "Alle",

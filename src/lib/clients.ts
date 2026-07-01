@@ -1,8 +1,6 @@
-import type { CollectionEntry } from "astro:content";
+import type { PortfolioProject } from "./projects";
 
-export type WorkProject = CollectionEntry<"work">;
-
-type ClientProfile = {
+export type ClientProfile = {
   slug: string;
   label: string;
   logo?: string;
@@ -12,7 +10,7 @@ type ClientProfile = {
 
 export type ClientGroup = {
   profile: ClientProfile;
-  projects: WorkProject[];
+  projects: PortfolioProject[];
   order: number;
 };
 
@@ -91,12 +89,12 @@ export const getClientProfile = (client: string): ClientProfile =>
     intro: "Eine kuratierte Auswahl von Arbeiten mit klarem Fokus auf Wirkung, Lesbarkeit und saubere Umsetzung.",
   };
 
-export const getClientGroups = (projects: WorkProject[], includeEmpty = false) => {
+export const getClientGroups = (projects: PortfolioProject[], includeEmpty = false) => {
   const groups = projects.reduce<Record<string, ClientGroup>>((groups, project) => {
-    const profile = getClientProfile(project.data.client);
-    groups[profile.slug] ??= { profile, projects: [], order: project.data.order };
+    const profile = project.clientProfile ?? getClientProfile(project.client);
+    groups[profile.slug] ??= { profile, projects: [], order: project.order };
     groups[profile.slug].projects.push(project);
-    groups[profile.slug].order = Math.min(groups[profile.slug].order, project.data.order);
+    groups[profile.slug].order = Math.min(groups[profile.slug].order, project.order);
     return groups;
   }, {});
 
@@ -109,7 +107,7 @@ export const getClientGroups = (projects: WorkProject[], includeEmpty = false) =
   return Object.values(groups)
     .map((group) => ({
       ...group,
-      projects: group.projects.sort((a, b) => a.data.order - b.data.order),
+      projects: group.projects.sort((a, b) => a.order - b.order),
     }))
     .sort((a, b) => a.order - b.order);
 };

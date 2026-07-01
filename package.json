@@ -6,11 +6,17 @@
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro build",
-    "preview": "astro preview --host 127.0.0.1"
+    "preview": "astro preview --host 127.0.0.1",
+    "studio": "sanity dev",
+    "studio:build": "sanity build studio-dist"
   },
   "dependencies": {
     "@fontsource/saira-stencil-one": "^5.2.8",
+    "@sanity/client": "^7.23.0",
+    "@sanity/image-url": "^2.1.1",
     "@sarap422/font-dinish": "^1.0.6",
-    "astro": "^5.0.0"
+    "astro": "^5.0.0",
+    "sanity": "^6.3.0",
+    "styled-components": "^6.4.3"
   }
 }

@@ -1,13 +1,13 @@
-import { getCollection } from "astro:content";
 import { type ProjectCategory } from "../data/site";
 import { getClientGroups } from "../lib/clients";
+import { getPortfolioProjects } from "../lib/projects";
 
 export async function GET({ site }: { site?: URL }) {
   const base = site?.toString().replace(/\/$/, "") ?? "https://moritzbarz.de";
-  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  const projects = await getPortfolioProjects();
   const clients = getClientGroups(projects, true);
   const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
-  const categories = categoryOrder.filter((category) => projects.some((project) => project.data.category === category));
+  const categories = categoryOrder.filter((category) => projects.some((project) => project.category === category));
   const urls = [
     { path: "", priority: "1.0" },
     ...clients.map((client) => ({ path: `kunden/${client.profile.slug}/`, priority: "0.8" })),

@@ -1,10 +1,9 @@
 ---
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import { categoryLabels, type ProjectCategory } from "../../data/site";
+import { getPortfolioProjects, getProjectImageUrl, type PortfolioProject } from "../../lib/projects";
 
 const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
 const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
@@ -32,11 +31,11 @@ const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
 
 export async function getStaticPaths() {
   const staticCategoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
-  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  const projects = await getPortfolioProjects();
 
   return staticCategoryOrder
     .map((category) => {
-      const categoryProjects = projects.filter((project) => project.data.category === category);
+      const categoryProjects = projects.filter((project) => project.category === category);
       return categoryProjects.length
         ? {
             params: { category },
@@ -52,14 +51,14 @@ export async function getStaticPaths() {
 
 type Props = {
   category: ProjectCategory;
-  projects: CollectionEntry<"work">[];
+  projects: PortfolioProject[];
 };
 
 const { category, projects } = Astro.props;
 const origin = Astro.site ?? Astro.url.origin;
 const label = categoryLabels[category];
 const intro = categoryIntros[category];
-const preview = projects[0]?.data.previewImage.src;
+const preview = projects[0] ? getProjectImageUrl(projects[0], origin) : undefined;
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -72,8 +71,8 @@ const structuredData = {
     itemListElement: projects.map((project, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: project.data.title,
-      image: new URL(project.data.previewImage.src, origin).toString(),
+      name: project.title,
+      image: getProjectImageUrl(project, origin),
     })),
   },
 };

@@ -1,13 +1,13 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import { categoryLabels } from "../../data/site";
 import { getClientGroups } from "../../lib/clients";
+import { getPortfolioProjects, getProjectImageUrl } from "../../lib/projects";
 
 export async function getStaticPaths() {
-  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+  const projects = await getPortfolioProjects();
   const clientGroups = getClientGroups(projects, true);
 
   return clientGroups.map((group) => ({
@@ -19,7 +19,8 @@ export async function getStaticPaths() {
 const { group } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const origin = Astro.site ?? Astro.url.origin;
-const categories = [...new Set(group.projects.map((project) => categoryLabels[project.data.category]))];
+const assetUrl = (path?: string) => (!path ? "" : path.startsWith("http") ? path : `${base}${path}`);
+const categories = [...new Set(group.projects.map((project) => categoryLabels[project.category]))];
 const seoTitle = `${group.profile.label} | Arbeiten von Moritz Barz`;
 const seoDescription = group.profile.summary;
 const clientStructuredData = {
@@ -33,8 +34,8 @@ const clientStructuredData = {
     itemListElement: group.projects.map((project, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: project.data.title,
-      image: new URL(project.data.previewImage.src, origin).toString(),
+      name: project.title,
+      image: getProjectImageUrl(project, origin),
     })),
   },
 };
@@ -45,7 +46,7 @@ const clientStructuredData = {
 
   <main>
     <header class="client-hero">
-      <img class="client-hero-logo-bg" src={`${base}${group.profile.logo}`} alt="" loading="eager" decoding="async" aria-hidden="true" />
+      <img class="client-hero-logo-bg" src={assetUrl(group.profile.logo)} alt="" loading="eager" decoding="async" aria-hidden="true" />
       <div class="container client-hero-inner">
         <div class="client-hero-copy">
           <p class="eyebrow">{categories.length > 0 ? categories.join(" / ") : "Portfolio"}</p>

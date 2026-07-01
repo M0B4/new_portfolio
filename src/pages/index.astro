@@ -1,16 +1,17 @@
 ---
-import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import { categoryLabels, type ProjectCategory } from "../data/site";
 import { getClientGroups } from "../lib/clients";
+import { getPortfolioProjects } from "../lib/projects";
 
-const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+const projects = await getPortfolioProjects();
 const clientGroups = getClientGroups(projects, true);
 const base = import.meta.env.BASE_URL;
 const origin = Astro.site ?? Astro.url.origin;
 const clientUrl = (slug: string) => `${base}kunden/${slug}/`;
+const assetUrl = (path?: string) => (!path ? "" : path.startsWith("http") ? path : `${base}${path}`);
 const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
 const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
   poster: {
@@ -36,7 +37,7 @@ const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
 };
 const categoryEntries = categoryOrder
   .map((category) => {
-    const categoryProjects = projects.filter((item) => item.data.category === category);
+    const categoryProjects = projects.filter((item) => item.category === category);
     const previewProject = categoryProjects[0];
     return previewProject
       ? {
@@ -90,7 +91,7 @@ const homeStructuredData = {
             return (
               <a class="client-card" href={clientUrl(group.profile.slug)} aria-label={`${group.profile.label} Arbeiten ansehen`}>
                 <figure class="client-logo-mark" aria-hidden="true">
-                  <img src={`${base}${group.profile.logo}`} alt="" loading={index === 0 ? "eager" : "lazy"} decoding="async" fetchpriority={index === 0 ? "high" : "auto"} />
+                  <img src={assetUrl(group.profile.logo)} alt="" loading={index === 0 ? "eager" : "lazy"} decoding="async" fetchpriority={index === 0 ? "high" : "auto"} />
                 </figure>
                 <span class="client-card-label">{group.profile.label}</span>
               </a>
@@ -109,7 +110,13 @@ const homeStructuredData = {
         <div class="discipline-grid">
           {categoryEntries.map((entry) => (
             <a class="discipline-card" href={entry.href} aria-label={`${entry.label} ansehen`}>
-              <Image src={entry.project.data.previewImage} alt="" widths={[520, 820]} sizes="(min-width: 900px) 20vw, 50vw" loading="lazy" decoding="async" />
+              {
+                typeof entry.project.previewImage === "string" ? (
+                  <img src={entry.project.previewImage} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <Image src={entry.project.previewImage} alt="" widths={[520, 820]} sizes="(min-width: 900px) 20vw, 50vw" loading="lazy" decoding="async" />
+                )
+              }
               <span>{entry.label}</span>
               <p data-i18n-de={entry.intro.de} data-i18n-en={entry.intro.en}>{entry.intro.de}</p>
             </a>

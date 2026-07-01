@@ -3,4 +3,5 @@ dist/
 .astro/
 .sanity/
 studio-dist/
+.sanity*login*.log
 npm-debug.log*

@@ -49,8 +49,21 @@ export const client = defineType({
       name: "order",
       title: "Sortierung",
       type: "number",
+      description: "Steuert die Reihenfolge der Partner-Kacheln. Kleinere Zahlen erscheinen weiter vorne.",
       initialValue: 100,
     }),
+  ],
+  orderings: [
+    {
+      title: "Sortierung",
+      name: "orderAsc",
+      by: [{ field: "order", direction: "asc" }],
+    },
+    {
+      title: "Name",
+      name: "labelAsc",
+      by: [{ field: "label", direction: "asc" }],
+    },
   ],
   preview: {
     select: {

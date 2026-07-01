@@ -80,6 +80,7 @@ export const project = defineType({
       name: "order",
       title: "Sortierung",
       type: "number",
+      description: "Steuert die Reihenfolge in Kunden- und Kategorie-Rastern. Kleinere Zahlen erscheinen weiter vorne.",
       initialValue: 100,
     }),
     defineField({

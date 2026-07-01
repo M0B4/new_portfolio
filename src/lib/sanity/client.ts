@@ -31,6 +31,14 @@ type SanityProject = {
   clientProfile?: ClientProfile;
 };
 
+export type SiteSettings = {
+  title?: string;
+  description?: string;
+  accentDark?: string;
+  accentLight?: string;
+  backgroundTextureOpacity?: number;
+};
+
 const projectQuery = `*[_type == "project" && defined(slug.current)] | order(order asc) {
   _id,
   "slug": slug.current,
@@ -44,7 +52,8 @@ const projectQuery = `*[_type == "project" && defined(slug.current)] | order(ord
     "label": client->label,
     "logo": client->logo.asset->url,
     "summary": client->summary,
-    "intro": client->intro
+    "intro": client->intro,
+    "order": client->order
   },
   year,
   "previewImage": previewImage.asset->url,
@@ -72,4 +81,18 @@ export const fetchSanityProjects = async (): Promise<PortfolioProject[]> => {
       clientProfile: project.clientProfile,
     }))
     .sort((a, b) => a.order - b.order);
+};
+
+export const fetchSiteSettings = async (): Promise<SiteSettings | null> => {
+  if (!client) return null;
+
+  return client.fetch<SiteSettings | null>(
+    `*[_type == "siteSettings"][0]{
+      title,
+      description,
+      accentDark,
+      accentLight,
+      backgroundTextureOpacity
+    }`,
+  );
 };

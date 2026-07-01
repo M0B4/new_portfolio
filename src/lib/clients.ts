@@ -6,6 +6,7 @@ export type ClientProfile = {
   logo?: string;
   summary: string;
   intro: string;
+  order?: number;
 };
 
 export type ClientGroup = {
@@ -92,9 +93,9 @@ export const getClientProfile = (client: string): ClientProfile =>
 export const getClientGroups = (projects: PortfolioProject[], includeEmpty = false) => {
   const groups = projects.reduce<Record<string, ClientGroup>>((groups, project) => {
     const profile = project.clientProfile ?? getClientProfile(project.client);
-    groups[profile.slug] ??= { profile, projects: [], order: project.order };
+    groups[profile.slug] ??= { profile, projects: [], order: profile.order ?? project.order };
     groups[profile.slug].projects.push(project);
-    groups[profile.slug].order = Math.min(groups[profile.slug].order, project.order);
+    groups[profile.slug].order = profile.order ?? Math.min(groups[profile.slug].order, project.order);
     return groups;
   }, {});
 

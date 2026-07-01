@@ -18,6 +18,7 @@
   --stencil: "Saira Stencil One", "Dinish Condensed", "Arial Narrow", system-ui, sans-serif;
   --texture: url("/images/textures/scratched-metal-tile.webp");
   --texture-size: min(68vw, 820px) min(68vw, 820px);
+  --texture-opacity: 0.1;
 }
 
 :root[data-theme="light"] {
@@ -49,7 +50,7 @@ body {
   min-width: 320px;
   background:
     radial-gradient(ellipse at 50% 8%, rgba(255, 255, 255, 0.012) 0%, rgba(0, 0, 0, 0.72) 54%, rgba(0, 0, 0, 0.92) 100%),
-    linear-gradient(rgba(0, 0, 0, 0.86), rgba(0, 0, 0, 0.93)),
+    linear-gradient(rgb(0 0 0 / calc(0.97 - var(--texture-opacity) * 0.42)), rgb(0 0 0 / calc(0.99 - var(--texture-opacity) * 0.36))),
     var(--texture) left top / var(--texture-size) repeat fixed,
     var(--bg);
   color: var(--text);
@@ -61,7 +62,7 @@ body {
 :root[data-theme="light"] body {
   background:
     radial-gradient(ellipse at 50% 8%, rgba(255, 255, 255, 0.96) 0%, rgba(245, 242, 235, 0.93) 56%, rgba(236, 232, 223, 0.96) 100%),
-    linear-gradient(rgba(255, 255, 255, 0.94), rgba(245, 242, 235, 0.97)),
+    linear-gradient(rgb(255 255 255 / calc(0.98 - var(--texture-opacity) * 0.28)), rgb(245 242 235 / calc(0.99 - var(--texture-opacity) * 0.24))),
     var(--texture) left top / var(--texture-size) repeat fixed,
     var(--bg);
 }

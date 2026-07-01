@@ -3,6 +3,7 @@ import "@sarap422/font-dinish/font-face.css";
 import "@fontsource/saira-stencil-one/latin.css";
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import { fetchSiteSettings } from "../lib/sanity/client";
 
 type Props = {
   title?: string;
@@ -27,6 +28,19 @@ const withBase = (path: string) => {
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
 const siteName = "Moritz Barz Portfolio";
+const siteSettings = await fetchSiteSettings();
+const hexToRgb = (hex?: string) => {
+  const match = hex?.match(/^#([0-9a-fA-F]{6})$/);
+  if (!match) return null;
+  const value = Number.parseInt(match[1], 16);
+  return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
+};
+const accentDark = siteSettings?.accentDark?.match(/^#[0-9a-fA-F]{6}$/) ? siteSettings.accentDark : "#e1262f";
+const accentLight = siteSettings?.accentLight?.match(/^#[0-9a-fA-F]{6}$/) ? siteSettings.accentLight : "#b40f1d";
+const accentDarkRgb = hexToRgb(accentDark) ?? "225, 38, 47";
+const accentLightRgb = hexToRgb(accentLight) ?? "180, 15, 29";
+const textureOpacity = Math.min(Math.max(siteSettings?.backgroundTextureOpacity ?? 0.1, 0), 1);
+const settingsCss = `:root{--accent:${accentDark};--accent-soft:rgba(${accentDarkRgb},0.18);--accent-line:rgba(${accentDarkRgb},0.5);--texture-opacity:${textureOpacity};}:root[data-theme="light"]{--accent:${accentLight};--accent-soft:rgba(${accentLightRgb},0.14);--accent-line:rgba(${accentLightRgb},0.42);}`;
 ---
 
 <!doctype html>
@@ -70,6 +84,7 @@ const siteName = "Moritz Barz Portfolio";
     <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
     <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />
     <link rel="manifest" href={`${base}manifest.json`} />
+    <style is:inline set:html={settingsCss}></style>
     {
       structuredData && (
         <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

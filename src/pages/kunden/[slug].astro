@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 
 const { group } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const cover = group.projects[0];
+const origin = Astro.site ?? Astro.url.origin;
 const categories = [...new Set(group.projects.map((project) => categoryLabels[project.data.category]))];
 const seoTitle = `${group.profile.label} | Arbeiten von Moritz Barz`;
 const seoDescription = group.profile.summary;
@@ -27,12 +27,21 @@ const clientStructuredData = {
   "@type": "CollectionPage",
   name: `${group.profile.label} Arbeiten`,
   description: seoDescription,
-  url: new URL(`${base}kunden/${group.profile.slug}/`, Astro.site ?? Astro.url.origin),
+  url: new URL(`${base}kunden/${group.profile.slug}/`, origin).toString(),
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: group.projects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: project.data.title,
+      image: new URL(project.data.previewImage.src, origin).toString(),
+    })),
+  },
 };
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? cover?.data.heroImage.src ?? "images/header.jpg"} structuredData={clientStructuredData}>
-  <Header simple />
+<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? "images/header.jpg"} structuredData={clientStructuredData}>
+  <Header />
 
   <main>
     <header class="client-hero">

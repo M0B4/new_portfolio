@@ -9,6 +9,7 @@ import { getClientGroups } from "../lib/clients";
 const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
 const clientGroups = getClientGroups(projects, true);
 const base = import.meta.env.BASE_URL;
+const origin = Astro.site ?? Astro.url.origin;
 const clientUrl = (slug: string) => `${base}kunden/${slug}/`;
 const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
 const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
@@ -35,14 +36,15 @@ const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
 };
 const categoryEntries = categoryOrder
   .map((category) => {
-    const project = projects.find((item) => item.data.category === category);
-    return project
+    const categoryProjects = projects.filter((item) => item.data.category === category);
+    const previewProject = categoryProjects[0];
+    return previewProject
       ? {
           category,
-          project,
+          project: previewProject,
           label: categoryLabels[category],
           intro: categoryIntros[category],
-          href: `${base}work/${project.id.replace(/\.md$/, "")}/`,
+          href: `${base}kategorien/${category}/`,
         }
       : null;
   })
@@ -53,7 +55,8 @@ const homeStructuredData = {
   "@type": "ProfessionalService",
   name: "Moritz Barz",
   description: "Portfolio von Moritz Barz: Poster, Merchandise, Eventdesign und funktionale 3D-Prints.",
-  url: Astro.site?.toString(),
+  url: new URL(base, origin).toString(),
+  image: new URL(`${base}images/header.jpg`, origin).toString(),
   areaServed: "DE",
   serviceType: ["Poster Design", "Merchandise Design", "Event Design", "3D-Printing"],
 };
@@ -87,7 +90,7 @@ const homeStructuredData = {
             return (
               <a class="client-card" href={clientUrl(group.profile.slug)} aria-label={`${group.profile.label} Arbeiten ansehen`}>
                 <figure class="client-logo-mark" aria-hidden="true">
-                  <img src={`${base}${group.profile.logo}`} alt="" loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+                  <img src={`${base}${group.profile.logo}`} alt="" loading={index === 0 ? "eager" : "lazy"} decoding="async" fetchpriority={index === 0 ? "high" : "auto"} />
                 </figure>
                 <span class="client-card-label">{group.profile.label}</span>
               </a>
@@ -132,24 +135,4 @@ const homeStructuredData = {
 
   </main>
 
-  <script>
-    const hamburger = document.querySelector(".hamburger");
-    const navLinks = document.querySelector(".nav-links");
-
-    hamburger?.addEventListener("click", () => {
-      const isOpen = hamburger.classList.toggle("active");
-      navLinks?.classList.toggle("active", isOpen);
-      hamburger.setAttribute("aria-expanded", String(isOpen));
-      hamburger.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
-    });
-
-    navLinks?.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        hamburger?.classList.remove("active");
-        navLinks.classList.remove("active");
-        hamburger?.setAttribute("aria-expanded", "false");
-        hamburger?.setAttribute("aria-label", "Menü öffnen");
-      });
-    });
-  </script>
 </BaseLayout>

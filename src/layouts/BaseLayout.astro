@@ -1,4 +1,6 @@
 ---
+import "@sarap422/font-dinish/font-face.css";
+import "@fontsource/saira-stencil-one/latin.css";
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
 
@@ -34,8 +36,11 @@ const siteName = "Moritz Barz Portfolio";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="author" content="Moritz Barz" />
+    <meta name="application-name" content={siteName} />
     <meta name="robots" content="index, follow" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="format-detection" content="telephone=no" />
     <script is:inline>
       (() => {
         const theme = localStorage.getItem("theme") || "dark";
@@ -45,10 +50,12 @@ const siteName = "Moritz Barz Portfolio";
       })();
     </script>
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#030303" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050505" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ece8df" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -116,6 +123,25 @@ const siteName = "Moritz Barz Portfolio";
 
         document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
           button.addEventListener("click", () => applyTheme(getTheme() === "light" ? "dark" : "light"));
+        });
+
+        const hamburger = document.querySelector(".hamburger");
+        const navLinks = document.querySelector(".nav-links");
+
+        hamburger?.addEventListener("click", () => {
+          const isOpen = hamburger.classList.toggle("active");
+          navLinks?.classList.toggle("active", isOpen);
+          hamburger.setAttribute("aria-expanded", String(isOpen));
+          hamburger.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
+        });
+
+        navLinks?.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            hamburger?.classList.remove("active");
+            navLinks.classList.remove("active");
+            hamburger?.setAttribute("aria-expanded", "false");
+            hamburger?.setAttribute("aria-label", "Menü öffnen");
+          });
         });
       })();
     </script>

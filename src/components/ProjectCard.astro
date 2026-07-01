@@ -9,11 +9,9 @@ type Props = {
 
 const { project } = Astro.props;
 const data = project.data;
-const slug = project.id.replace(/\.md$/, "");
-const base = import.meta.env.BASE_URL;
 ---
 
-<a class="project-card" href={`${base}work/${slug}/`} data-category={data.category} aria-label={`${data.title} ansehen`}>
+<article class="project-card" data-category={data.category}>
   <figure class="card-image">
     <Image
       src={data.previewImage}
@@ -29,4 +27,4 @@ const base = import.meta.env.BASE_URL;
     <h3>{data.shortTitle}</h3>
     <p>{data.summary}</p>
   </div>
-</a>
+</article>

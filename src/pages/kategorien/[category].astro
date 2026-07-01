@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Header from "../../components/Header.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { categoryLabels, type ProjectCategory } from "../../data/site";
+
+const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
+const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
+  poster: {
+    de: "Plakative Motive für Bühne, Club und Festival.",
+    en: "Bold visuals for stages, clubs and festivals.",
+  },
+  clothing: {
+    de: "Merchandise, der als Motiv und Produkt funktioniert.",
+    en: "Merchandise that works as both artwork and product.",
+  },
+  event: {
+    de: "Auftritte mit klarer Hierarchie und Szene-Energie.",
+    en: "Event visuals with clear hierarchy and scene energy.",
+  },
+  "3d-print": {
+    de: "Funktionale Objekte für echte Nutzung.",
+    en: "Functional objects for real use.",
+  },
+  various: {
+    de: "Sonderformate zwischen Grafik, Objekt und Anwendung.",
+    en: "Special formats between graphics, objects and use.",
+  },
+};
+
+export async function getStaticPaths() {
+  const staticCategoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
+  const projects = (await getCollection("work")).sort((a, b) => a.data.order - b.data.order);
+
+  return staticCategoryOrder
+    .map((category) => {
+      const categoryProjects = projects.filter((project) => project.data.category === category);
+      return categoryProjects.length
+        ? {
+            params: { category },
+            props: {
+              category,
+              projects: categoryProjects,
+            },
+          }
+        : null;
+    })
+    .filter(Boolean);
+}
+
+type Props = {
+  category: ProjectCategory;
+  projects: CollectionEntry<"work">[];
+};
+
+const { category, projects } = Astro.props;
+const origin = Astro.site ?? Astro.url.origin;
+const label = categoryLabels[category];
+const intro = categoryIntros[category];
+const preview = projects[0]?.data.previewImage.src;
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: `${label} - Moritz Barz Portfolio`,
+  description: `${label} Arbeiten von Moritz Barz.`,
+  url: Astro.url.toString(),
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: projects.map((project, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: project.data.title,
+      image: new URL(project.data.previewImage.src, origin).toString(),
+    })),
+  },
+};
+---
+
+<BaseLayout title={`${label} - Moritz Barz`} description={`${label} Arbeiten von Moritz Barz.`} image={preview ?? "images/header.jpg"} structuredData={structuredData}>
+  <Header />
+
+  <main>
+    <section class="client-hero category-hero" aria-labelledby="category-title">
+      <div class="container client-hero-inner">
+        <div class="client-hero-copy">
+          <p class="eyebrow" data-i18n-de="Arbeitsart" data-i18n-en="Field">Arbeitsart</p>
+          <h1 id="category-title">{label}</h1>
+          <p data-i18n-de={intro.de} data-i18n-en={intro.en}>{intro.de}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section client-work-section category-work-section" aria-label={`${label} Arbeiten`}>
+      <div class="container">
+        <div class="client-work-grid">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

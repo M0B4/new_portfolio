@@ -3,40 +3,31 @@ type Props = {
   simple?: boolean;
 };
 
-const { simple = false } = Astro.props;
+Astro.props satisfies Props;
 const base = import.meta.env.BASE_URL;
+const normalizedPath = Astro.url.pathname.replace(/\/+$/, "/");
+const isHome = normalizedPath === "/" || normalizedPath === base;
+const sectionHref = (hash: string) => (isHome ? hash : `${base}${hash}`);
 ---
 
 <nav class="navbar" aria-label="Hauptnavigation">
   <div class="nav-container">
-    <a href={simple ? `${base}#portfolio` : base} class="logo" aria-label="Moritz Barz Portfolio">
+    <a href={base} class="logo" aria-label="Moritz Barz Portfolio">
       MORITZ<span>BARZ</span>
     </a>
-    {
-      simple ? (
-        <div class="nav-actions">
-          <a class="back-link" href={`${base}#portfolio`} data-i18n-de="Zur Übersicht" data-i18n-en="Overview">Zur Übersicht</a>
-          <button class="nav-toggle" type="button" data-language-toggle aria-label="Sprache wechseln" aria-pressed="false">EN</button>
-          <button class="nav-toggle nav-toggle-icon" type="button" data-theme-toggle aria-label="Light Mode aktivieren" aria-pressed="false">☼</button>
-        </div>
-      ) : (
-        <>
-          <ul class="nav-links" id="primary-navigation">
-            <li><a href="#portfolio" data-i18n-de="Kunden" data-i18n-en="Clients">Kunden</a></li>
-            <li><a href="#about" data-i18n-de="Moritz" data-i18n-en="Moritz">Moritz</a></li>
-            <li><a href="#contact" data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a></li>
-          </ul>
-          <div class="nav-actions">
-            <button class="nav-toggle" type="button" data-language-toggle aria-label="Sprache wechseln" aria-pressed="false">EN</button>
-            <button class="nav-toggle nav-toggle-icon" type="button" data-theme-toggle aria-label="Light Mode aktivieren" aria-pressed="false">☼</button>
-            <button class="hamburger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="primary-navigation">
-              <span class="bar" aria-hidden="true"></span>
-              <span class="bar" aria-hidden="true"></span>
-              <span class="bar" aria-hidden="true"></span>
-            </button>
-          </div>
-        </>
-      )
-    }
+    <ul class="nav-links" id="primary-navigation">
+      <li><a href={sectionHref("#portfolio")} data-i18n-de="Portfolio" data-i18n-en="Portfolio">Portfolio</a></li>
+      <li><a href={sectionHref("#about")} data-i18n-de="About Me" data-i18n-en="About Me">About Me</a></li>
+      <li><a href={sectionHref("#contact")} data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-toggle" type="button" data-language-toggle aria-label="Sprache wechseln" aria-pressed="false">EN</button>
+      <button class="nav-toggle nav-toggle-icon" type="button" data-theme-toggle aria-label="Light Mode aktivieren" aria-pressed="false">☼</button>
+      <button class="hamburger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="primary-navigation">
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+        <span class="bar" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </nav>

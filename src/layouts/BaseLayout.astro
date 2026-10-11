@@ -1,8 +1,9 @@
----
+﻿---
 import "@sarap422/font-dinish/font-face.css";
 import "@fontsource/saira-stencil-one/latin.css";
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import { assetUrl } from "../lib/url";
 import { fetchSiteSettings } from "../lib/sanity/client";
 
 type Props = {
@@ -20,13 +21,8 @@ const {
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
-const withBase = (path: string) => {
-  if (path.startsWith("http")) return path;
-  if (path.startsWith(base)) return path;
-  return `${base}${path.replace(/^\/+/, "")}`;
-};
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
-const absoluteImage = new URL(withBase(image), Astro.site ?? Astro.url.origin);
+const absoluteImage = new URL(assetUrl(image), Astro.site ?? Astro.url.origin);
 const siteName = "Moritz Barz Portfolio";
 const siteSettings = await fetchSiteSettings();
 const hexToRgb = (hex?: string) => {
@@ -63,7 +59,9 @@ const settingsCss = `:root{--accent:${accentDark};--accent-soft:rgba(${accentDar
         document.documentElement.dataset.language = language;
       })();
     </script>
-    <link rel="canonical" href={canonical} />
+        <link rel="canonical" href={canonical} />
+    <link rel="alternate" href={canonical} hreflang="de" />
+    <link rel="alternate" href={canonical} hreflang="x-default" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050505" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ece8df" />
     <meta property="og:type" content="website" />
@@ -91,7 +89,8 @@ const settingsCss = `:root{--accent:${accentDark};--accent-soft:rgba(${accentDar
       )
     }
   </head>
-  <body>
+    <body>
+    <a href="#main" class="skip-link" data-i18n-de="Zum Inhalt springen" data-i18n-en="Skip to content">Zum Inhalt springen</a>
     <slot />
     <Footer />
     <script is:inline>

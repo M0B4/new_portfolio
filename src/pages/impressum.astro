@@ -2,27 +2,41 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 
+const base = import.meta.env.BASE_URL;
 const title = "Impressum | Moritz Barz";
 const description = "Impressum der Portfolio-Website von Moritz Barz.";
 ---
-
+<!-- TODO: Alle Platzhalter mit Ihren echten Daten ersetzen (§ 5 DDG) -->
 <BaseLayout title={title} description={description}>
-  <Header simple />
+  <Header />
 
-  <main class="legal-page">
+  <main id="main" class="legal-page">
     <section class="section">
       <div class="container legal-layout">
         <p class="kicker">Impressum</p>
         <div class="legal-content">
           <h1>Angaben gemäß § 5 DDG</h1>
           <p>Moritz Barz</p>
-          <p class="legal-muted">Adresse und weitere Pflichtangaben bitte vor Veröffentlichung ergänzen.</p>
+          <!-- TODO: Straße, PLZ, Ort ergänzen -->
+          <p class="legal-muted">Straße, 12345 Stadt</p>
+
+          <h2>Vertreten durch</h2>
+          <p>Moritz Barz</p>
 
           <h2>Kontakt</h2>
           <p>Kontaktaufnahme über das Formular auf der Startseite.</p>
 
           <h2>Verantwortlich für den Inhalt</h2>
-          <p>Moritz Barz</p>
+          <p>Moritz Barz, dort, wo der Auftritt erfolgt.</p>
+
+          <h2>Umsatzsteuer</h2>
+          <!-- TODO: ggf. Umsatzsteueridentifikationsnummer gemäß § 27a UStG eintragen -->
+          <p class="legal-muted">Umsatzsteueridentifikationsnummer: wird ergänzt</p>
+
+          <h2>Datenschutz</h2>
+          <p>
+            <a href={`${base}datenschutz/`} data-i18n-de="Datenschutzerklärung" data-i18n-en="Privacy policy">Datenschutzerklärung</a>
+          </p>
         </div>
       </div>
     </section>

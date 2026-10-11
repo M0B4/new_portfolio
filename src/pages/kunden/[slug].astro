@@ -1,10 +1,11 @@
----
+﻿---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import { categoryLabels } from "../../data/site";
 import { getClientGroups } from "../../lib/clients";
 import { getPortfolioProjects, getProjectImageUrl } from "../../lib/projects";
+import { assetUrl } from "../../lib/url";
 
 export async function getStaticPaths() {
   const projects = await getPortfolioProjects();
@@ -19,7 +20,6 @@ export async function getStaticPaths() {
 const { group } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const origin = Astro.site ?? Astro.url.origin;
-const assetUrl = (path?: string) => (!path ? "" : path.startsWith("http") ? path : `${base}${path}`);
 const categories = [...new Set(group.projects.map((project) => categoryLabels[project.category]))];
 const seoTitle = `${group.profile.label} | Arbeiten von Moritz Barz`;
 const seoDescription = group.profile.summary;
@@ -44,9 +44,9 @@ const clientStructuredData = {
 <BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? "images/header.jpg"} structuredData={clientStructuredData}>
   <Header />
 
-  <main>
+    <main id="main">
     <header class="client-hero">
-      <img class="client-hero-logo-bg" src={assetUrl(group.profile.logo)} alt="" loading="eager" decoding="async" aria-hidden="true" />
+          <img class="client-hero-logo-bg" src={assetUrl(group.profile.logo)} alt="" loading="lazy" decoding="async" aria-hidden="true" />
       <div class="container client-hero-inner">
         <div class="client-hero-copy">
           <p class="eyebrow">{categories.length > 0 ? categories.join(" / ") : "Portfolio"}</p>

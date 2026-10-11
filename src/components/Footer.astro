@@ -11,7 +11,7 @@ const base = import.meta.env.BASE_URL;
       <h2 data-i18n-de="Projekt anfragen" data-i18n-en="Start a project">Projekt anfragen</h2>
       <p data-i18n-de="Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung." data-i18n-en="A short context is enough. I will get back with a clear assessment.">Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung.</p>
     </div>
-    <form class="contact-form" name="contact" method="POST" action={formspreeEndpoint}>
+        <form id="contact-form" class="contact-form" name="contact" method="POST" action={formspreeEndpoint} novalidate>
       <label for="footer-name">
         <span data-i18n-de="Name / Brand" data-i18n-en="Name / Brand">Name / Brand</span>
         <input id="footer-name" name="name" type="text" autocomplete="name" required />
@@ -26,14 +26,47 @@ const base = import.meta.env.BASE_URL;
       </label>
       <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" />
       <input type="hidden" name="_subject" value="Neue Projektanfrage über moritzbarz.de" />
-      <button type="submit" class="btn" data-i18n-de="Senden" data-i18n-en="Send">Senden</button>
+            <div class="contact-actions">
+        <button type="submit" class="btn" data-i18n-de="Senden" data-i18n-en="Send">Senden</button>
+        <p id="contact-form-status" class="form-status" role="status" aria-live="polite"></p>
+      </div>
     </form>
+    <script is:inline>
+      (() => {
+        const form = document.getElementById("contact-form");
+        if (!form) return;
+        const status = document.getElementById("contact-form-status");
+        const submit = form.querySelector("[type=submit]");
+        const texts = (document.documentElement.dataset.language === "en")
+          ? { sending: "Sending…", ok: "Message sent. I will get back to you soon.", bad: "Something went wrong. Please try again." }
+          : { sending: "Wird gesendet…", ok: "Nachricht gesendet. Ich melde mich bald.", bad: "Leider ein Fehler beim Senden. Bitte erneut versuchen." };
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (submit) submit.disabled = true;
+          status.textContent = texts.sending;
+          try {
+            const payload = Object.fromEntries(new FormData(form).entries());
+            const res = await fetch(form.action || window.location.href, {
+              method: "POST",
+              headers: { Accept: "application/json", "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+            if (res.ok) { form.reset(); status.textContent = texts.ok; }
+            else { status.textContent = texts.bad; }
+          } catch {
+            status.textContent = texts.bad;
+          }
+          if (submit) submit.disabled = false;
+        });
+      })();
+    </script>
   </div>
   <div class="container footer-meta">
     <span>MORITZ<span>BARZ</span></span>
     <nav aria-label="Footer">
       <a href={`${base}#contact`} data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a>
-      <a href={`${base}impressum/`} data-i18n-de="Impressum" data-i18n-en="Legal notice">Impressum</a>
+            <a href={`${base}impressum/`} data-i18n-de="Impressum" data-i18n-en="Legal notice">Impressum</a>
+      <a href={`${base}datenschutz/`} data-i18n-de="Datenschutz" data-i18n-en="Privacy">Datenschutz</a>
     </nav>
   </div>
 </footer>

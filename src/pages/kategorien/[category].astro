@@ -1,36 +1,12 @@
----
+﻿---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Header from "../../components/Header.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
-import { categoryLabels, type ProjectCategory } from "../../data/site";
+import { categoryLabels, categoryIntros, categoryOrder, type ProjectCategory } from "../../data/site";
 import { getPortfolioProjects, getProjectImageUrl, type PortfolioProject } from "../../lib/projects";
 
-const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
-const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
-  poster: {
-    de: "Plakative Motive für Bühne, Club und Festival.",
-    en: "Bold visuals for stages, clubs and festivals.",
-  },
-  clothing: {
-    de: "Merchandise, der als Motiv und Produkt funktioniert.",
-    en: "Merchandise that works as both artwork and product.",
-  },
-  event: {
-    de: "Auftritte mit klarer Hierarchie und Szene-Energie.",
-    en: "Event visuals with clear hierarchy and scene energy.",
-  },
-  "3d-print": {
-    de: "Funktionale Objekte für echte Nutzung.",
-    en: "Functional objects for real use.",
-  },
-  various: {
-    de: "Sonderformate zwischen Grafik, Objekt und Anwendung.",
-    en: "Special formats between graphics, objects and use.",
-  },
-};
-
 export async function getStaticPaths() {
-  const staticCategoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
+  const staticCategoryOrder = categoryOrder;
   const projects = await getPortfolioProjects();
 
   return staticCategoryOrder
@@ -81,7 +57,7 @@ const structuredData = {
 <BaseLayout title={`${label} - Moritz Barz`} description={`${label} Arbeiten von Moritz Barz.`} image={preview ?? "images/header.jpg"} structuredData={structuredData}>
   <Header />
 
-  <main>
+    <main id="main">
     <section class="client-hero category-hero" aria-labelledby="category-title">
       <div class="container client-hero-inner">
         <div class="client-hero-copy">

@@ -2,8 +2,9 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
-import { categoryLabels, type ProjectCategory } from "../data/site";
+import { categoryLabels, categoryIntros, categoryOrder, type ProjectCategory } from "../data/site";
 import { getClientGroups } from "../lib/clients";
+import { assetUrl } from "../lib/url";
 import { getPortfolioProjects } from "../lib/projects";
 
 const projects = await getPortfolioProjects();
@@ -11,30 +12,7 @@ const clientGroups = getClientGroups(projects, true);
 const base = import.meta.env.BASE_URL;
 const origin = Astro.site ?? Astro.url.origin;
 const clientUrl = (slug: string) => `${base}kunden/${slug}/`;
-const assetUrl = (path?: string) => (!path ? "" : path.startsWith("http") ? path : `${base}${path}`);
-const categoryOrder: ProjectCategory[] = ["poster", "clothing", "event", "3d-print", "various"];
-const categoryIntros: Record<ProjectCategory, { de: string; en: string }> = {
-  poster: {
-    de: "Plakative Motive für Bühne, Club und Festival.",
-    en: "Bold visuals for stages, clubs and festivals.",
-  },
-  clothing: {
-    de: "Merchandise, der als Motiv und Produkt funktioniert.",
-    en: "Merchandise that works as both artwork and product.",
-  },
-  event: {
-    de: "Auftritte mit klarer Hierarchie und Szene-Energie.",
-    en: "Event visuals with clear hierarchy and scene energy.",
-  },
-  "3d-print": {
-    de: "Funktionale Objekte für echte Nutzung.",
-    en: "Functional objects for real use.",
-  },
-  various: {
-    de: "Sonderformate zwischen Grafik, Objekt und Anwendung.",
-    en: "Special formats between graphics, objects and use.",
-  },
-};
+// categoryOrder, categoryIntros and assetUrl are imported from ../data/site and ../lib/url
 const categoryEntries = categoryOrder
   .map((category) => {
     const categoryProjects = projects.filter((item) => item.category === category);
@@ -66,7 +44,7 @@ const homeStructuredData = {
 <BaseLayout structuredData={homeStructuredData}>
   <Header />
 
-  <main class="home">
+    <main id="main" class="home">
     <section class="home-hero" aria-labelledby="hero-title">
       <div class="container hero-layout">
         <div class="hero-panel hero-panel-plain">

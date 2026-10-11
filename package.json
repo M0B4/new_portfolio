@@ -16,7 +16,10 @@
     "@sanity/image-url": "^2.1.1",
     "@sarap422/font-dinish": "^1.0.6",
     "astro": "^5.0.0",
-    "sanity": "^6.3.0",
-    "styled-components": "^6.4.3"
+    "sanity": "^6.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^5.9.3"
   }
 }

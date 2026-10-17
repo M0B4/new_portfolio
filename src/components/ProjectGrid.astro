@@ -15,9 +15,11 @@ type Props = {
   /** Render the lightbox dialog. Pages with several grids render it only once. */
   lightbox?: boolean;
   eagerCount?: number;
+  /** First image is the likely LCP element (pages without a hero image). */
+  priorityFirst?: boolean;
 };
 
-const { projects, categories, lang, filterable = false, columns = 3, lightbox = true, eagerCount = 3 } = Astro.props;
+const { projects, categories, lang, filterable = false, columns = 3, lightbox = true, eagerCount = 4, priorityFirst = false } = Astro.props;
 const ui = t(lang);
 const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
 const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
@@ -49,6 +51,7 @@ const sizes = columns === 2 ? "(min-width: 820px) 50vw, 100vw" : "(min-width: 82
           lang={lang}
           categoryLabel={labelFor(project.category)}
           eager={index < eagerCount}
+          priority={priorityFirst && index === 0}
           sizes={sizes}
         />
       ))

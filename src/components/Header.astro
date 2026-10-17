@@ -18,8 +18,8 @@ const sectionHref = (hash: string) => (isHome ? hash : `${home}${hash}`);
 
 <header class="navbar" id="top">
   <nav class="nav-container" aria-label={ui.navLabel}>
-    <a href={home} class="logo" aria-label={ui.homeLabel}>
-      MORITZ<span>BARZ</span>
+    <a href={home} class="logo">
+      MORITZ<span>BARZ</span><span class="sr-only"> – {ui.home}</span>
     </a>
     <ul class="nav-links" id="primary-navigation">
       <li><a href={sectionHref("#work")} data-section="work">{ui.navWork}</a></li>
@@ -28,8 +28,8 @@ const sectionHref = (hash: string) => (isHome ? hash : `${home}${hash}`);
       <li><a href={sectionHref("#contact")} data-section="contact">{ui.navContact}</a></li>
     </ul>
     <div class="nav-actions">
-      <a class="nav-toggle" href={languageHref} hreflang={otherLang} lang={otherLang} aria-label={ui.switchLanguage}>
-        {otherLang.toUpperCase()}
+      <a class="nav-toggle" href={languageHref} hreflang={otherLang} lang={otherLang}>
+        {otherLang.toUpperCase()}<span class="sr-only"> – {ui.switchLanguage}</span>
       </a>
       <button
         class="nav-toggle nav-toggle-icon"

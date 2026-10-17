@@ -21,9 +21,9 @@ const client = hasSanityConfig
 const imageBuilder = hasSanityConfig ? createImageUrlBuilder({ projectId, dataset }) : null;
 
 /** Resized, format-negotiated (WebP/AVIF) URL for a Sanity image asset. */
-export const sanityImageUrl = (assetId: string, width: number, format?: "jpg" | "webp") => {
+export const sanityImageUrl = (assetId: string, width: number, format?: "jpg" | "webp", quality = 80) => {
   if (!imageBuilder) return "";
-  const image = imageBuilder.image(assetId).width(width).fit("max").quality(80);
+  const image = imageBuilder.image(assetId).width(width).fit("max").quality(quality);
   return (format ? image.format(format) : image.auto("format")).url();
 };
 
@@ -41,6 +41,8 @@ export type SanityClientProfile = {
   slug?: string;
   label?: string;
   logo?: string;
+  logoWidth?: number;
+  logoHeight?: number;
   summary?: string;
   summaryEn?: string;
   intro?: string;
@@ -116,6 +118,8 @@ const clientProjection = `{
   "slug": slug.current,
   label,
   "logo": logo.asset->url,
+  "logoWidth": logo.asset->metadata.dimensions.width,
+  "logoHeight": logo.asset->metadata.dimensions.height,
   summary,
   summaryEn,
   intro,

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ClientLogo from "../components/ClientLogo.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
 import RelatedLinks from "../components/RelatedLinks.astro";
@@ -76,7 +77,7 @@ const otherClients = clientGroups
 
   <main id="main">
     <header class="client-hero">
-      {profile.logo && <img class="client-hero-logo-bg" src={assetUrl(profile.logo)} alt="" decoding="async" />}
+      <ClientLogo class="client-hero-logo-bg" profile={profile} height={360} loading="eager" />
       <div class="container client-hero-inner">
         <nav class="breadcrumb" aria-label={ui.breadcrumb}>
           <ol>
@@ -96,7 +97,7 @@ const otherClients = clientGroups
       <div class="container">
         {
           projects.length > 0 ? (
-            <ProjectGrid projects={projects} categories={categories} lang={lang} filterable />
+            <ProjectGrid projects={projects} categories={categories} lang={lang} filterable priorityFirst />
           ) : (
             <p class="client-empty-note">{ui.emptyClient}</p>
           )

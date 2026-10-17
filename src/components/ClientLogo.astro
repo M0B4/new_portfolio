@@ -1,0 +1,34 @@
+---
+import type { ClientProfile } from "../lib/clients";
+import { assetUrl } from "../lib/url";
+
+type Props = {
+  profile: ClientProfile;
+  /** Rendered height in CSS pixels – used to request a matching image size. */
+  height: number;
+  class?: string;
+  loading?: "lazy" | "eager";
+};
+
+const { profile, height, class: className, loading = "lazy" } = Astro.props;
+const src = assetUrl(profile.logo);
+const isSanity = src.startsWith("https://cdn.sanity.io/");
+// Sanity CDN resizes on the fly; local fallback logos are served as they are.
+const sized = (h: number) => `${src}?h=${h}&fit=max&auto=format`;
+const ratio = profile.logoWidth && profile.logoHeight ? profile.logoWidth / profile.logoHeight : undefined;
+---
+
+{
+  profile.logo && (
+    <img
+      class={className}
+      src={isSanity ? sized(height * 2) : src}
+      srcset={isSanity ? `${sized(height)} 1x, ${sized(height * 2)} 2x, ${sized(height * 3)} 3x` : undefined}
+      width={ratio ? Math.round(height * ratio) : undefined}
+      height={ratio ? height : undefined}
+      alt=""
+      loading={loading}
+      decoding="async"
+    />
+  )
+}

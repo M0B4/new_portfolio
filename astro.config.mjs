@@ -7,4 +7,8 @@ export default defineConfig({
   site: process.env.PUBLIC_SITE_URL || productionUrl,
   base: process.env.PUBLIC_BASE_PATH || "/",
   trailingSlash: "always",
+  // The single stylesheet is small (~6 KB gzip); inlining removes the render-blocking request.
+  build: {
+    inlineStylesheets: "always",
+  },
 });

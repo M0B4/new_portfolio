@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ClientLogo from "../components/ClientLogo.astro";
 import Header from "../components/Header.astro";
 import Lightbox from "../components/Lightbox.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
@@ -31,7 +32,10 @@ const groupOf = (project: PortfolioProject) => clientGroups.find((group) => grou
 // Spotlight: first "Hervorheben" project, otherwise the top project of the first client (Wacken).
 const spotlightProject = projects.find((project) => project.featured) ?? activeGroups[0]?.projects[0];
 const spotlightGroup: ClientGroup | undefined = spotlightProject ? groupOf(spotlightProject) : undefined;
-const heroImage = spotlightProject ? await getResponsiveImage(spotlightProject.previewImage, [800, 1280, 1920, 2400]) : undefined;
+// The backdrop is darkened, so a lower quality is invisible but saves a lot on the LCP image.
+const heroImage = spotlightProject
+  ? await getResponsiveImage(spotlightProject.previewImage, [640, 960, 1440, 1920], { quality: 55 })
+  : undefined;
 
 // Selected work: featured first, then round-robin across clients so no single series dominates.
 const pickSelectedWork = (limit: number) => {
@@ -119,7 +123,7 @@ const structuredData = [
             class="hero-backdrop"
             src={heroImage.src}
             srcset={heroImage.srcset}
-            sizes="100vw"
+            sizes="(max-width: 760px) 340px, 100vw"
             width={heroImage.width}
             height={heroImage.height}
             alt=""
@@ -150,7 +154,7 @@ const structuredData = [
               .map((group) => (
                 <li>
                   <a href={clientPath(lang, group.profile.slug)} aria-label={ui.viewWorkFor(group.profile.label)}>
-                    <img src={assetUrl(group.profile.logo)} alt="" loading="lazy" decoding="async" />
+                    <ClientLogo profile={group.profile} height={40} />
                   </a>
                 </li>
               ))
@@ -162,7 +166,7 @@ const structuredData = [
     <section id="work" class="section work-section" aria-labelledby="work-title">
       <div class="container">
         <SectionHeading id="work-title" number="01" kicker={ui.workKicker} title={ui.workTitle} />
-        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} columns={2} lightbox={false} eagerCount={2} />
+        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} columns={2} lightbox={false} eagerCount={0} />
       </div>
     </section>
 
@@ -187,7 +191,7 @@ const structuredData = [
                 <span class="section-number">02</span> {ui.highlightKicker}
               </p>
               {spotlightGroup.profile.logo && (
-                <img class="spotlight-logo" src={assetUrl(spotlightGroup.profile.logo)} alt="" loading="lazy" decoding="async" />
+                <ClientLogo class="spotlight-logo" profile={spotlightGroup.profile} height={64} />
               )}
               <h2 id="spotlight-title">{spotlightGroup.profile.label}</h2>
               <p>{pick(lang, spotlightGroup.profile.intro, spotlightGroup.profile.introEn)}</p>
@@ -222,7 +226,7 @@ const structuredData = [
                 <a class="client-card" href={clientPath(lang, group.profile.slug)}>
                   {group.profile.logo ? (
                     <span class="client-logo-mark" aria-hidden="true">
-                      <img src={assetUrl(group.profile.logo)} alt="" loading="lazy" decoding="async" />
+                      <ClientLogo profile={group.profile} height={100} />
                     </span>
                   ) : (
                     <span class="client-logo-mark client-logo-text" aria-hidden="true">

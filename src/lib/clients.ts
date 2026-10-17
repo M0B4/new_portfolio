@@ -5,6 +5,9 @@ export type ClientProfile = {
   slug: string;
   label: string;
   logo?: string;
+  /** Intrinsic logo size, known for Sanity assets. */
+  logoWidth?: number;
+  logoHeight?: number;
   summary: string;
   summaryEn?: string;
   intro: string;
@@ -127,6 +130,8 @@ export const fromSanityClient = (client: SanityClientProfile): ClientProfile => 
     slug: client.slug || fallback.slug,
     label: client.label || fallback.label,
     logo: client.logo || undefined,
+    logoWidth: client.logoWidth,
+    logoHeight: client.logoHeight,
     summary: client.summary || fallback.summary,
     summaryEn: client.summaryEn || fallback.summaryEn,
     intro: client.intro || fallback.intro,

@@ -20,6 +20,9 @@
   --accent-rgb: 225, 38, 47;
   --accent-soft: rgba(var(--accent-rgb), 0.16);
   --accent-line: rgba(var(--accent-rgb), 0.55);
+  /* Small red text needs >= 4.5:1 on black; white button text needs >= 4.5:1 on red */
+  --accent-text: #ff4f57;
+  --accent-strong: #c41c25;
   --on-accent: #fff8f4;
   --focus: #ffd34d;
   --mark: var(--quiet);
@@ -30,7 +33,7 @@
   --stencil: "Saira Stencil One", "Dinish Condensed", "Arial Narrow", system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
   --texture-opacity: 0.1;
-  --grain-opacity: calc(0.035 + var(--texture-opacity) * 0.35);
+  --grain-opacity: calc(0.05 + var(--texture-opacity) * 0.5);
   --torn-edge: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22 L40 18 L70 25 L110 14 L150 21 L190 12 L230 20 L262 16 L300 26 L345 13 L380 19 L420 10 L462 22 L500 15 L540 24 L585 11 L620 18 L660 9 L700 21 L742 14 L780 25 L820 12 L860 20 L900 13 L940 23 L982 10 L1020 19 L1060 14 L1100 24 L1140 12 L1172 20 L1200 15 L1200 40 L0 40 Z'/%3E%3C/svg%3E");
 }
 
@@ -46,6 +49,8 @@
   --quiet: #5e5a53;
   --accent: #b40f1d;
   --accent-rgb: 180, 15, 29;
+  --accent-text: #a50d1a;
+  --accent-strong: #a50d1a;
   --focus: #0b57d0;
 }
 
@@ -76,9 +81,12 @@ body::after {
   inset: 0;
   z-index: 90;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: var(--grain-opacity);
-  mix-blend-mode: overlay;
+  background: url("../assets/textures/grain.png") 0 0 / 96px 96px repeat;
+  opacity: min(var(--grain-opacity), 0.35);
+}
+
+:root[data-theme="light"] body::after {
+  opacity: min(calc(var(--grain-opacity) * 0.7), 0.25);
 }
 
 body:has(.nav-links.active),
@@ -189,7 +197,7 @@ h3,
 }
 
 .section-number {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 /* Crop marks around an element – the visual signature instead of frames and boxes */
@@ -245,9 +253,9 @@ h3,
   justify-content: center;
   gap: 0.5rem;
   min-height: 48px;
-  border: 1px solid var(--accent);
+  border: 1px solid var(--accent-strong);
   border-radius: 0;
-  background: var(--accent);
+  background: var(--accent-strong);
   color: var(--on-accent);
   cursor: pointer;
   font-size: 1.05rem;
@@ -260,7 +268,8 @@ h3,
 
 .btn:hover,
 .btn:focus-visible {
-  background: color-mix(in srgb, var(--accent) 85%, #fff);
+  border-color: var(--accent);
+  background: var(--accent);
 }
 
 .btn-outline {
@@ -271,8 +280,8 @@ h3,
 
 .btn-outline:hover,
 .btn-outline:focus-visible {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -312,7 +321,7 @@ h3,
 }
 
 .logo span {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .nav-links {
@@ -338,7 +347,7 @@ h3,
 }
 
 .nav-links a[aria-current] {
-  background: var(--accent);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -558,8 +567,8 @@ h3,
 }
 
 .filter-button[aria-pressed="true"] {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -569,7 +578,7 @@ h3,
 }
 
 .filter-count {
-  opacity: 0.7;
+  font-size: 0.9em;
 }
 
 /* Masonry via CSS columns keeps posters and shirts in their native ratio */
@@ -730,6 +739,7 @@ h3,
 
 .client-logo-mark img {
   width: min(72%, 260px);
+  height: auto;
   max-height: clamp(56px, 8vw, 100px);
   object-fit: contain;
   opacity: 0.85;
@@ -870,7 +880,7 @@ h3,
 }
 
 .process-number {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .process-step h3 {
@@ -1042,8 +1052,8 @@ h3,
 
 .social-links a:hover,
 .social-links a:focus-visible {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -1156,7 +1166,7 @@ h3,
 }
 
 .footer-meta > span > span:first-child {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .footer-host {
@@ -1267,8 +1277,8 @@ h3,
 
 .lightbox-button:hover,
 .lightbox-button:focus-visible {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -1286,6 +1296,7 @@ h3,
 
 .client-hero-logo-bg {
   position: absolute;
+  height: auto;
   top: 50%;
   right: clamp(1rem, 6vw, 7rem);
   width: min(46vw, 620px);
@@ -1324,7 +1335,7 @@ h3,
 }
 
 .client-hero .eyebrow {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .breadcrumb ol {
@@ -1398,8 +1409,8 @@ h3,
 
 .related-links a:hover,
 .related-links a:focus-visible {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--accent-strong);
+  background: var(--accent-strong);
   color: var(--on-accent);
 }
 
@@ -1586,6 +1597,56 @@ h3,
 
   .footer-host {
     display: none;
+  }
+}
+
+/* ---------- Motion (CSS only, skipped for reduced motion) ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Smooth fade between pages in supporting browsers – no JavaScript router needed */
+  @view-transition {
+    navigation: auto;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    /* 1. Parallax: the hero work drifts slower than the page */
+    .hero-backdrop {
+      animation: hero-parallax linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100svh;
+    }
+
+    /* 2. Work cards rise into place as they enter the viewport */
+    .project-card {
+      animation: card-reveal ease-out both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+
+    .client-hero-logo-bg {
+      animation: logo-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70svh;
+    }
+  }
+}
+
+@keyframes hero-parallax {
+  to {
+    transform: translateY(18%) scale(1.06);
+  }
+}
+
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2.5rem);
+  }
+}
+
+@keyframes logo-drift {
+  to {
+    transform: translateY(-38%) scale(1.06);
   }
 }
 

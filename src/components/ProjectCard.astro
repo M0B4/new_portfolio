@@ -8,10 +8,12 @@ type Props = {
   lang: Lang;
   categoryLabel: string;
   eager?: boolean;
+  /** Likely LCP element: load with high priority. */
+  priority?: boolean;
   sizes?: string;
 };
 
-const { project, lang, categoryLabel, eager = false, sizes = "(min-width: 820px) 33vw, 50vw" } = Astro.props;
+const { project, lang, categoryLabel, eager = false, priority = false, sizes = "(min-width: 820px) 33vw, 50vw" } = Astro.props;
 const ui = t(lang);
 const image = await getResponsiveImage(project.previewImage, [400, 640, 960, 1280]);
 const slides = await Promise.all(
@@ -36,7 +38,6 @@ const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" /
     data-title={title}
     data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
-    aria-label={ui.openProject(title)}
   >
     <span class="print-frame">
       <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
@@ -46,8 +47,9 @@ const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" /
           sizes={sizes}
           width={image.width}
           height={image.height}
-          alt={project.alt}
-          loading={eager ? "eager" : "lazy"}
+          alt={project.alt === project.title ? "" : project.alt}
+          loading={eager || priority ? "eager" : "lazy"}
+          fetchpriority={priority ? "high" : "auto"}
           decoding="async"
         />
       </span>
@@ -57,6 +59,7 @@ const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" /
       <span class="spec">{meta}</span>
       <span class="card-title">{shortTitle}</span>
       {project.specs && <span class="spec spec-quiet">{project.specs}</span>}
+      <span class="sr-only">{ui.openProjectHint}</span>
     </span>
   </button>
 </article>

@@ -5,6 +5,9 @@ import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
 import "../styles/global.css";
 import stencilFont from "@fontsource/saira-stencil-one/files/saira-stencil-one-latin-400-normal.woff2?url";
+import monoFont from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
+import bodyFont from "@sarap422/font-dinish/Dinish-Regular.woff2?url";
+import headingFont from "@sarap422/font-dinish/DinishCondensed-Bold.woff2?url";
 import Footer from "../components/Footer.astro";
 import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
 import { getSiteContent } from "../lib/content";
@@ -89,7 +92,12 @@ const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};
         document.documentElement.dataset.theme = theme;
       })();
     </script>
-    <link rel="preload" href={stencilFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://cdn.sanity.io" />
+    {
+      [stencilFont, headingFont, bodyFont, monoFont].map((font) => (
+        <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
+      ))
+    }
     <link rel="canonical" href={canonical} />
     {alternateLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
     {defaultAlternate && <link rel="alternate" hreflang="x-default" href={defaultAlternate.href} />}

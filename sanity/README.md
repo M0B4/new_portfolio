@@ -34,7 +34,7 @@ Einmalig veröffentlichen (und nach jeder Schema-Änderung erneut):
 
 ```bash
 npx sanity login        # nur beim ersten Mal, öffnet den Browser
-npm run studio:deploy   # baut das Studio und lädt es nach mbarz.sanity.studio hoch
+npm run studio:deploy   # baut das Studio nach studio-dist/ und lädt es nach mbarz.sanity.studio hoch
 ```
 
 Danach `mbarz.de/studio/` öffnen und mit demselben Sanity-Konto anmelden. Weitere Personen lädst du unter

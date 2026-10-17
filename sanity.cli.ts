@@ -7,4 +7,7 @@ export default defineCliConfig({
   },
   // Hosted at https://mbarz.sanity.studio – keep in sync with SANITY_STUDIO_URL in src/data/site.ts
   studioHost: "mbarz",
+  deployment: {
+    appId: "et6azy5fznqey1yrihd91jlt",
+  },
 });

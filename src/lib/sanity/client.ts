@@ -128,7 +128,7 @@ const clientProjection = `{
 }`;
 
 const contentQuery = `{
-  "projects": *[_type == "project" && defined(slug.current)] | order(order asc) {
+  "projects": *[_type == "project"] | order(order asc) {
     _id,
     _updatedAt,
     "slug": slug.current,

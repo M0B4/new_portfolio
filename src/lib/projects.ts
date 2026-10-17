@@ -76,7 +76,8 @@ export const fromSanityProject = (
   toClientProfile: (client: NonNullable<SanityProject["client"]>) => ClientProfile,
 ): PortfolioProject | null => {
   const { title, category, client, previewImage } = project;
-  if (!title || !isProjectCategory(category) || !client?.title || !previewImage?.assetId) return null;
+  const clientName = client?.title || client?.label;
+  if (!title || !isProjectCategory(category) || !client || !clientName || !previewImage?.assetId) return null;
 
   return {
     id: project._id,
@@ -88,7 +89,7 @@ export const fromSanityProject = (
     category,
     summary: project.summary ?? "",
     summaryEn: project.summaryEn,
-    client: client.title,
+    client: clientName,
     year: project.year ?? "",
     previewImage,
     alt: previewImage.alt || title,

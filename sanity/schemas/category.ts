@@ -1,9 +1,14 @@
+import { TagsIcon } from "@sanity/icons/Tags";
 import { defineField, defineType } from "sanity";
+import { categoryOptions } from "./categoryOptions";
 
+// The five categories are fixed (the website relies on their technical values);
+// only names, intros and order are editable. Creating/deleting is disabled in sanity.config.ts.
 export const category = defineType({
   name: "category",
-  title: "Kategorie",
+  title: "Arbeitsart",
   type: "document",
+  icon: TagsIcon,
   fields: [
     defineField({
       name: "title",
@@ -12,31 +17,16 @@ export const category = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "introDe",
+      title: "Intro",
+      type: "text",
+      rows: 3,
+      description: "Ein Satz, erscheint auf der Startseite und der Kategorieseite.",
+    }),
+    defineField({
       name: "titleEn",
       title: "Name Englisch",
       type: "string",
-    }),
-    defineField({
-      name: "value",
-      title: "Technischer Wert",
-      type: "string",
-      description: "Muss zu den Website-Kategorien passen.",
-      options: {
-        list: [
-          { title: "Eventdesign", value: "event" },
-          { title: "Poster", value: "poster" },
-          { title: "Merch", value: "clothing" },
-          { title: "3D-Print", value: "3d-print" },
-          { title: "Objekte", value: "various" },
-        ],
-      },
-      validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: "introDe",
-      title: "Intro Deutsch",
-      type: "text",
-      rows: 3,
     }),
     defineField({
       name: "introEn",
@@ -48,13 +38,23 @@ export const category = defineType({
       name: "order",
       title: "Sortierung",
       type: "number",
+      description: "Reihenfolge auf der Website. Kleinere Zahlen erscheinen weiter vorne.",
       initialValue: 100,
     }),
+    defineField({
+      name: "value",
+      title: "Technischer Wert",
+      type: "string",
+      readOnly: true,
+      description: "Fest vorgegeben, nicht änderbar.",
+      options: { list: categoryOptions },
+    }),
   ],
+  orderings: [{ title: "Reihenfolge auf der Website", name: "orderAsc", by: [{ field: "order", direction: "asc" }] }],
   preview: {
     select: {
       title: "title",
-      subtitle: "value",
+      subtitle: "introDe",
     },
   },
 });

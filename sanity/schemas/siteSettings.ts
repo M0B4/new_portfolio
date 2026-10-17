@@ -1,15 +1,17 @@
+import { CogIcon } from "@sanity/icons/Cog";
 import { defineField, defineType } from "sanity";
 
 export const siteSettings = defineType({
   name: "siteSettings",
   title: "Website-Einstellungen",
   type: "document",
+  icon: CogIcon,
   groups: [
-    { name: "seo", title: "SEO" },
-    { name: "design", title: "Design" },
-    { name: "hero", title: "Startseite" },
+    { name: "hero", title: "Startseite", default: true },
     { name: "about", title: "Profil" },
     { name: "social", title: "Social Media" },
+    { name: "seo", title: "SEO" },
+    { name: "design", title: "Design" },
   ],
   fields: [
     defineField({
@@ -65,6 +67,7 @@ export const siteSettings = defineType({
       title: "Hero Kicker Deutsch",
       type: "string",
       group: "hero",
+      description: "Kleine Zeile über der Überschrift. Alle Startseiten-Felder: leer lassen = Standardtext.",
     }),
     defineField({
       name: "heroTitleDe",
@@ -123,7 +126,14 @@ export const siteSettings = defineType({
           type: "object",
           name: "socialLink",
           fields: [
-            defineField({ name: "label", title: "Name", type: "string", validation: (Rule) => Rule.required() }),
+            defineField({
+              name: "label",
+              title: "Plattform",
+              type: "string",
+              options: { list: ["Instagram", "Facebook", "YouTube", "TikTok", "Behance", "LinkedIn"] },
+              description: "Für diese Plattformen erscheint ein Icon; eigene Namen werden als Text gezeigt.",
+              validation: (Rule) => Rule.required(),
+            }),
             defineField({
               name: "url",
               title: "URL",

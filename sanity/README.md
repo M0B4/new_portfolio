@@ -25,11 +25,29 @@ Englische Felder sind optional; ohne Eintrag wird der deutsche Text angezeigt.
 
 Die Website zeigt ein Bild pro Projekt; ein Klick öffnet die Großansicht (Lightbox).
 
+## Studio über die Website erreichen
+
+Das Studio läuft bei Sanity unter **https://mbarz.sanity.studio**. **https://mbarz.de/studio/** leitet dorthin
+weiter (nicht in Suchmaschinen, siehe `robots.txt`).
+
+Einmalig veröffentlichen (und nach jeder Schema-Änderung erneut):
+
+```bash
+npx sanity login        # nur beim ersten Mal, öffnet den Browser
+npm run studio:deploy   # baut das Studio und lädt es nach mbarz.sanity.studio hoch
+```
+
+Danach `mbarz.de/studio/` öffnen und mit demselben Sanity-Konto anmelden. Weitere Personen lädst du unter
+https://www.sanity.io/manage → Projekt → **Members** ein.
+
+Der Hostname steht in `sanity.cli.ts` (`studioHost`) und in `src/data/site.ts` (`SANITY_STUDIO_URL`); bei einer
+Änderung beide anpassen.
+
 ## Lokale Befehle
 
 ```bash
 npm run studio          # Studio lokal
-npm run studio:deploy   # Studio unter <name>.sanity.studio veröffentlichen
+npm run studio:deploy   # Studio unter mbarz.sanity.studio veröffentlichen
 ```
 
 ## Benötigte Umgebungswerte

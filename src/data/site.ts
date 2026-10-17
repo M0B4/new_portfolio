@@ -8,6 +8,9 @@ export const SITE_HOST = new URL(SITE_URL).host;
 export const SITE_NAME = "Moritz Barz Portfolio";
 export const OWNER_NAME = "Moritz Barz";
 
+/** Hosted Sanity Studio (`npm run studio:deploy`); mbarz.de/studio/ redirects here. */
+export const SANITY_STUDIO_URL = "https://mbarz.sanity.studio/";
+
 /**
  * Pflichtangaben für Impressum und Datenschutz (§ 5 DDG, Art. 13 DSGVO).
  * TODO: Platzhalter durch echte Daten ersetzen – der Build warnt, solange sie gesetzt sind.

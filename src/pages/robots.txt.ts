@@ -5,6 +5,7 @@ export function GET({ site }: { site?: URL }) {
 
   return new Response(`User-agent: *
 Allow: /
+Disallow: /studio/
 
 Sitemap: ${sitemap}
 `, {

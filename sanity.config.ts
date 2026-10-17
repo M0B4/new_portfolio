@@ -11,7 +11,6 @@ export default defineConfig({
   title: "Moritz Barz Portfolio",
   projectId,
   dataset,
-  basePath: "/studio",
   plugins: [structureTool({ structure })],
   schema: {
     types: schemaTypes,

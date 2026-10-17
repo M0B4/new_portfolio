@@ -18,12 +18,18 @@ Englische Felder sind optional; ohne Eintrag wird der deutsche Text angezeigt.
 
 ## Projekt anlegen
 
-1. Zuerst einen `Kunde / Kontext` anlegen.
-2. Danach ein `Projekt` anlegen und den Kunden verknüpfen.
-3. Kategorie wählen, Hauptbild hochladen und einen **Alt-Text** eintragen (wichtig für Barrierefreiheit).
-4. `Sortierung` setzen. Kleinere Zahlen erscheinen weiter vorne.
+1. Links **Projekte nach Kunde** → Kunde wählen → oben **+**. Der Kunde ist dann schon eingetragen.
+   (Neuer Kunde? Erst unter **Kunden** anlegen – nur der Name ist Pflicht.)
+2. Im Tab **Basis** ausfüllen: Titel, Arbeitsart, Hauptbild mit Alt-Text, Kurztext. Jahr ist vorausgefüllt.
+3. Optional im Tab **Bilder & Details**: weitere Fotos (mehrere auf einmal hineinziehen), Druckangaben, Hervorheben.
+4. **Publish** klicken. Neue Projekte erscheinen ganz vorne; die Reihenfolge änderst du im Tab **Intern**.
 
-Die Website zeigt ein Bild pro Projekt; ein Klick öffnet die Großansicht (Lightbox).
+Hilfen in der Navigation: **Zuletzt bearbeitet**, **Hervorgehoben** und **Unvollständig** (Projekte ohne Alt-Text,
+ohne englischen Text oder ohne Druckangaben). Über das Menü **⋯ → Open preview** springst du zur passenden Seite
+auf mbarz.de.
+
+Änderungen erscheinen auf der Website nach dem nächsten Build (automatisch, sobald der Webhook aus der Haupt-README
+eingerichtet ist).
 
 ## Studio über die Website erreichen
 

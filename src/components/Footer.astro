@@ -1,5 +1,6 @@
 ---
-import { formspreeEndpoint, SITE_HOST } from "../data/site";
+import SocialIcon from "./SocialIcon.astro";
+import { formspreeEndpoint, legal, SITE_HOST } from "../data/site";
 import { getActiveCategories, getSiteContent } from "../lib/content";
 import { legalPath, localizePath, t, type Lang } from "../lib/i18n";
 
@@ -24,16 +25,38 @@ const messages = {
 <footer id="contact" class="contact-footer">
   <div class="container contact-layout">
     <div class="footer-contact-copy">
-      <p class="kicker">{ui.contactKicker}</p>
-      <h2>{ui.contactTitle}</h2>
-      <p>{ui.contactText}</p>
+      <p class="section-label"><span class="section-number">→</span> {ui.contactKicker}</p>
+      <h2 class="cta-title">{ui.ctaTitle}</h2>
+      <p>{ui.ctaText}</p>
+      {
+        (legal.email || legal.phone) && (
+          <dl class="contact-direct">
+            {legal.email && (
+              <div>
+                <dt class="spec">{ui.emailLabel}</dt>
+                <dd>
+                  <a href={`mailto:${legal.email}`}>{legal.email}</a>
+                </dd>
+              </div>
+            )}
+            {legal.phone && (
+              <div>
+                <dt class="spec">{ui.phoneLabel}</dt>
+                <dd>
+                  <a href={`tel:${legal.phone.replace(/[^+\d]/g, "")}`}>{legal.phone}</a>
+                </dd>
+              </div>
+            )}
+          </dl>
+        )
+      }
       {
         socialLinks.length > 0 && (
           <ul class="social-links" aria-label={ui.social}>
             {socialLinks.map((link) => (
               <li>
-                <a href={link.url} rel="me noopener" target="_blank">
-                  {link.label}
+                <a href={link.url} rel="me noopener" target="_blank" aria-label={link.label}>
+                  <SocialIcon label={link.label} />
                 </a>
               </li>
             ))}
@@ -86,11 +109,17 @@ const messages = {
     </form>
   </div>
   <div class="container footer-meta">
-    <span>MORITZ<span>BARZ</span></span>
+    <span>MORITZ<span>BARZ</span> <span class="spec footer-host">{SITE_HOST}</span></span>
     <nav aria-label={ui.footerNav}>
       <a href={`${localizePath(lang)}#contact`}>{ui.navContact}</a>
       <a href={legalPath("impressum")} hreflang="de">{ui.imprint}</a>
       <a href={legalPath("datenschutz")} hreflang="de">{ui.privacy}</a>
+      <a href="#top" class="back-to-top">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+          <path d="M12 3 4 11h5v10h6V11h5z" fill="currentColor"></path>
+        </svg>
+        {ui.backToTop}
+      </a>
     </nav>
   </div>
 </footer>

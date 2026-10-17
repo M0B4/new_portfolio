@@ -98,6 +98,33 @@ export const project = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "gallery",
+      title: "Weitere Bilder",
+      type: "array",
+      description: "Optional: Fotos im Einsatz (Shirt am Stand, Poster an der Wand) oder Details. Erscheinen in der Großansicht nach dem Hauptbild.",
+      of: [
+        {
+          type: "image",
+          options: { hotspot: false },
+          fields: [
+            defineField({
+              name: "alt",
+              title: "Alt-Text",
+              type: "string",
+              validation: (Rule) => Rule.warning().required(),
+            }),
+          ],
+        },
+      ],
+    }),
+    defineField({
+      name: "specs",
+      title: "Druckangaben",
+      type: "string",
+      description: "Kurz und technisch, z. B. „A2 · Siebdruck“ oder „PETG · 3D-Druck“. Erscheint unter dem Bild.",
+      validation: (Rule) => Rule.max(60),
+    }),
+    defineField({
       name: "order",
       title: "Sortierung",
       type: "number",
@@ -108,7 +135,7 @@ export const project = defineType({
       name: "featured",
       title: "Hervorheben",
       type: "boolean",
-      description: "Hervorgehobene Projekte erscheinen in der Bildcollage auf der Startseite (max. 3).",
+      description: "Das erste hervorgehobene Projekt wird Hero-Bild und Highlight der Startseite; alle hervorgehobenen stehen in „Ausgewählte Arbeiten“ vorne.",
       initialValue: false,
     }),
     defineField({

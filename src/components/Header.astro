@@ -16,15 +16,16 @@ const isHome = normalizedPath === home;
 const sectionHref = (hash: string) => (isHome ? hash : `${home}${hash}`);
 ---
 
-<header class="navbar">
+<header class="navbar" id="top">
   <nav class="nav-container" aria-label={ui.navLabel}>
     <a href={home} class="logo" aria-label={ui.homeLabel}>
       MORITZ<span>BARZ</span>
     </a>
     <ul class="nav-links" id="primary-navigation">
-      <li><a href={sectionHref("#portfolio")}>{ui.navPortfolio}</a></li>
-      <li><a href={sectionHref("#about")}>{ui.navAbout}</a></li>
-      <li><a href={sectionHref("#contact")}>{ui.navContact}</a></li>
+      <li><a href={sectionHref("#work")} data-section="work">{ui.navWork}</a></li>
+      <li><a href={sectionHref("#portfolio")} data-section="portfolio">{ui.clientsKicker}</a></li>
+      <li><a href={sectionHref("#about")} data-section="about">{ui.navAbout}</a></li>
+      <li><a href={sectionHref("#contact")} data-section="contact">{ui.navContact}</a></li>
     </ul>
     <div class="nav-actions">
       <a class="nav-toggle" href={languageHref} hreflang={otherLang} lang={otherLang} aria-label={ui.switchLanguage}>
@@ -67,3 +68,27 @@ const sectionHref = (hash: string) => (isHome ? hash : `${home}${hash}`);
     </div>
   </nav>
 </header>
+
+<script>
+  // Highlight the navigation entry of the section currently in view (home page only).
+  const links = [...document.querySelectorAll<HTMLAnchorElement>(".nav-links a[data-section]")];
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.section ?? ""))
+    .filter((section): section is HTMLElement => Boolean(section));
+
+  if (sections.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          links.forEach((link) => {
+            if (link.dataset.section === entry.target.id) link.setAttribute("aria-current", "true");
+            else link.removeAttribute("aria-current");
+          });
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

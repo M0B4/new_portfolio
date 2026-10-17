@@ -6,18 +6,20 @@ type Props = {
 };
 
 const ui = t(Astro.props.lang);
+// Template for the per-image counter, filled in client-side.
+const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2", "{total}");
 ---
 
-<dialog class="lightbox" aria-labelledby="lightbox-title">
+<dialog class="lightbox" aria-labelledby="lightbox-title" data-count-template={countTemplate}>
   <div class="lightbox-inner">
     <figure class="lightbox-figure">
       <img class="lightbox-image" src="data:," alt="" />
     </figure>
     <div class="lightbox-caption">
-      <p class="kicker lightbox-meta"></p>
+      <p class="spec lightbox-meta"></p>
       <h2 id="lightbox-title" class="lightbox-title"></h2>
       <p class="lightbox-summary"></p>
-      <p class="lightbox-count" aria-hidden="true"></p>
+      <p class="spec lightbox-count"></p>
     </div>
     <div class="lightbox-controls">
       <button type="button" class="lightbox-button" data-lightbox-prev aria-label={ui.lightboxPrev}>
@@ -34,6 +36,8 @@ const ui = t(Astro.props.lang);
 </dialog>
 
 <script>
+  type Slide = { src: string; alt: string; title: string; meta: string; summary: string; index: number; total: number };
+
   const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
 
   if (dialog) {
@@ -42,36 +46,56 @@ const ui = t(Astro.props.lang);
     const meta = dialog.querySelector<HTMLElement>(".lightbox-meta")!;
     const summary = dialog.querySelector<HTMLElement>(".lightbox-summary")!;
     const count = dialog.querySelector<HTMLElement>(".lightbox-count")!;
-    let items: HTMLButtonElement[] = [];
+    const countTemplate = dialog.dataset.countTemplate ?? "{current} / {total}";
+    let slides: Slide[] = [];
     let current = 0;
     let opener: HTMLButtonElement | null = null;
 
-    const visibleItems = () =>
-      [...document.querySelectorAll<HTMLButtonElement>("[data-lightbox-item]")].filter(
-        (item) => !item.closest("[hidden]"),
-      );
+    // Flatten all visible projects into one slide list: main image first, then the gallery.
+    const collectSlides = () => {
+      const starts = new Map<HTMLButtonElement, number>();
+      const list: Slide[] = [];
+      document.querySelectorAll<HTMLButtonElement>("[data-lightbox-item]").forEach((item) => {
+        if (item.closest("[hidden]")) return;
+        const images = JSON.parse(item.dataset.slides ?? "[]") as { src: string; alt: string }[];
+        starts.set(item, list.length);
+        images.forEach((entry, index) =>
+          list.push({
+            ...entry,
+            title: item.dataset.title ?? "",
+            meta: item.dataset.meta ?? "",
+            summary: item.dataset.summary ?? "",
+            index,
+            total: images.length,
+          }),
+        );
+      });
+      return { list, starts };
+    };
 
     const show = (index: number) => {
-      current = (index + items.length) % items.length;
-      const item = items[current];
-      image.src = item.dataset.full ?? "";
-      image.alt = item.dataset.alt ?? "";
-      title.textContent = item.dataset.title ?? "";
-      meta.textContent = item.dataset.meta ?? "";
-      summary.textContent = item.dataset.summary ?? "";
-      summary.hidden = !item.dataset.summary;
-      count.textContent = `${current + 1} / ${items.length}`;
+      current = (index + slides.length) % slides.length;
+      const slide = slides[current];
+      image.src = slide.src;
+      image.alt = slide.alt;
+      title.textContent = slide.title;
+      meta.textContent = slide.meta;
+      summary.textContent = slide.summary;
+      summary.hidden = !slide.summary;
+      count.textContent =
+        slide.total > 1 ? countTemplate.replace("{current}", String(slide.index + 1)).replace("{total}", String(slide.total)) : "";
       dialog.querySelectorAll<HTMLButtonElement>("[data-lightbox-prev], [data-lightbox-next]").forEach((button) => {
-        button.hidden = items.length < 2;
+        button.hidden = slides.length < 2;
       });
     };
 
     document.addEventListener("click", (event) => {
       const trigger = (event.target as Element).closest<HTMLButtonElement>("[data-lightbox-item]");
       if (!trigger) return;
-      items = visibleItems();
+      const { list, starts } = collectSlides();
+      slides = list;
       opener = trigger;
-      show(items.indexOf(trigger));
+      show(starts.get(trigger) ?? 0);
       dialog.showModal();
     });
 

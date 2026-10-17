@@ -10,13 +10,19 @@ type Props = {
   categories: CategoryInfo[];
   lang: Lang;
   filterable?: boolean;
+  /** Number of columns on wide screens. */
+  columns?: 2 | 3;
+  /** Render the lightbox dialog. Pages with several grids render it only once. */
+  lightbox?: boolean;
+  eagerCount?: number;
 };
 
-const { projects, categories, lang, filterable = false } = Astro.props;
+const { projects, categories, lang, filterable = false, columns = 3, lightbox = true, eagerCount = 3 } = Astro.props;
 const ui = t(lang);
 const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
 const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
 const showFilter = filterable && presentCategories.length > 1;
+const sizes = columns === 2 ? "(min-width: 820px) 50vw, 100vw" : "(min-width: 820px) 33vw, 50vw";
 ---
 
 <div class="project-grid-wrapper" data-project-grid>
@@ -35,15 +41,21 @@ const showFilter = filterable && presentCategories.length > 1;
       </div>
     )
   }
-  <div class="client-work-grid">
+  <div class:list={["client-work-grid", { "grid-two": columns === 2 }]}>
     {
       projects.map((project, index) => (
-        <ProjectCard project={project} lang={lang} categoryLabel={labelFor(project.category)} eager={index < 3} />
+        <ProjectCard
+          project={project}
+          lang={lang}
+          categoryLabel={labelFor(project.category)}
+          eager={index < eagerCount}
+          sizes={sizes}
+        />
       ))
     }
   </div>
 </div>
-<Lightbox lang={lang} />
+{lightbox && <Lightbox lang={lang} />}
 
 <script>
   document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach((grid) => {

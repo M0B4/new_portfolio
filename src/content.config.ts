@@ -4,7 +4,7 @@ import { z } from "astro/zod";
 
 const projectCategory = z.enum(["event", "poster", "clothing", "3d-print", "various"]);
 
-// Offline fallback for Sanity. Additional frontmatter (gallery, challenge, …) is kept
+// Offline fallback for Sanity. Additional frontmatter (challenge, services, …) is kept
 // in the Markdown files as an archive but is not rendered.
 const work = defineCollection({
   loader: glob({ pattern: "*.md", base: "./src/content/work" }),
@@ -21,7 +21,9 @@ const work = defineCollection({
       year: z.string(),
       previewImage: image(),
       alt: z.string().optional(),
+      specs: z.string().optional(),
       featured: z.boolean().optional(),
+      gallery: z.array(z.object({ image: image(), title: z.string().optional() })).optional(),
       order: z.number(),
     }),
 });

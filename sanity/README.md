@@ -8,7 +8,10 @@ nicht erreichbar ist oder keine Projekte enthält.
 - `Website-Einstellungen`: SEO-Texte, Akzentfarben, Hintergrund, Startseiten-Hero, Profiltext und Social Links.
 - `Partner / Kunden`: Wacken, Metal im Dorf, DLRG usw. mit Logo, Intro und SEO-Kurztext (jeweils DE/EN).
 - `Projekte`: Kachel mit Titel, Kunde, Kategorie, Jahr, Kurztext, Hauptbild (mit Alt-Text) und Sortierung.
-  „Hervorheben“ setzt ein Projekt in die Bildcollage auf der Startseite (max. 3).
+  „Hervorheben“ macht ein Projekt zum Hero-Bild und Highlight auf der Startseite und stellt es in „Ausgewählte Arbeiten“
+  an den Anfang. „Druckangaben“ (z. B. „A2 · Siebdruck“) erscheinen in Monospace unter dem Bild.
+  „Weitere Bilder“ nimmt Fotos im Einsatz auf (Shirt am Stand, Poster an der Wand); sie lassen sich in der Großansicht
+  durchblättern.
 - `Kategorien`: Name und Intro (DE/EN) sowie Reihenfolge der Arbeitsarten.
 
 Englische Felder sind optional; ohne Eintrag wird der deutsche Text angezeigt.

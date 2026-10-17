@@ -2,8 +2,12 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
+import Lightbox from "../components/Lightbox.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import SectionHeading from "../components/SectionHeading.astro";
 import portrait from "../assets/header.jpg";
 import { OWNER_NAME, SITE_NAME } from "../data/site";
+import type { ClientGroup } from "../lib/clients";
 import { getActiveCategories, getClientGroupsWithEmpty, getSiteContent } from "../lib/content";
 import { getResponsiveImage } from "../lib/images";
 import { categoryPath, clientPath, localizePath, pick, t, type Lang } from "../lib/i18n";
@@ -16,30 +20,44 @@ type Props = {
 
 const { lang } = Astro.props;
 const ui = t(lang);
-const { projects, settings, socialLinks } = await getSiteContent();
+const { projects, settings, socialLinks, categories: allCategories } = await getSiteContent();
 const clientGroups = await getClientGroupsWithEmpty();
+const activeGroups = clientGroups.filter((group) => group.projects.length > 0);
 const categories = await getActiveCategories();
 const origin = Astro.site ?? Astro.url.origin;
 const alternates = { de: localizePath("de"), en: localizePath("en") };
+const groupOf = (project: PortfolioProject) => clientGroups.find((group) => group.projects.includes(project))!;
 
-// Featured projects (Sanity "Hervorheben"), otherwise the first project of the top clients.
-const pickFeatured = (): PortfolioProject[] => {
-  const featured = projects.filter((project) => project.featured);
-  if (featured.length >= 3) return featured.slice(0, 3);
-  const firstPerClient = clientGroups.map((group) => group.projects[0]).filter(Boolean);
-  return [...featured, ...firstPerClient.filter((project) => !featured.includes(project))].slice(0, 3);
+// Spotlight: first "Hervorheben" project, otherwise the top project of the first client (Wacken).
+const spotlightProject = projects.find((project) => project.featured) ?? activeGroups[0]?.projects[0];
+const spotlightGroup: ClientGroup | undefined = spotlightProject ? groupOf(spotlightProject) : undefined;
+const heroImage = spotlightProject ? await getResponsiveImage(spotlightProject.previewImage, [800, 1280, 1920, 2400]) : undefined;
+
+// Selected work: featured first, then round-robin across clients so no single series dominates.
+const pickSelectedWork = (limit: number) => {
+  const picked = projects.filter((project) => project.featured);
+  const queues = activeGroups.map((group) => [...group.projects]);
+  while (picked.length < limit && queues.some((queue) => queue.length > 0)) {
+    for (const queue of queues) {
+      const next = queue.shift();
+      if (next && !picked.includes(next) && picked.length < limit) picked.push(next);
+    }
+  }
+  return picked;
 };
-const featured = await Promise.all(
-  pickFeatured().map(async (project) => {
-    const group = clientGroups.find((item) => item.projects.includes(project))!;
-    return {
-      project,
-      clientLabel: group.profile.label,
-      image: await getResponsiveImage(project.previewImage, [320, 520, 760]),
-      href: clientPath(lang, group.profile.slug),
-    };
-  }),
-);
+const selectedWork = pickSelectedWork(8);
+
+// The spotlight shows another piece of the same client so hero and grid are not repeated.
+const spotlightPiece =
+  spotlightGroup?.projects.find((project) => project !== spotlightProject && !selectedWork.includes(project)) ??
+  spotlightProject;
+const spotlightImage = spotlightPiece ? await getResponsiveImage(spotlightPiece.previewImage, [640, 960, 1280, 1600]) : undefined;
+
+// Latest: newest year first (then last edit in Sanity), excluding what is already shown above.
+const latest = projects
+  .filter((project) => !selectedWork.includes(project) && project !== spotlightPiece)
+  .sort((a, b) => b.year.localeCompare(a.year) || (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))
+  .slice(0, 3);
 
 const categoryEntries = await Promise.all(
   categories.map(async (category) => {
@@ -95,48 +113,108 @@ const structuredData = [
 
   <main id="main" class="home">
     <section class="home-hero" aria-labelledby="hero-title">
-      <div class="container hero-layout">
-        <div class="hero-panel hero-panel-plain">
-          <p class="kicker">{heroKicker}</p>
-          <h1 id="hero-title">{heroTitle}</h1>
-          <p>{heroText}</p>
+      {
+        heroImage && spotlightProject && (
+          <img
+            class="hero-backdrop"
+            src={heroImage.src}
+            srcset={heroImage.srcset}
+            sizes="100vw"
+            width={heroImage.width}
+            height={heroImage.height}
+            alt=""
+            fetchpriority="high"
+            decoding="async"
+          />
+        )
+      }
+      <div class="container hero-content">
+        <p class="section-label">{heroKicker}</p>
+        <h1 id="hero-title">{heroTitle}</h1>
+        <p class="hero-text">{heroText}</p>
+        <div class="hero-actions">
+          <a class="btn" href="#contact">{ui.heroCtaPrimary}</a>
+          <a class="btn btn-outline" href="#work">{ui.heroCtaSecondary}</a>
         </div>
-        {
-          featured.length > 0 && (
-            <ul class="hero-collage" aria-label={ui.featuredLabel}>
-              {featured.map(({ project, clientLabel, image, href }, index) => (
-                <li class="hero-collage-item">
-                  <a href={href}>
-                    <img
-                      src={image.src}
-                      srcset={image.srcset}
-                      sizes="(min-width: 820px) 18vw, 33vw"
-                      width={image.width}
-                      height={image.height}
-                      alt={project.alt}
-                      loading="eager"
-                      fetchpriority={index === 0 ? "high" : "auto"}
-                      decoding="async"
-                    />
-                    <span class="sr-only">{ui.viewWorkFor(clientLabel)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )
-        }
+        <p class="spec hero-spec">{ui.heroSpec}</p>
       </div>
     </section>
 
+    <section class="trust-strip" aria-label={ui.trustLabel}>
+      <div class="container trust-inner">
+        <p class="spec">{ui.trustLabel}</p>
+        <ul class="trust-logos">
+          {
+            clientGroups
+              .filter((group) => group.profile.logo)
+              .map((group) => (
+                <li>
+                  <a href={clientPath(lang, group.profile.slug)} aria-label={ui.viewWorkFor(group.profile.label)}>
+                    <img src={assetUrl(group.profile.logo)} alt="" loading="lazy" decoding="async" />
+                  </a>
+                </li>
+              ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section id="work" class="section work-section" aria-labelledby="work-title">
+      <div class="container">
+        <SectionHeading id="work-title" number="01" kicker={ui.workKicker} title={ui.workTitle} />
+        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} columns={2} lightbox={false} eagerCount={2} />
+      </div>
+    </section>
+
+    {
+      spotlightGroup && spotlightPiece && spotlightImage && (
+        <section class="section spotlight-section" aria-labelledby="spotlight-title">
+          <div class="container spotlight-layout">
+            <figure class="spotlight-figure print-frame">
+              <img
+                src={spotlightImage.src}
+                srcset={spotlightImage.srcset}
+                sizes="(min-width: 820px) 55vw, 100vw"
+                width={spotlightImage.width}
+                height={spotlightImage.height}
+                alt={spotlightPiece.alt}
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <div class="spotlight-copy">
+              <p class="section-label">
+                <span class="section-number">02</span> {ui.highlightKicker}
+              </p>
+              {spotlightGroup.profile.logo && (
+                <img class="spotlight-logo" src={assetUrl(spotlightGroup.profile.logo)} alt="" loading="lazy" decoding="async" />
+              )}
+              <h2 id="spotlight-title">{spotlightGroup.profile.label}</h2>
+              <p>{pick(lang, spotlightGroup.profile.intro, spotlightGroup.profile.introEn)}</p>
+              <p class="spec">{ui.projectCount(spotlightGroup.projects.length)}</p>
+              <a class="btn btn-outline" href={clientPath(lang, spotlightGroup.profile.slug)}>
+                {ui.highlightCta(spotlightGroup.profile.label)}
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      latest.length > 0 && (
+        <section class="section latest-section" aria-labelledby="latest-title">
+          <div class="container">
+            <SectionHeading id="latest-title" number="03" kicker={ui.latestKicker} title={ui.latestTitle} />
+            <ProjectGrid projects={latest} categories={allCategories} lang={lang} lightbox={false} eagerCount={0} />
+          </div>
+        </section>
+      )
+    }
+
     <section id="portfolio" class="section portfolio-section" aria-labelledby="client-title">
       <div class="container">
-        <div class="section-heading section-heading-split">
-          <div>
-            <p class="kicker">{ui.clientsKicker}</p>
-            <h2 id="client-title">{ui.clientsTitle}</h2>
-          </div>
-          <p>{ui.clientsText}</p>
-        </div>
+        <SectionHeading id="client-title" number="04" kicker={ui.clientsKicker} title={ui.clientsTitle} text={ui.clientsText} />
         <ul class="client-grid" aria-label={ui.clientsListLabel}>
           {
             clientGroups.map((group) => (
@@ -154,7 +232,7 @@ const structuredData = [
                   <span class="client-card-label">
                     <span class="client-card-name">{group.profile.label}</span>
                     {group.projects.length > 0 && (
-                      <span class="client-card-count">{ui.projectCount(group.projects.length)}</span>
+                      <span class="spec client-card-count">{ui.projectCount(group.projects.length)}</span>
                     )}
                   </span>
                 </a>
@@ -167,10 +245,7 @@ const structuredData = [
 
     <section class="section discipline-section" aria-labelledby="discipline-title">
       <div class="container">
-        <div class="section-heading">
-          <p class="kicker">{ui.fieldsKicker}</p>
-          <h2 id="discipline-title">{ui.fieldsTitle}</h2>
-        </div>
+        <SectionHeading id="discipline-title" number="05" kicker={ui.fieldsKicker} title={ui.fieldsTitle} />
         <ul class="discipline-grid">
           {
             categoryEntries.map(({ category, image, href }) => (
@@ -196,10 +271,27 @@ const structuredData = [
       </div>
     </section>
 
+    <section class="section process-section" aria-labelledby="process-title">
+      <div class="container">
+        <SectionHeading id="process-title" number="06" kicker={ui.processKicker} title={ui.processTitle} />
+        <ol class="process-steps">
+          {
+            ui.processSteps.map((step, index) => (
+              <li class="process-step">
+                <span class="spec process-number">{String(index + 1).padStart(2, "0")}</span>
+                <h3>{step.title}</h3>
+                <p>{step.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
     <section id="about" class="section statement-section" aria-labelledby="about-title">
       <div class="container statement-layout">
         <div class="statement-content">
-          <p class="kicker">{ui.profileKicker}</p>
+          <p class="section-label"><span class="section-number">07</span> {ui.profileKicker}</p>
           <h2 id="about-title">{ui.profileTitle}</h2>
           {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
           <h3 class="services-title">{ui.servicesTitle}</h3>
@@ -216,10 +308,11 @@ const structuredData = [
             }
           </ul>
         </div>
-        <figure class="statement-portrait">
-          <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 55vw, 100vw" loading="lazy" />
+        <figure class="statement-portrait print-frame">
+          <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 50vw, 100vw" loading="lazy" />
         </figure>
       </div>
     </section>
   </main>
+  <Lightbox lang={lang} />
 </BaseLayout>

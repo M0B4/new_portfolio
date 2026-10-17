@@ -15,6 +15,8 @@ export type PortfolioImage = ImageMetadata | SanityImage;
 
 export const isSanityImage = (image: PortfolioImage): image is SanityImage => "assetId" in image;
 
+export type GalleryImage = { image: PortfolioImage; alt: string };
+
 export type PortfolioProject = {
   id: string;
   slug: string;
@@ -29,6 +31,10 @@ export type PortfolioProject = {
   year: string;
   previewImage: PortfolioImage;
   alt: string;
+  /** Print/production specs, e.g. "A2 · Siebdruck". */
+  specs?: string;
+  /** Additional images (in use, details) shown in the lightbox after the main image. */
+  gallery: GalleryImage[];
   order: number;
   featured: boolean;
   updatedAt?: string;
@@ -51,6 +57,10 @@ const fromContentProject = (project: CollectionEntry<"work">): PortfolioProject 
   year: project.data.year,
   previewImage: project.data.previewImage,
   alt: project.data.alt ?? project.data.title,
+  specs: project.data.specs,
+  gallery: (project.data.gallery ?? [])
+    .filter((item) => item.image.src !== project.data.previewImage.src)
+    .map((item) => ({ image: item.image, alt: item.title ?? project.data.title })),
   order: project.data.order,
   featured: project.data.featured ?? false,
 });
@@ -82,6 +92,10 @@ export const fromSanityProject = (
     year: project.year ?? "",
     previewImage,
     alt: previewImage.alt || title,
+    specs: project.specs,
+    gallery: (project.gallery ?? [])
+      .filter((image) => image.assetId && image.assetId !== previewImage.assetId)
+      .map((image) => ({ image, alt: image.alt || title })),
     order: project.order ?? index + 1,
     featured: project.featured ?? false,
     updatedAt: project._updatedAt,

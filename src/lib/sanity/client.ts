@@ -61,7 +61,9 @@ export type SanityProject = {
   summaryEn?: string;
   year?: string;
   featured?: boolean;
+  specs?: string;
   previewImage?: SanityImage;
+  gallery?: SanityImage[];
   order?: number;
   client?: SanityClientProfile;
 };
@@ -100,6 +102,15 @@ export type SanityContent = {
   settings: SiteSettings | null;
 };
 
+const imageProjection = `{
+  alt,
+  "assetId": asset->_id,
+  "url": asset->url,
+  "width": asset->metadata.dimensions.width,
+  "height": asset->metadata.dimensions.height,
+  "lqip": asset->metadata.lqip
+}`;
+
 const clientProjection = `{
   title,
   "slug": slug.current,
@@ -127,14 +138,9 @@ const contentQuery = `{
     year,
     featured,
     order,
-    "previewImage": previewImage{
-      alt,
-      "assetId": asset->_id,
-      "url": asset->url,
-      "width": asset->metadata.dimensions.width,
-      "height": asset->metadata.dimensions.height,
-      "lqip": asset->metadata.lqip
-    },
+    specs,
+    "previewImage": previewImage${imageProjection},
+    "gallery": gallery[]${imageProjection},
     "client": client->${clientProjection}
   },
   "categories": *[_type == "category"] | order(order asc) { title, titleEn, value, introDe, introEn, order },

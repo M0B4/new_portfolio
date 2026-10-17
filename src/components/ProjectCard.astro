@@ -8,16 +8,23 @@ type Props = {
   lang: Lang;
   categoryLabel: string;
   eager?: boolean;
+  sizes?: string;
 };
 
-const { project, lang, categoryLabel, eager = false } = Astro.props;
+const { project, lang, categoryLabel, eager = false, sizes = "(min-width: 820px) 33vw, 50vw" } = Astro.props;
 const ui = t(lang);
-const image = await getResponsiveImage(project.previewImage, [400, 640, 960]);
-const fullImage = await getImageUrl(project.previewImage, 1800);
+const image = await getResponsiveImage(project.previewImage, [400, 640, 960, 1280]);
+const slides = await Promise.all(
+  [{ image: project.previewImage, alt: project.alt }, ...project.gallery].map(async (item) => ({
+    src: await getImageUrl(item.image, 1800),
+    alt: item.alt,
+  })),
+);
 const title = pick(lang, project.title, project.titleEn);
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
-const meta = [categoryLabel, project.clientProfile?.label, project.year].filter(Boolean).join(" / ");
+const clientLabel = project.clientProfile?.label ?? project.client;
+const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" / ");
 ---
 
 <article class="project-card" data-category={project.category}>
@@ -25,28 +32,31 @@ const meta = [categoryLabel, project.clientProfile?.label, project.year].filter(
     type="button"
     class="project-card-trigger"
     data-lightbox-item
-    data-full={fullImage}
+    data-slides={JSON.stringify(slides)}
     data-title={title}
-    data-meta={meta}
+    data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
-    data-alt={project.alt}
     aria-label={ui.openProject(title)}
   >
-    <figure class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
-      <img
-        src={image.src}
-        srcset={image.srcset}
-        sizes="(min-width: 820px) 33vw, 50vw"
-        width={image.width}
-        height={image.height}
-        alt={project.alt}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-      />
-    </figure>
+    <span class="print-frame">
+      <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
+        <img
+          src={image.src}
+          srcset={image.srcset}
+          sizes={sizes}
+          width={image.width}
+          height={image.height}
+          alt={project.alt}
+          loading={eager ? "eager" : "lazy"}
+          decoding="async"
+        />
+      </span>
+      {slides.length > 1 && <span class="card-badge" aria-hidden="true">+{slides.length - 1}</span>}
+    </span>
     <span class="card-info">
-      <span class="card-meta">{categoryLabel} / {project.year}</span>
+      <span class="spec">{meta}</span>
       <span class="card-title">{shortTitle}</span>
+      {project.specs && <span class="spec spec-quiet">{project.specs}</span>}
     </span>
   </button>
 </article>

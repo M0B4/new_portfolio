@@ -27,8 +27,6 @@ tags:
 gallery:
   - image: "../../assets/3d_print/dlrg.webp"
     title: "Schutzkappen Set"
-  - image: "../../assets/dlrg.webp"
-    title: "DLRG Anwendung"
 order: 60
 ---
 

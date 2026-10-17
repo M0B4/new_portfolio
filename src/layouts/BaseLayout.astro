@@ -1,6 +1,8 @@
 ﻿---
 import "@sarap422/font-dinish/font-face.css";
 import "@fontsource/saira-stencil-one/latin.css";
+import "@fontsource/ibm-plex-mono/latin-400.css";
+import "@fontsource/ibm-plex-mono/latin-500.css";
 import "../styles/global.css";
 import stencilFont from "@fontsource/saira-stencil-one/files/saira-stencil-one-latin-400-normal.woff2?url";
 import Footer from "../components/Footer.astro";
@@ -112,8 +114,8 @@ const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};
     <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-icon-180x180.png`} />
     <link rel="manifest" href={`${base}manifest.json`} />
     <style is:inline set:html={settingsCss}></style>
-    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
-    {plausibleDomain && <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
+    {structuredData && <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+    {plausibleDomain && <script is:inline defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
   </head>
   <body>
     <a href="#main" class="skip-link">{ui.skip}</a>
@@ -163,7 +165,7 @@ const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && hamburger?.getAttribute("aria-expanded") === "true") setMenu(false, true);
       });
-      window.matchMedia("(min-width: 761px)").addEventListener("change", (event) => {
+      window.matchMedia("(min-width: 861px)").addEventListener("change", (event) => {
         if (event.matches) setMenu(false);
       });
     </script>

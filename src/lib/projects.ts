@@ -1,22 +1,37 @@
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import type { ImageMetadata } from "astro";
-import { fetchSanityProjects, hasSanityConfig } from "./sanity/client";
 import type { ClientProfile } from "./clients";
+import type { SanityImage, SanityProject } from "./sanity/client";
 
 export type ProjectCategory = "event" | "poster" | "clothing" | "3d-print" | "various";
+
+export const projectCategories: ProjectCategory[] = ["event", "poster", "clothing", "3d-print", "various"];
+
+export const isProjectCategory = (value: unknown): value is ProjectCategory =>
+  projectCategories.includes(value as ProjectCategory);
+
+export type PortfolioImage = ImageMetadata | SanityImage;
+
+export const isSanityImage = (image: PortfolioImage): image is SanityImage => "assetId" in image;
 
 export type PortfolioProject = {
   id: string;
   slug: string;
   title: string;
+  titleEn?: string;
   shortTitle: string;
+  shortTitleEn?: string;
   category: ProjectCategory;
   summary: string;
+  summaryEn?: string;
   client: string;
   year: string;
-  previewImage: ImageMetadata | string;
+  previewImage: PortfolioImage;
+  alt: string;
   order: number;
+  featured: boolean;
+  updatedAt?: string;
   clientProfile?: ClientProfile;
 };
 
@@ -26,13 +41,18 @@ const fromContentProject = (project: CollectionEntry<"work">): PortfolioProject 
   id: project.id,
   slug: toSlug(project.id),
   title: project.data.title,
+  titleEn: project.data.titleEn,
   shortTitle: project.data.shortTitle,
+  shortTitleEn: project.data.shortTitleEn,
   category: project.data.category,
   summary: project.data.summary,
+  summaryEn: project.data.summaryEn,
   client: project.data.client,
   year: project.data.year,
   previewImage: project.data.previewImage,
+  alt: project.data.alt ?? project.data.title,
   order: project.data.order,
+  featured: project.data.featured ?? false,
 });
 
 export const getLocalProjects = async () => {
@@ -40,17 +60,31 @@ export const getLocalProjects = async () => {
   return projects.map(fromContentProject).sort((a, b) => a.order - b.order);
 };
 
-export const getPortfolioProjects = async () => {
-  if (hasSanityConfig) {
-    const projects = await fetchSanityProjects();
-    if (projects.length > 0) return projects;
-  }
+export const fromSanityProject = (
+  project: SanityProject,
+  index: number,
+  toClientProfile: (client: NonNullable<SanityProject["client"]>) => ClientProfile,
+): PortfolioProject | null => {
+  const { title, category, client, previewImage } = project;
+  if (!title || !isProjectCategory(category) || !client?.title || !previewImage?.assetId) return null;
 
-  return getLocalProjects();
-};
-
-export const getProjectImageUrl = (project: PortfolioProject, origin: string | URL) => {
-  const image = project.previewImage;
-  if (typeof image === "string") return image;
-  return new URL(image.src, origin).toString();
+  return {
+    id: project._id,
+    slug: project.slug ?? project._id,
+    title,
+    titleEn: project.titleEn,
+    shortTitle: project.shortTitle ?? title,
+    shortTitleEn: project.shortTitleEn,
+    category,
+    summary: project.summary ?? "",
+    summaryEn: project.summaryEn,
+    client: client.title,
+    year: project.year ?? "",
+    previewImage,
+    alt: previewImage.alt || title,
+    order: project.order ?? index + 1,
+    featured: project.featured ?? false,
+    updatedAt: project._updatedAt,
+    clientProfile: toClientProfile(client),
+  };
 };

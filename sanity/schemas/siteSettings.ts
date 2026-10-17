@@ -8,6 +8,8 @@ export const siteSettings = defineType({
     { name: "seo", title: "SEO" },
     { name: "design", title: "Design" },
     { name: "hero", title: "Startseite" },
+    { name: "about", title: "Profil" },
+    { name: "social", title: "Social Media" },
   ],
   fields: [
     defineField({
@@ -20,6 +22,13 @@ export const siteSettings = defineType({
     defineField({
       name: "description",
       title: "SEO-Beschreibung",
+      type: "text",
+      rows: 3,
+      group: "seo",
+    }),
+    defineField({
+      name: "descriptionEn",
+      title: "SEO-Beschreibung Englisch",
       type: "text",
       rows: 3,
       group: "seo",
@@ -88,6 +97,43 @@ export const siteSettings = defineType({
       type: "text",
       rows: 3,
       group: "hero",
+    }),
+    defineField({
+      name: "aboutTextDe",
+      title: "Profiltext Deutsch",
+      type: "text",
+      rows: 6,
+      description: "Absätze mit einer Leerzeile trennen.",
+      group: "about",
+    }),
+    defineField({
+      name: "aboutTextEn",
+      title: "Profiltext Englisch",
+      type: "text",
+      rows: 6,
+      group: "about",
+    }),
+    defineField({
+      name: "socialLinks",
+      title: "Social Links",
+      type: "array",
+      group: "social",
+      of: [
+        {
+          type: "object",
+          name: "socialLink",
+          fields: [
+            defineField({ name: "label", title: "Name", type: "string", validation: (Rule) => Rule.required() }),
+            defineField({
+              name: "url",
+              title: "URL",
+              type: "url",
+              validation: (Rule) => Rule.required().uri({ scheme: ["https"] }),
+            }),
+          ],
+          preview: { select: { title: "label", subtitle: "url" } },
+        },
+      ],
     }),
   ],
   preview: {

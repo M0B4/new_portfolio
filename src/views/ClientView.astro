@@ -1,0 +1,109 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import RelatedLinks from "../components/RelatedLinks.astro";
+import { OWNER_NAME } from "../data/site";
+import type { ClientGroup } from "../lib/clients";
+import { getClientGroupsWithEmpty, getSiteContent } from "../lib/content";
+import { getAbsoluteImageUrl } from "../lib/images";
+import { clientPath, localizePath, pick, t, type Lang } from "../lib/i18n";
+import { assetUrl } from "../lib/url";
+
+type Props = {
+  lang: Lang;
+  group: ClientGroup;
+};
+
+const { lang, group } = Astro.props;
+const ui = t(lang);
+const { categories } = await getSiteContent();
+const clientGroups = await getClientGroupsWithEmpty();
+const origin = Astro.site ?? Astro.url.origin;
+const { profile, projects } = group;
+const alternates = { de: clientPath("de", profile.slug), en: clientPath("en", profile.slug) };
+const categoryLabels = categories
+  .filter((category) => projects.some((project) => project.category === category.value))
+  .map((category) => category.label[lang]);
+const summary = pick(lang, profile.summary, profile.summaryEn);
+const intro = pick(lang, profile.intro, profile.introEn);
+const seoTitle = lang === "de" ? `${profile.label} | Arbeiten von ${OWNER_NAME}` : `${profile.label} | Work by ${OWNER_NAME}`;
+const ogImage = projects[0] ? await getAbsoluteImageUrl(projects[0].previewImage, origin) : undefined;
+const projectImages = await Promise.all(projects.map((project) => getAbsoluteImageUrl(project.previewImage, origin, 800)));
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: ui.workFor(profile.label),
+    description: summary,
+    inLanguage: lang,
+    url: new URL(alternates[lang], origin).toString(),
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: projects.map((project, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: pick(lang, project.title, project.titleEn),
+        image: projectImages[index],
+      })),
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: ui.home, item: new URL(localizePath(lang), origin).toString() },
+      { "@type": "ListItem", position: 2, name: profile.label, item: new URL(alternates[lang], origin).toString() },
+    ],
+  },
+];
+
+const otherClients = clientGroups
+  .filter((item) => item.profile.slug !== profile.slug && item.projects.length > 0)
+  .map((item) => ({ label: item.profile.label, href: clientPath(lang, item.profile.slug) }));
+---
+
+<BaseLayout
+  lang={lang}
+  title={seoTitle}
+  description={summary}
+  image={ogImage ?? (profile.logo ? assetUrl(profile.logo) : undefined)}
+  alternates={alternates}
+  structuredData={structuredData}
+>
+  <Header lang={lang} alternates={alternates} />
+
+  <main id="main">
+    <header class="client-hero">
+      {profile.logo && <img class="client-hero-logo-bg" src={assetUrl(profile.logo)} alt="" decoding="async" />}
+      <div class="container client-hero-inner">
+        <nav class="breadcrumb" aria-label={ui.breadcrumb}>
+          <ol>
+            <li><a href={`${localizePath(lang)}#portfolio`}>{ui.home}</a></li>
+            <li><span aria-current="page">{profile.label}</span></li>
+          </ol>
+        </nav>
+        <div class="client-hero-copy">
+          <p class="eyebrow">{categoryLabels.length > 0 ? categoryLabels.join(" / ") : "Portfolio"}</p>
+          <h1>{profile.label}</h1>
+          <p>{intro}</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section client-work-section" aria-label={ui.workFor(profile.label)}>
+      <div class="container">
+        {
+          projects.length > 0 ? (
+            <ProjectGrid projects={projects} categories={categories} lang={lang} filterable />
+          ) : (
+            <p class="client-empty-note">{ui.emptyClient}</p>
+          )
+        }
+      </div>
+    </section>
+
+    <RelatedLinks title={ui.moreClients} links={otherClients} />
+  </main>
+</BaseLayout>

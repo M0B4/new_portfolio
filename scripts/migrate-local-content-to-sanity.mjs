@@ -1,3 +1,6 @@
+// One-time migration of the local Markdown content into Sanity.
+// WARNING: uses createOrReplace – re-running it overwrites edits made in the Studio
+// (e.g. renamed categories, English texts, alt texts).
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";

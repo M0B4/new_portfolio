@@ -1,73 +1,14 @@
-﻿---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Header from "../../components/Header.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
-import { categoryLabels } from "../../data/site";
-import { getClientGroups } from "../../lib/clients";
-import { getPortfolioProjects, getProjectImageUrl } from "../../lib/projects";
-import { assetUrl } from "../../lib/url";
+---
+import ClientView from "../../views/ClientView.astro";
+import type { ClientGroup } from "../../lib/clients";
+import { getClientGroupsWithEmpty } from "../../lib/content";
 
 export async function getStaticPaths() {
-  const projects = await getPortfolioProjects();
-  const clientGroups = getClientGroups(projects, true);
-
-  return clientGroups.map((group) => ({
-    params: { slug: group.profile.slug },
-    props: { group },
-  }));
+  const groups = await getClientGroupsWithEmpty();
+  return groups.map((group) => ({ params: { slug: group.profile.slug }, props: { group } }));
 }
 
-const { group } = Astro.props;
-const base = import.meta.env.BASE_URL;
-const origin = Astro.site ?? Astro.url.origin;
-const categories = [...new Set(group.projects.map((project) => categoryLabels[project.category]))];
-const seoTitle = `${group.profile.label} | Arbeiten von Moritz Barz`;
-const seoDescription = group.profile.summary;
-const clientStructuredData = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: `${group.profile.label} Arbeiten`,
-  description: seoDescription,
-  url: new URL(`${base}kunden/${group.profile.slug}/`, origin).toString(),
-  mainEntity: {
-    "@type": "ItemList",
-    itemListElement: group.projects.map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: project.title,
-      image: getProjectImageUrl(project, origin),
-    })),
-  },
-};
+type Props = { group: ClientGroup };
 ---
 
-<BaseLayout title={seoTitle} description={seoDescription} image={group.profile.logo ?? "images/header.jpg"} structuredData={clientStructuredData}>
-  <Header />
-
-    <main id="main">
-    <header class="client-hero">
-          <img class="client-hero-logo-bg" src={assetUrl(group.profile.logo)} alt="" loading="lazy" decoding="async" aria-hidden="true" />
-      <div class="container client-hero-inner">
-        <div class="client-hero-copy">
-          <p class="eyebrow">{categories.length > 0 ? categories.join(" / ") : "Portfolio"}</p>
-          <h1>{group.profile.label}</h1>
-          <p>{group.profile.intro}</p>
-        </div>
-      </div>
-    </header>
-
-    <section class="section client-work-section">
-      <div class="container">
-        {
-          group.projects.length > 0 ? (
-            <div class="client-work-grid">
-              {group.projects.map((project) => <ProjectCard project={project} />)}
-            </div>
-          ) : (
-            <p class="client-empty-note" data-i18n-de="Arbeiten für diesen Kontext werden noch kuratiert." data-i18n-en="Work for this context is still being curated.">Arbeiten für diesen Kontext werden noch kuratiert.</p>
-          )
-        }
-      </div>
-    </section>
-  </main>
-</BaseLayout>
+<ClientView lang="de" group={Astro.props.group} />

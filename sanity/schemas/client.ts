@@ -39,11 +39,24 @@ export const client = defineType({
       validation: (Rule) => Rule.required().max(180),
     }),
     defineField({
+      name: "summaryEn",
+      title: "SEO-Kurzbeschreibung Englisch",
+      type: "text",
+      rows: 3,
+      validation: (Rule) => Rule.max(180),
+    }),
+    defineField({
       name: "intro",
       title: "Intro auf Kundenseite",
       type: "text",
       rows: 4,
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "introEn",
+      title: "Intro auf Kundenseite Englisch",
+      type: "text",
+      rows: 4,
     }),
     defineField({
       name: "order",

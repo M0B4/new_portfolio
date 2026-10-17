@@ -1,0 +1,106 @@
+---
+import { t, type Lang } from "../lib/i18n";
+
+type Props = {
+  lang: Lang;
+};
+
+const ui = t(Astro.props.lang);
+---
+
+<dialog class="lightbox" aria-labelledby="lightbox-title">
+  <div class="lightbox-inner">
+    <figure class="lightbox-figure">
+      <img class="lightbox-image" src="data:," alt="" />
+    </figure>
+    <div class="lightbox-caption">
+      <p class="kicker lightbox-meta"></p>
+      <h2 id="lightbox-title" class="lightbox-title"></h2>
+      <p class="lightbox-summary"></p>
+      <p class="lightbox-count" aria-hidden="true"></p>
+    </div>
+    <div class="lightbox-controls">
+      <button type="button" class="lightbox-button" data-lightbox-prev aria-label={ui.lightboxPrev}>
+        <span aria-hidden="true">←</span>
+      </button>
+      <button type="button" class="lightbox-button" data-lightbox-next aria-label={ui.lightboxNext}>
+        <span aria-hidden="true">→</span>
+      </button>
+      <button type="button" class="lightbox-button" data-lightbox-close aria-label={ui.lightboxClose}>
+        <span aria-hidden="true">✕</span>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
+
+  if (dialog) {
+    const image = dialog.querySelector<HTMLImageElement>(".lightbox-image")!;
+    const title = dialog.querySelector<HTMLElement>(".lightbox-title")!;
+    const meta = dialog.querySelector<HTMLElement>(".lightbox-meta")!;
+    const summary = dialog.querySelector<HTMLElement>(".lightbox-summary")!;
+    const count = dialog.querySelector<HTMLElement>(".lightbox-count")!;
+    let items: HTMLButtonElement[] = [];
+    let current = 0;
+    let opener: HTMLButtonElement | null = null;
+
+    const visibleItems = () =>
+      [...document.querySelectorAll<HTMLButtonElement>("[data-lightbox-item]")].filter(
+        (item) => !item.closest("[hidden]"),
+      );
+
+    const show = (index: number) => {
+      current = (index + items.length) % items.length;
+      const item = items[current];
+      image.src = item.dataset.full ?? "";
+      image.alt = item.dataset.alt ?? "";
+      title.textContent = item.dataset.title ?? "";
+      meta.textContent = item.dataset.meta ?? "";
+      summary.textContent = item.dataset.summary ?? "";
+      summary.hidden = !item.dataset.summary;
+      count.textContent = `${current + 1} / ${items.length}`;
+      dialog.querySelectorAll<HTMLButtonElement>("[data-lightbox-prev], [data-lightbox-next]").forEach((button) => {
+        button.hidden = items.length < 2;
+      });
+    };
+
+    document.addEventListener("click", (event) => {
+      const trigger = (event.target as Element).closest<HTMLButtonElement>("[data-lightbox-item]");
+      if (!trigger) return;
+      items = visibleItems();
+      opener = trigger;
+      show(items.indexOf(trigger));
+      dialog.showModal();
+    });
+
+    dialog.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => show(current - 1));
+    dialog.querySelector("[data-lightbox-next]")?.addEventListener("click", () => show(current + 1));
+    dialog.querySelector("[data-lightbox-close]")?.addEventListener("click", () => dialog.close());
+
+    // Click on the backdrop closes the dialog
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") show(current - 1);
+      if (event.key === "ArrowRight") show(current + 1);
+    });
+
+    let touchStart: number | null = null;
+    dialog.addEventListener("touchstart", (event) => (touchStart = event.touches[0].clientX), { passive: true });
+    dialog.addEventListener("touchend", (event) => {
+      if (touchStart === null) return;
+      const delta = event.changedTouches[0].clientX - touchStart;
+      if (Math.abs(delta) > 50) show(current + (delta < 0 ? 1 : -1));
+      touchStart = null;
+    });
+
+    dialog.addEventListener("close", () => {
+      image.src = "data:,";
+      opener?.focus();
+    });
+  }
+</script>

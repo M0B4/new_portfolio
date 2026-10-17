@@ -12,11 +12,23 @@ export const project = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "titleEn",
+      title: "Titel Englisch",
+      type: "string",
+      description: "Optional. Ohne Eintrag wird der deutsche Titel verwendet.",
+    }),
+    defineField({
       name: "shortTitle",
       title: "Kurztitel",
       type: "string",
       description: "Kurzer Titel für Kacheln und Overlays.",
       validation: (Rule) => Rule.required().max(60),
+    }),
+    defineField({
+      name: "shortTitleEn",
+      title: "Kurztitel Englisch",
+      type: "string",
+      validation: (Rule) => Rule.max(60),
     }),
     defineField({
       name: "slug",
@@ -62,6 +74,13 @@ export const project = defineType({
       validation: (Rule) => Rule.required().max(220),
     }),
     defineField({
+      name: "summaryEn",
+      title: "Kurztext Englisch",
+      type: "text",
+      rows: 3,
+      validation: (Rule) => Rule.max(220),
+    }),
+    defineField({
       name: "previewImage",
       title: "Hauptbild",
       type: "image",
@@ -72,6 +91,8 @@ export const project = defineType({
           name: "alt",
           title: "Alt-Text",
           type: "string",
+          description: "Beschreibt das Motiv für Screenreader, z. B. „Poster mit Totenkopf und Line-up“.",
+          validation: (Rule) => Rule.warning().required(),
         }),
       ],
       validation: (Rule) => Rule.required(),
@@ -87,6 +108,7 @@ export const project = defineType({
       name: "featured",
       title: "Hervorheben",
       type: "boolean",
+      description: "Hervorgehobene Projekte erscheinen in der Bildcollage auf der Startseite (max. 3).",
       initialValue: false,
     }),
     defineField({

@@ -1,0 +1,14 @@
+---
+import ClientView from "../../../views/ClientView.astro";
+import type { ClientGroup } from "../../../lib/clients";
+import { getClientGroupsWithEmpty } from "../../../lib/content";
+
+export async function getStaticPaths() {
+  const groups = await getClientGroupsWithEmpty();
+  return groups.map((group) => ({ params: { slug: group.profile.slug }, props: { group } }));
+}
+
+type Props = { group: ClientGroup };
+---
+
+<ClientView lang="en" group={Astro.props.group} />

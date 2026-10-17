@@ -2,162 +2,170 @@
 import "@sarap422/font-dinish/font-face.css";
 import "@fontsource/saira-stencil-one/latin.css";
 import "../styles/global.css";
+import stencilFont from "@fontsource/saira-stencil-one/files/saira-stencil-one-latin-400-normal.woff2?url";
 import Footer from "../components/Footer.astro";
-import { assetUrl } from "../lib/url";
-import { fetchSiteSettings } from "../lib/sanity/client";
+import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
+import { getSiteContent } from "../lib/content";
+import { htmlLang, ogLocale, pick, t, type Alternates, type Lang } from "../lib/i18n";
+import { assetUrl, basePath as base } from "../lib/url";
 
 type Props = {
+  lang: Lang;
   title?: string;
   description?: string;
+  /** Absolute URL or base-relative path of the Open Graph image. */
   image?: string;
+  imageAlt?: string;
+  alternates?: Alternates;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
 };
 
+const { settings } = await getSiteContent();
 const {
-  title = "Moritz Barz | Heavy Design, Merch & 3D-Print",
-  description = "Portfolio von Moritz Barz: Poster, Merchandise, Eventdesign und funktionale 3D-Prints für Metal-Szene, Festivals und Tauchsport.",
+  lang,
+  title = `${OWNER_NAME} | Heavy Design, Merch & 3D-Print`,
+  description = pick(
+    lang,
+    settings.description ||
+      "Portfolio von Moritz Barz: Poster, Merchandise, Eventdesign und funktionale 3D-Prints für Metal-Szene, Festivals und Tauchsport.",
+    settings.descriptionEn ||
+      "Portfolio of Moritz Barz: posters, merchandise, event design and functional 3D prints for the metal scene, festivals and diving.",
+  ),
   image = "images/header.jpg",
+  imageAlt = title,
+  alternates = {},
   structuredData,
+  noindex = false,
 } = Astro.props;
 
-const base = import.meta.env.BASE_URL;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
-const absoluteImage = new URL(assetUrl(image), Astro.site ?? Astro.url.origin);
-const siteName = "Moritz Barz Portfolio";
-const siteSettings = await fetchSiteSettings();
+const ui = t(lang);
+const origin = Astro.site ?? Astro.url.origin;
+const canonical = new URL(Astro.url.pathname, origin);
+const absoluteImage = new URL(assetUrl(image), origin);
+const alternateLinks = Object.entries(alternates).map(([hreflang, path]) => ({
+  hreflang,
+  href: new URL(path, origin).toString(),
+}));
+const defaultAlternate = alternateLinks.find((link) => link.hreflang === "de");
+
 const hexToRgb = (hex?: string) => {
   const match = hex?.match(/^#([0-9a-fA-F]{6})$/);
   if (!match) return null;
   const value = Number.parseInt(match[1], 16);
   return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
 };
-const accentDark = siteSettings?.accentDark?.match(/^#[0-9a-fA-F]{6}$/) ? siteSettings.accentDark : "#e1262f";
-const accentLight = siteSettings?.accentLight?.match(/^#[0-9a-fA-F]{6}$/) ? siteSettings.accentLight : "#b40f1d";
+const accentDark = hexToRgb(settings.accentDark) ? settings.accentDark : "#e1262f";
+const accentLight = hexToRgb(settings.accentLight) ? settings.accentLight : "#b40f1d";
 const accentDarkRgb = hexToRgb(accentDark) ?? "225, 38, 47";
 const accentLightRgb = hexToRgb(accentLight) ?? "180, 15, 29";
-const textureOpacity = Math.min(Math.max(siteSettings?.backgroundTextureOpacity ?? 0.1, 0), 1);
-const settingsCss = `:root{--accent:${accentDark};--accent-soft:rgba(${accentDarkRgb},0.18);--accent-line:rgba(${accentDarkRgb},0.5);--texture-opacity:${textureOpacity};}:root[data-theme="light"]{--accent:${accentLight};--accent-soft:rgba(${accentLightRgb},0.14);--accent-line:rgba(${accentLightRgb},0.42);}`;
+const textureOpacity = Math.min(Math.max(settings.backgroundTextureOpacity ?? 0.1, 0), 1);
+const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};--texture-opacity:${textureOpacity};}:root[data-theme="light"]{--accent:${accentLight};--accent-rgb:${accentLightRgb};}`;
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang={htmlLang[lang]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="author" content="Moritz Barz" />
-    <meta name="application-name" content={siteName} />
-    <meta name="robots" content="index, follow" />
+    <meta name="author" content={OWNER_NAME} />
+    <meta name="application-name" content={SITE_NAME} />
+    <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
     <meta name="color-scheme" content="dark light" />
     <meta name="format-detection" content="telephone=no" />
     <script is:inline>
       (() => {
-        const theme = localStorage.getItem("theme") || "dark";
-        const language = localStorage.getItem("language") || "de";
+        let theme;
+        try {
+          theme = localStorage.getItem("theme");
+        } catch {}
+        if (theme !== "light" && theme !== "dark") {
+          theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+        }
         document.documentElement.dataset.theme = theme;
-        document.documentElement.dataset.language = language;
       })();
     </script>
-        <link rel="canonical" href={canonical} />
-    <link rel="alternate" href={canonical} hreflang="de" />
-    <link rel="alternate" href={canonical} hreflang="x-default" />
+    <link rel="preload" href={stencilFont} as="font" type="font/woff2" crossorigin />
+    <link rel="canonical" href={canonical} />
+    {alternateLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
+    {defaultAlternate && <link rel="alternate" hreflang="x-default" href={defaultAlternate.href} />}
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050505" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ece8df" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content={siteName} />
-    <meta property="og:locale" content="de_DE" />
-    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:locale:alternate" content={ogLocale[lang === "de" ? "en" : "de"]} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={absoluteImage} />
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteImage} />
-    <meta name="twitter:image:alt" content={title} />
-    <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-icon-180x180.png`} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    <link rel="icon" href={`${base}favicon.ico`} sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href={`${base}favicon-32x32.png`} />
-    <link rel="icon" type="image/png" sizes="16x16" href={`${base}favicon-16x16.png`} />
+    <link rel="apple-touch-icon" sizes="180x180" href={`${base}apple-icon-180x180.png`} />
     <link rel="manifest" href={`${base}manifest.json`} />
     <style is:inline set:html={settingsCss}></style>
-    {
-      structuredData && (
-        <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
-      )
-    }
+    {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+    {plausibleDomain && <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
   </head>
-    <body>
-    <a href="#main" class="skip-link" data-i18n-de="Zum Inhalt springen" data-i18n-en="Skip to content">Zum Inhalt springen</a>
+  <body>
+    <a href="#main" class="skip-link">{ui.skip}</a>
     <slot />
-    <Footer />
-    <script is:inline>
-      (() => {
-        const root = document.documentElement;
-        const getLanguage = () => localStorage.getItem("language") || "de";
-        const getTheme = () => localStorage.getItem("theme") || "dark";
+    <Footer lang={lang} />
+    <script>
+      const root = document.documentElement;
 
-        const applyLanguage = (language) => {
-          root.dataset.language = language;
-          document.documentElement.lang = language;
-          localStorage.setItem("language", language);
-
-          document.querySelectorAll("[data-i18n-de][data-i18n-en]").forEach((element) => {
-            const value = element.dataset[language === "en" ? "i18nEn" : "i18nDe"];
-            if (value) element.textContent = value;
-          });
-
-          document.querySelectorAll("[data-language-toggle]").forEach((button) => {
-            button.textContent = language === "en" ? "DE" : "EN";
-            button.setAttribute("aria-pressed", String(language === "en"));
-            button.setAttribute("aria-label", language === "en" ? "Switch to German" : "Sprache auf Englisch wechseln");
-          });
-        };
-
-        const applyTheme = (theme) => {
-          root.dataset.theme = theme;
+      // Theme toggle
+      const themeButtons = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
+      const applyTheme = (theme: string) => {
+        root.dataset.theme = theme;
+        try {
           localStorage.setItem("theme", theme);
-
-          document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-            const isLight = theme === "light";
-            button.textContent = isLight ? "●" : "☼";
-            button.setAttribute("aria-pressed", String(isLight));
-            button.setAttribute("aria-label", isLight ? "Dark Mode aktivieren" : "Light Mode aktivieren");
-          });
-        };
-
-        applyLanguage(getLanguage());
-        applyTheme(getTheme());
-
-        document.querySelectorAll("[data-language-toggle]").forEach((button) => {
-          button.addEventListener("click", () => applyLanguage(getLanguage() === "en" ? "de" : "en"));
+        } catch {}
+        themeButtons.forEach((button) => {
+          const isLight = theme === "light";
+          button.setAttribute("aria-pressed", String(isLight));
+          const label = button.querySelector(".sr-only");
+          if (label) label.textContent = (isLight ? button.dataset.labelDark : button.dataset.labelLight) ?? "";
         });
+      };
+      applyTheme(root.dataset.theme === "light" ? "light" : "dark");
+      themeButtons.forEach((button) =>
+        button.addEventListener("click", () => applyTheme(root.dataset.theme === "light" ? "dark" : "light")),
+      );
 
-        document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-          button.addEventListener("click", () => applyTheme(getTheme() === "light" ? "dark" : "light"));
-        });
+      // Mobile menu: Esc closes, background is inert while open
+      const hamburger = document.querySelector<HTMLButtonElement>(".hamburger");
+      const navLinks = document.querySelector<HTMLElement>(".nav-links");
+      const background = document.querySelectorAll<HTMLElement>("main, footer");
 
-        const hamburger = document.querySelector(".hamburger");
-        const navLinks = document.querySelector(".nav-links");
+      const setMenu = (open: boolean, restoreFocus = false) => {
+        if (!hamburger || !navLinks) return;
+        hamburger.classList.toggle("active", open);
+        navLinks.classList.toggle("active", open);
+        hamburger.setAttribute("aria-expanded", String(open));
+        const label = hamburger.querySelector(".sr-only");
+        if (label) label.textContent = (open ? hamburger.dataset.labelClose : hamburger.dataset.labelOpen) ?? "";
+        background.forEach((element) => (element.inert = open));
+        if (open) navLinks.querySelector("a")?.focus();
+        if (!open && restoreFocus) hamburger.focus();
+      };
 
-        hamburger?.addEventListener("click", () => {
-          const isOpen = hamburger.classList.toggle("active");
-          navLinks?.classList.toggle("active", isOpen);
-          hamburger.setAttribute("aria-expanded", String(isOpen));
-          hamburger.setAttribute("aria-label", isOpen ? "Menü schließen" : "Menü öffnen");
-        });
-
-        navLinks?.querySelectorAll("a").forEach((link) => {
-          link.addEventListener("click", () => {
-            hamburger?.classList.remove("active");
-            navLinks.classList.remove("active");
-            hamburger?.setAttribute("aria-expanded", "false");
-            hamburger?.setAttribute("aria-label", "Menü öffnen");
-          });
-        });
-      })();
+      hamburger?.addEventListener("click", () => setMenu(hamburger.getAttribute("aria-expanded") !== "true"));
+      navLinks?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setMenu(false)));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && hamburger?.getAttribute("aria-expanded") === "true") setMenu(false, true);
+      });
+      window.matchMedia("(min-width: 761px)").addEventListener("change", (event) => {
+        if (event.matches) setMenu(false);
+      });
     </script>
   </body>
 </html>

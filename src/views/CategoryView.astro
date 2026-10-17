@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import RelatedLinks from "../components/RelatedLinks.astro";
+import { OWNER_NAME, type CategoryInfo } from "../data/site";
+import { getActiveCategories, getSiteContent } from "../lib/content";
+import { getAbsoluteImageUrl } from "../lib/images";
+import { categoryPath, localizePath, pick, t, type Lang } from "../lib/i18n";
+
+type Props = {
+  lang: Lang;
+  category: CategoryInfo;
+};
+
+const { lang, category } = Astro.props;
+const ui = t(lang);
+const { projects: allProjects, categories } = await getSiteContent();
+const activeCategories = await getActiveCategories();
+const projects = allProjects.filter((project) => project.category === category.value);
+const origin = Astro.site ?? Astro.url.origin;
+const alternates = { de: categoryPath("de", category.value), en: categoryPath("en", category.value) };
+const label = category.label[lang];
+const description =
+  lang === "de" ? `${label}: Arbeiten von ${OWNER_NAME}. ${category.intro.de}` : `${label}: work by ${OWNER_NAME}. ${category.intro.en}`;
+const projectImages = await Promise.all(projects.map((project) => getAbsoluteImageUrl(project.previewImage, origin, 800)));
+const ogImage = projects[0] ? await getAbsoluteImageUrl(projects[0].previewImage, origin) : undefined;
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${label} – ${OWNER_NAME}`,
+    description,
+    inLanguage: lang,
+    url: new URL(alternates[lang], origin).toString(),
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: projects.map((project, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: pick(lang, project.title, project.titleEn),
+        image: projectImages[index],
+      })),
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: ui.home, item: new URL(localizePath(lang), origin).toString() },
+      { "@type": "ListItem", position: 2, name: label, item: new URL(alternates[lang], origin).toString() },
+    ],
+  },
+];
+
+const otherCategories = activeCategories
+  .filter((item) => item.value !== category.value)
+  .map((item) => ({ label: item.label[lang], href: categoryPath(lang, item.value) }));
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${label} – ${OWNER_NAME}`}
+  description={description}
+  image={ogImage}
+  alternates={alternates}
+  structuredData={structuredData}
+>
+  <Header lang={lang} alternates={alternates} />
+
+  <main id="main">
+    <header class="client-hero category-hero">
+      <div class="container client-hero-inner">
+        <nav class="breadcrumb" aria-label={ui.breadcrumb}>
+          <ol>
+            <li><a href={`${localizePath(lang)}#portfolio`}>{ui.home}</a></li>
+            <li><span aria-current="page">{label}</span></li>
+          </ol>
+        </nav>
+        <div class="client-hero-copy">
+          <p class="eyebrow">{ui.field}</p>
+          <h1>{label}</h1>
+          <p>{category.intro[lang]}</p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section client-work-section category-work-section" aria-label={ui.workFor(label)}>
+      <div class="container">
+        <ProjectGrid projects={projects} categories={categories} lang={lang} />
+      </div>
+    </section>
+
+    <RelatedLinks title={ui.moreFields} links={otherCategories} />
+  </main>
+</BaseLayout>

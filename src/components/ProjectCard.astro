@@ -1,36 +1,52 @@
 ---
-import { Image } from "astro:assets";
-import { categoryLabels } from "../data/site";
+import { getImageUrl, getResponsiveImage } from "../lib/images";
+import { pick, t, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
   project: PortfolioProject;
+  lang: Lang;
+  categoryLabel: string;
+  eager?: boolean;
 };
 
-const { project } = Astro.props;
-const image = project.previewImage;
+const { project, lang, categoryLabel, eager = false } = Astro.props;
+const ui = t(lang);
+const image = await getResponsiveImage(project.previewImage, [400, 640, 960]);
+const fullImage = await getImageUrl(project.previewImage, 1800);
+const title = pick(lang, project.title, project.titleEn);
+const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
+const summary = pick(lang, project.summary, project.summaryEn);
+const meta = [categoryLabel, project.clientProfile?.label, project.year].filter(Boolean).join(" / ");
 ---
 
 <article class="project-card" data-category={project.category}>
-  <figure class="card-image">
-    {
-      typeof image === "string" ? (
-        <img src={image} alt={project.title} loading="lazy" decoding="async" />
-      ) : (
-        <Image
-          src={image}
-          alt={project.title}
-          widths={[420, 720]}
-          sizes="(min-width: 900px) 25vw, 50vw"
-          loading="lazy"
-          decoding="async"
-        />
-      )
-    }
-  </figure>
-  <div class="card-info">
-    <span>{categoryLabels[project.category]} / {project.year}</span>
-    <h3>{project.shortTitle}</h3>
-    <p>{project.summary}</p>
-  </div>
+  <button
+    type="button"
+    class="project-card-trigger"
+    data-lightbox-item
+    data-full={fullImage}
+    data-title={title}
+    data-meta={meta}
+    data-summary={summary}
+    data-alt={project.alt}
+    aria-label={ui.openProject(title)}
+  >
+    <figure class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
+      <img
+        src={image.src}
+        srcset={image.srcset}
+        sizes="(min-width: 820px) 33vw, 50vw"
+        width={image.width}
+        height={image.height}
+        alt={project.alt}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+      />
+    </figure>
+    <span class="card-info">
+      <span class="card-meta">{categoryLabel} / {project.year}</span>
+      <span class="card-title">{shortTitle}</span>
+    </span>
+  </button>
 </article>

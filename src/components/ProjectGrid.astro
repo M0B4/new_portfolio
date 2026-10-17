@@ -1,0 +1,63 @@
+---
+import ProjectCard from "./ProjectCard.astro";
+import Lightbox from "./Lightbox.astro";
+import type { CategoryInfo } from "../data/site";
+import { t, type Lang } from "../lib/i18n";
+import type { PortfolioProject } from "../lib/projects";
+
+type Props = {
+  projects: PortfolioProject[];
+  categories: CategoryInfo[];
+  lang: Lang;
+  filterable?: boolean;
+};
+
+const { projects, categories, lang, filterable = false } = Astro.props;
+const ui = t(lang);
+const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
+const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
+const showFilter = filterable && presentCategories.length > 1;
+---
+
+<div class="project-grid-wrapper" data-project-grid>
+  {
+    showFilter && (
+      <div class="grid-filter" role="group" aria-label={ui.filterLabel}>
+        <button type="button" class="filter-button" data-filter="all" aria-pressed="true">
+          {ui.filterAll} <span class="filter-count">{projects.length}</span>
+        </button>
+        {presentCategories.map((category) => (
+          <button type="button" class="filter-button" data-filter={category.value} aria-pressed="false">
+            {category.label[lang]}{" "}
+            <span class="filter-count">{projects.filter((project) => project.category === category.value).length}</span>
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <div class="client-work-grid">
+    {
+      projects.map((project, index) => (
+        <ProjectCard project={project} lang={lang} categoryLabel={labelFor(project.category)} eager={index < 3} />
+      ))
+    }
+  </div>
+</div>
+<Lightbox lang={lang} />
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach((grid) => {
+    const buttons = grid.querySelectorAll<HTMLButtonElement>("[data-filter]");
+    const cards = grid.querySelectorAll<HTMLElement>(".project-card");
+
+    buttons.forEach((button) =>
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+        buttons.forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
+        cards.forEach((card) => {
+          card.hidden = filter !== "all" && card.dataset.category !== filter;
+        });
+      }),
+    );
+  });
+</script>

@@ -1,83 +1,76 @@
 # Moritz Barz Portfolio
 
-Astro portfolio site for static hosting on GitHub Pages.
+Astro-Portfolio (statisch, GitHub Pages) unter **https://mbarz.de**. Inhalte kommen aus Sanity; lokale
+Markdown-Dateien dienen als Offline-Fallback.
 
-## Development
+## Entwicklung
 
 ```bash
 npm install
-npm run dev
+npm run dev        # Website auf http://127.0.0.1:4321
+npm run studio     # Sanity Studio lokal
+npm run check      # Typecheck (läuft auch in CI)
+npm run build      # Statischer Build nach dist/
 ```
 
-## Build
+## Struktur
 
-```bash
-npm run build
-```
+| Pfad | Inhalt |
+| --- | --- |
+| `src/views/` | Seitenlayouts (Start, Kunde, Kategorie), sprachunabhängig |
+| `src/pages/` | Routen: Deutsch unter `/`, Englisch unter `/en/` |
+| `src/lib/content.ts` | Lädt alle Inhalte einmal pro Build (Sanity → Fallback Markdown) |
+| `src/lib/i18n.ts` | UI-Texte DE/EN, lokalisierte Pfade |
+| `src/data/site.ts` | Domain, Impressumsdaten, Fallback-Kategorien, Social Links |
+| `sanity/schemas/` | Sanity-Schemas |
 
-The static output is generated in `dist/`.
+### URLs
 
-## Add A Project
+| Deutsch | Englisch |
+| --- | --- |
+| `/` | `/en/` |
+| `/kunden/<slug>/` | `/en/clients/<slug>/` |
+| `/kategorien/<kategorie>/` | `/en/categories/<kategorie>/` |
+| `/impressum/`, `/datenschutz/` | – (nur Deutsch) |
 
-1. Add your images to `src/assets/`.
-2. Copy one file from `src/content/work/`.
-3. Rename the copy to the desired URL slug, for example:
+## Inhalte pflegen
 
-```txt
-src/content/work/my-new-project.md
-```
+Projekte, Kunden, Kategorien, Startseiten-/Profiltexte und Social Links werden im Sanity Studio gepflegt
+(siehe [sanity/README.md](sanity/README.md)). Englische Felder sind optional – ohne Eintrag wird der deutsche
+Text verwendet.
 
-4. Update the frontmatter:
+Ist Sanity nicht erreichbar oder leer, baut die Seite aus `src/content/work/*.md` und den Fallback-Daten in
+`src/lib/clients.ts` / `src/data/site.ts`. Ein Build ohne Sanity lässt sich mit
+`PUBLIC_SANITY_PROJECT_ID= npm run build` erzwingen.
 
-```md
----
-title: "My New Project"
-shortTitle: "New Project"
-category: "poster"
-summary: "Short teaser for the portfolio card."
-client: "Client Name"
-year: "2026"
-previewImage: "../../assets/poster/my-image.webp"
-heroImage: "../../assets/poster/my-image.webp"
-details:
-  - "Poster Design"
-services:
-  - "Art Direction"
-gallery:
-  - image: "../../assets/poster/my-image.webp"
-    title: "Poster Artwork"
-order: 110
----
+## Impressum & Datenschutz
 
-Longer project description for the detail page.
-```
+Die Pflichtangaben stehen in `src/data/site.ts` (`legal`). Solange Platzhalter gesetzt sind, gibt der Build
+eine Warnung aus.
 
-The detail page is generated automatically at `/work/my-new-project/`.
+## Sanity → automatischer Rebuild
 
-Valid categories are:
+Der Deploy-Workflow reagiert auf das `repository_dispatch`-Event `sanity-content-changed`:
 
-- `event`
-- `poster`
-- `clothing`
-- `3d-print`
-- `various`
+1. GitHub: Fine-grained Personal Access Token mit Berechtigung **Contents: Read and write** für dieses Repo
+   erstellen.
+2. Sanity → Project → API → Webhooks → **Create webhook**:
+   - URL: `https://api.github.com/repos/<owner>/<repo>/dispatches`
+   - Trigger on: Create, Update, Delete · Filter: `_type in ["project", "client", "category", "siteSettings"]`
+   - HTTP method: `POST`
+   - HTTP headers: `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`
+   - Projection: `{"event_type": "sanity-content-changed"}`
 
-## Formspree
+## Umgebungsvariablen
 
-Set the Formspree endpoint with an environment variable:
+Siehe `.env.example`. Für GitHub Pages:
 
-```bash
-PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/your-form-id
-```
-
-For GitHub Pages, add this as a repository secret named:
-
-```txt
-PUBLIC_FORMSPREE_ENDPOINT
-```
+- Secret `PUBLIC_FORMSPREE_ENDPOINT` – Formspree-Endpunkt des Kontaktformulars
+- Variable `PUBLIC_PLAUSIBLE_DOMAIN` – optional, aktiviert cookielose Statistik mit Plausible
+  (der Datenschutz-Abschnitt dazu erscheint dann automatisch)
 
 ## GitHub Pages
 
-The workflow in `.github/workflows/deploy.yml` builds and deploys the site on every push to `main`.
-
-It automatically detects whether the repository is a user page repository (`username.github.io`) or a project page repository and sets Astro's `site` and `base` values accordingly.
+`.github/workflows/deploy.yml` baut und deployt bei jedem Push auf `main`, bei Sanity-Änderungen und manuell.
+Die Domain kommt aus `public/CNAME`. `.github/workflows/lighthouse.yml` prüft Pull Requests mit Lighthouse
+(Schwellenwerte in `lighthouserc.json`).

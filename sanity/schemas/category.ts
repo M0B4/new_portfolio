@@ -12,6 +12,11 @@ export const category = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "titleEn",
+      title: "Name Englisch",
+      type: "string",
+    }),
+    defineField({
       name: "value",
       title: "Technischer Wert",
       type: "string",

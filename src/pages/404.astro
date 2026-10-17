@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import { localizePath, t } from "../lib/i18n";
+
+const de = t("de");
+const en = t("en");
+---
+
+<BaseLayout lang="de" title={`404 – ${de.notFoundTitle} | Moritz Barz`} description={de.notFoundText} noindex>
+  <Header lang="de" />
+
+  <main id="main" class="legal-page not-found">
+    <section class="section">
+      <div class="container legal-layout">
+        <p class="kicker">404</p>
+        <div class="legal-content">
+          <h1>{de.notFoundTitle}</h1>
+          <p>{de.notFoundText}</p>
+          <p><a class="btn" href={localizePath("de")}>{de.notFoundCta}</a></p>
+          <div lang="en">
+            <h2>{en.notFoundTitle}</h2>
+            <p>{en.notFoundText}</p>
+            <p><a href={localizePath("en")}>{en.notFoundCta}</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

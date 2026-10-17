@@ -1,29 +1,32 @@
 # Sanity Setup
 
-Dieses Projekt ist so vorbereitet, dass Astro lokal weiter mit den vorhandenen Markdown-Projekten baut. Sobald die Sanity-Variablen gesetzt sind und dort Projekte existieren, nutzt die Website Sanity als Quelle.
+Sanity ist die Hauptquelle für alle Inhalte. Die Website baut aus den lokalen Markdown-Projekten, wenn Sanity
+nicht erreichbar ist oder keine Projekte enthält.
 
 ## Bereiche im Studio
 
-- `Projekt`: Portfolio-Kachel mit Titel, Kunde, Kategorie, Jahr, Kurztext, Hauptbild und Sortierung.
-- `Kunde / Kontext`: Wacken, Metal im Dorf, DLRG usw. mit Logo, Intro und SEO-Kurztext.
-- `Kategorie`: Poster, Merch, Eventdesign, 3D-Print und Objekte.
-- `Website-Einstellungen`: Grundlage für spätere Pflege von Startseiten-Texten und SEO.
+- `Website-Einstellungen`: SEO-Texte, Akzentfarben, Hintergrund, Startseiten-Hero, Profiltext und Social Links.
+- `Partner / Kunden`: Wacken, Metal im Dorf, DLRG usw. mit Logo, Intro und SEO-Kurztext (jeweils DE/EN).
+- `Projekte`: Kachel mit Titel, Kunde, Kategorie, Jahr, Kurztext, Hauptbild (mit Alt-Text) und Sortierung.
+  „Hervorheben“ setzt ein Projekt in die Bildcollage auf der Startseite (max. 3).
+- `Kategorien`: Name und Intro (DE/EN) sowie Reihenfolge der Arbeitsarten.
 
-## Projekt Anlegen
+Englische Felder sind optional; ohne Eintrag wird der deutsche Text angezeigt.
+
+## Projekt anlegen
 
 1. Zuerst einen `Kunde / Kontext` anlegen.
-2. Danach ein `Projekt` anlegen.
-3. Als Kategorie einen der festen Werte wählen.
-4. Ein Hauptbild hochladen.
-5. `Sortierung` setzen. Kleinere Zahlen erscheinen weiter vorne.
+2. Danach ein `Projekt` anlegen und den Kunden verknüpfen.
+3. Kategorie wählen, Hauptbild hochladen und einen **Alt-Text** eintragen (wichtig für Barrierefreiheit).
+4. `Sortierung` setzen. Kleinere Zahlen erscheinen weiter vorne.
 
-Die Website zeigt weiterhin nur ein Bild pro Projekt. Projekt-Unterseiten sind bewusst nicht aktiv.
+Die Website zeigt ein Bild pro Projekt; ein Klick öffnet die Großansicht (Lightbox).
 
 ## Lokale Befehle
 
 ```bash
-npm run studio
-npm run build
+npm run studio          # Studio lokal
+npm run studio:deploy   # Studio unter <name>.sanity.studio veröffentlichen
 ```
 
 ## Benötigte Umgebungswerte
@@ -36,4 +39,4 @@ SANITY_STUDIO_PROJECT_ID=...
 SANITY_STUDIO_DATASET=production
 ```
 
-Für GitHub Pages müssen die `PUBLIC_...` Werte als Repository-Secrets oder Build-Environment gesetzt werden, wenn live aus Sanity gebaut werden soll.
+Damit Änderungen automatisch live gehen, den Webhook aus der Haupt-README einrichten.

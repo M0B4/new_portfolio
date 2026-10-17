@@ -1,79 +1,14 @@
-﻿---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import Header from "../../components/Header.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
-import { categoryLabels, categoryIntros, categoryOrder, type ProjectCategory } from "../../data/site";
-import { getPortfolioProjects, getProjectImageUrl, type PortfolioProject } from "../../lib/projects";
+---
+import CategoryView from "../../views/CategoryView.astro";
+import type { CategoryInfo } from "../../data/site";
+import { getActiveCategories } from "../../lib/content";
 
 export async function getStaticPaths() {
-  const staticCategoryOrder = categoryOrder;
-  const projects = await getPortfolioProjects();
-
-  return staticCategoryOrder
-    .map((category) => {
-      const categoryProjects = projects.filter((project) => project.category === category);
-      return categoryProjects.length
-        ? {
-            params: { category },
-            props: {
-              category,
-              projects: categoryProjects,
-            },
-          }
-        : null;
-    })
-    .filter(Boolean);
+  const categories = await getActiveCategories();
+  return categories.map((category) => ({ params: { category: category.value }, props: { category } }));
 }
 
-type Props = {
-  category: ProjectCategory;
-  projects: PortfolioProject[];
-};
-
-const { category, projects } = Astro.props;
-const origin = Astro.site ?? Astro.url.origin;
-const label = categoryLabels[category];
-const intro = categoryIntros[category];
-const preview = projects[0] ? getProjectImageUrl(projects[0], origin) : undefined;
-
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: `${label} - Moritz Barz Portfolio`,
-  description: `${label} Arbeiten von Moritz Barz.`,
-  url: Astro.url.toString(),
-  mainEntity: {
-    "@type": "ItemList",
-    itemListElement: projects.map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      name: project.title,
-      image: getProjectImageUrl(project, origin),
-    })),
-  },
-};
+type Props = { category: CategoryInfo };
 ---
 
-<BaseLayout title={`${label} - Moritz Barz`} description={`${label} Arbeiten von Moritz Barz.`} image={preview ?? "images/header.jpg"} structuredData={structuredData}>
-  <Header />
-
-    <main id="main">
-    <section class="client-hero category-hero" aria-labelledby="category-title">
-      <div class="container client-hero-inner">
-        <div class="client-hero-copy">
-          <p class="eyebrow" data-i18n-de="Arbeitsart" data-i18n-en="Field">Arbeitsart</p>
-          <h1 id="category-title">{label}</h1>
-          <p data-i18n-de={intro.de} data-i18n-en={intro.en}>{intro.de}</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section client-work-section category-work-section" aria-label={`${label} Arbeiten`}>
-      <div class="container">
-        <div class="client-work-grid">
-          {projects.map((project) => <ProjectCard project={project} />)}
-        </div>
-      </div>
-    </section>
-  </main>
-</BaseLayout>
+<CategoryView lang="de" category={Astro.props.category} />

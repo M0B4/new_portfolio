@@ -1,72 +1,154 @@
 ---
-import { formspreeEndpoint } from "../data/site";
+import { formspreeEndpoint, SITE_HOST } from "../data/site";
+import { getActiveCategories, getSiteContent } from "../lib/content";
+import { legalPath, localizePath, t, type Lang } from "../lib/i18n";
 
-const base = import.meta.env.BASE_URL;
+type Props = {
+  lang: Lang;
+};
+
+const { lang } = Astro.props;
+const ui = t(lang);
+const { socialLinks } = await getSiteContent();
+const categories = await getActiveCategories();
+const messages = {
+  sending: ui.formSending,
+  ok: ui.formOk,
+  bad: ui.formBad,
+  invalid: ui.formInvalid,
+  required: ui.formRequired,
+  email: ui.formEmailInvalid,
+};
 ---
 
 <footer id="contact" class="contact-footer">
   <div class="container contact-layout">
     <div class="footer-contact-copy">
-      <p class="kicker" data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</p>
-      <h2 data-i18n-de="Projekt anfragen" data-i18n-en="Start a project">Projekt anfragen</h2>
-      <p data-i18n-de="Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung." data-i18n-en="A short context is enough. I will get back with a clear assessment.">Kurzer Kontext reicht. Ich melde mich mit einer klaren Einschätzung.</p>
+      <p class="kicker">{ui.contactKicker}</p>
+      <h2>{ui.contactTitle}</h2>
+      <p>{ui.contactText}</p>
+      {
+        socialLinks.length > 0 && (
+          <ul class="social-links" aria-label={ui.social}>
+            {socialLinks.map((link) => (
+              <li>
+                <a href={link.url} rel="me noopener" target="_blank">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
     </div>
-        <form id="contact-form" class="contact-form" name="contact" method="POST" action={formspreeEndpoint} novalidate>
-      <label for="footer-name">
-        <span data-i18n-de="Name / Brand" data-i18n-en="Name / Brand">Name / Brand</span>
-        <input id="footer-name" name="name" type="text" autocomplete="name" required />
-      </label>
-      <label for="footer-email">
-        <span data-i18n-de="Email" data-i18n-en="Email">Email</span>
-        <input id="footer-email" name="email" type="email" autocomplete="email" required />
-      </label>
-      <label class="contact-message" for="footer-message">
-        <span data-i18n-de="Projekt" data-i18n-en="Project">Projekt</span>
-        <textarea id="footer-message" name="message" rows="2" required></textarea>
-      </label>
-      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" />
-      <input type="hidden" name="_subject" value="Neue Projektanfrage über moritzbarz.de" />
-            <div class="contact-actions">
-        <button type="submit" class="btn" data-i18n-de="Senden" data-i18n-en="Send">Senden</button>
+    <form
+      id="contact-form"
+      class="contact-form"
+      name="contact"
+      method="POST"
+      action={formspreeEndpoint}
+      novalidate
+      data-messages={JSON.stringify(messages)}
+    >
+      <div class="form-field">
+        <label for="footer-name">{ui.formName}</label>
+        <input id="footer-name" name="name" type="text" autocomplete="name" required aria-describedby="footer-name-error" />
+        <p class="field-error" id="footer-name-error"></p>
+      </div>
+      <div class="form-field">
+        <label for="footer-email">{ui.formEmail}</label>
+        <input id="footer-email" name="email" type="email" autocomplete="email" required aria-describedby="footer-email-error" />
+        <p class="field-error" id="footer-email-error"></p>
+      </div>
+      <div class="form-field">
+        <label for="footer-type">{ui.formType}</label>
+        <select id="footer-type" name="projectType">
+          <option value="">{ui.formTypeChoose}</option>
+          {categories.map((category) => <option value={category.label.de}>{category.label[lang]}</option>)}
+          <option value="Sonstiges">{ui.formTypeOther}</option>
+        </select>
+      </div>
+      <div class="form-field contact-message">
+        <label for="footer-message">{ui.formMessage}</label>
+        <textarea id="footer-message" name="message" rows="4" required aria-describedby="footer-message-error"></textarea>
+        <p class="field-error" id="footer-message-error"></p>
+      </div>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" aria-hidden="true" />
+      <input type="hidden" name="_subject" value={`Neue Projektanfrage über ${SITE_HOST}`} />
+      <input type="hidden" name="language" value={lang} />
+      <p class="form-privacy">
+        {ui.formPrivacy} <a href={legalPath("datenschutz")}>{ui.privacy}</a>.
+      </p>
+      <div class="contact-actions">
+        <button type="submit" class="btn">{ui.formSend}</button>
         <p id="contact-form-status" class="form-status" role="status" aria-live="polite"></p>
       </div>
     </form>
-    <script is:inline>
-      (() => {
-        const form = document.getElementById("contact-form");
-        if (!form) return;
-        const status = document.getElementById("contact-form-status");
-        const submit = form.querySelector("[type=submit]");
-        const texts = (document.documentElement.dataset.language === "en")
-          ? { sending: "Sending…", ok: "Message sent. I will get back to you soon.", bad: "Something went wrong. Please try again." }
-          : { sending: "Wird gesendet…", ok: "Nachricht gesendet. Ich melde mich bald.", bad: "Leider ein Fehler beim Senden. Bitte erneut versuchen." };
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          if (submit) submit.disabled = true;
-          status.textContent = texts.sending;
-          try {
-            const payload = Object.fromEntries(new FormData(form).entries());
-            const res = await fetch(form.action || window.location.href, {
-              method: "POST",
-              headers: { Accept: "application/json", "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            if (res.ok) { form.reset(); status.textContent = texts.ok; }
-            else { status.textContent = texts.bad; }
-          } catch {
-            status.textContent = texts.bad;
-          }
-          if (submit) submit.disabled = false;
-        });
-      })();
-    </script>
   </div>
   <div class="container footer-meta">
     <span>MORITZ<span>BARZ</span></span>
-    <nav aria-label="Footer">
-      <a href={`${base}#contact`} data-i18n-de="Kontakt" data-i18n-en="Contact">Kontakt</a>
-            <a href={`${base}impressum/`} data-i18n-de="Impressum" data-i18n-en="Legal notice">Impressum</a>
-      <a href={`${base}datenschutz/`} data-i18n-de="Datenschutz" data-i18n-en="Privacy">Datenschutz</a>
+    <nav aria-label={ui.footerNav}>
+      <a href={`${localizePath(lang)}#contact`}>{ui.navContact}</a>
+      <a href={legalPath("impressum")} hreflang="de">{ui.imprint}</a>
+      <a href={legalPath("datenschutz")} hreflang="de">{ui.privacy}</a>
     </nav>
   </div>
 </footer>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#contact-form");
+
+  if (form) {
+    const status = form.querySelector<HTMLElement>("#contact-form-status")!;
+    const submit = form.querySelector<HTMLButtonElement>("[type=submit]");
+    const messages = JSON.parse(form.dataset.messages ?? "{}") as Record<string, string>;
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input[required], textarea[required]")];
+
+    const validate = (field: HTMLInputElement | HTMLTextAreaElement) => {
+      const error = document.getElementById(`${field.id}-error`);
+      const message = field.validity.valueMissing
+        ? messages.required
+        : field.validity.typeMismatch
+          ? messages.email
+          : "";
+      field.setAttribute("aria-invalid", String(Boolean(message)));
+      if (error) error.textContent = message;
+      return !message;
+    };
+
+    fields.forEach((field) =>
+      field.addEventListener("blur", () => {
+        if (field.value || field.getAttribute("aria-invalid") === "true") validate(field);
+      }),
+    );
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const invalid = fields.filter((field) => !validate(field));
+      if (invalid.length > 0) {
+        status.textContent = messages.invalid;
+        invalid[0].focus();
+        return;
+      }
+
+      if (submit) submit.disabled = true;
+      status.textContent = messages.sending;
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: new FormData(form),
+        });
+        if (response.ok) {
+          form.reset();
+          status.textContent = messages.ok;
+        } else {
+          status.textContent = messages.bad;
+        }
+      } catch {
+        status.textContent = messages.bad;
+      }
+      if (submit) submit.disabled = false;
+    });
+  }
+</script>

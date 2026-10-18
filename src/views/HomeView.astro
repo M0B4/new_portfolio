@@ -44,18 +44,18 @@ for (const stop of stops) {
 }
 const selected = highlights.slice(0, 3);
 
-const heroKicker = pick(lang, settings.heroKickerDe || "Moritz Barz / Grafikdesign", settings.heroKickerEn || "Moritz Barz / Graphic design");
+const heroKicker = pick(lang, settings.heroKickerDe || "Grafikdesign · Poster · Merch · 3D-Druck", settings.heroKickerEn || "Graphic design · Posters · Merch · 3D printing");
 const heroTitle = pick(
   lang,
-  settings.heroTitleDe || "Grafik, Merch und Objekte für laute Kontexte.",
-  settings.heroTitleEn || "Graphics, merch and objects for loud contexts.",
+  settings.heroTitleDe || "Poster, Merch und Artwork für Festivals, Bands und die Metal-Szene.",
+  settings.heroTitleEn || "Posters, merch and artwork for festivals, bands and the metal scene.",
 );
 const heroText = pick(
   lang,
   settings.heroTextDe ||
-    "Visuelle Arbeiten für Festivals, Events, Szene-Marken und funktionale Anwendungen: rau im Charakter, sauber in der Umsetzung.",
+    "Ich bin Moritz, Grafikdesigner aus der Pfalz. Ich gestalte Plakate, Shirts und Bändchen, die auf dem Festivalgelände genauso funktionieren wie im Feed, und konstruiere funktionale Teile für den 3D-Druck.",
   settings.heroTextEn ||
-    "Visual work for festivals, events, scene brands and functional use: rough in character, precise in execution.",
+    "I'm Moritz, a graphic designer from southwest Germany. I design posters, shirts and wristbands that work on the festival grounds as well as in your feed, and I build functional parts for 3D printing.",
 );
 const aboutText = (lang === "en" ? settings.aboutTextEn : settings.aboutTextDe) || ui.profileText;
 const aboutParagraphs = aboutText.split(/\n\s*\n/).filter(Boolean);

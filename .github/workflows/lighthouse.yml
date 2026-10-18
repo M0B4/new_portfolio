@@ -34,3 +34,23 @@ jobs:
           configPath: ./lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: false
+
+      - name: Show failing audits
+        if: failure()
+        run: |
+          node -e '
+            const fs = require("fs");
+            for (const file of fs.readdirSync(".lighthouseci").filter((f) => /^lhr-.*\.json$/.test(f))) {
+              const lhr = JSON.parse(fs.readFileSync(`.lighthouseci/${file}`, "utf8"));
+              for (const [id, category] of Object.entries(lhr.categories)) {
+                if (category.score === 1 || id === "performance") continue;
+                for (const ref of category.auditRefs) {
+                  const audit = lhr.audits[ref.id];
+                  if (ref.weight === 0 || audit.score === null || audit.score === 1) continue;
+                  const items = (audit.details?.items ?? []).slice(0, 5).map((item) => JSON.stringify(item.node?.snippet ?? item.href ?? item.source ?? item));
+                  console.log(`${lhr.finalDisplayedUrl} [${id}] ${ref.id} (${audit.score}): ${audit.title}`);
+                  items.forEach((item) => console.log(`    ${item.slice(0, 300)}`));
+                }
+              }
+            }
+          '

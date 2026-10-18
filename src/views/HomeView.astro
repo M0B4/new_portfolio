@@ -125,7 +125,7 @@ const structuredData = [
                   decoding="async"
                 />
               ))}
-              <span class:list={["hero-frame", { taped: !heroImage.transparent }]}>
+              <span class:list={["hero-frame", heroImage.transparent ? "has-cutout" : "taped"]}>
                 <img
                   class:list={["hero-image", { "is-cutout": heroImage.transparent }]}
                   src={heroImage.src}

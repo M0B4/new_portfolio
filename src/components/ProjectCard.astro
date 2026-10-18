@@ -50,7 +50,7 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
     data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
   >
-    <span class="card-image">
+    <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img
         class={image.transparent ? "is-cutout" : undefined}
         style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}

@@ -217,6 +217,7 @@
 
 /* Cut-out artwork (shirt mockups) lies on the paper as it is: no margin, the shadow follows its outline */
 .hero-image.is-cutout {
+  position: relative;
   border: 0;
   box-shadow: none;
   filter: var(--cutout-shadow);
@@ -429,12 +430,29 @@
 .project-card-trigger:hover .card-image img.is-cutout,
 .project-card-trigger:focus-visible .card-image img.is-cutout {
   box-shadow: none;
-  filter: drop-shadow(0 18px 14px rgba(14, 13, 12, 0.4));
+  filter: var(--cutout-edge) drop-shadow(0 18px 14px rgba(14, 13, 12, 0.4));
 }
 
 .project-card-trigger:active .card-image img.is-cutout {
   box-shadow: none;
-  filter: drop-shadow(0 4px 4px rgba(14, 13, 12, 0.45));
+  filter: var(--cutout-edge) drop-shadow(0 4px 4px rgba(14, 13, 12, 0.45));
+}
+
+/* A halftone dot screen printed on the wall behind the cut-out, like on a copied flyer */
+.card-image.has-cutout::before,
+.hero-frame.has-cutout::before {
+  content: "";
+  position: absolute;
+  inset: 8% 4%;
+  background: var(--halftone-dots);
+  -webkit-mask: radial-gradient(closest-side, #000 25%, transparent);
+  mask: radial-gradient(closest-side, #000 35%, transparent);
+  transform: rotate(-6deg);
+  pointer-events: none;
+}
+
+.card-image.has-cutout::before {
+  inset: 10% 0;
 }
 
 .card-badge {
@@ -962,8 +980,6 @@
 
 .lightbox-figure {
   position: relative;
-  display: grid;
-  place-items: center;
   min-height: 0;
   overflow: hidden;
 }
@@ -994,16 +1010,23 @@
   }
 }
 
+/* Centred in the figure and never larger than it, so every work is shown whole */
 .lightbox-image {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  height: auto;
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain;
 }
 
+/* Cut-outs would vanish on the dark overlay: glued onto a sheet of paper with a halftone screen */
 .lightbox-image.is-cutout {
   box-sizing: border-box;
   padding: clamp(1rem, 4vw, 3rem);
-  background: var(--paper);
+  background: radial-gradient(closest-side, transparent 35%, var(--paper)), var(--halftone-dots), var(--paper);
+  filter: none;
 }
 
 .lightbox-caption {

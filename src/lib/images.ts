@@ -1,3 +1,4 @@
+import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import sharp from "sharp";
 import { isSanityImage, type PortfolioImage } from "./projects";
@@ -16,8 +17,8 @@ export type ResponsiveImage = {
 const transparencyCache = new Map<string, Promise<boolean>>();
 
 /** True when a local image has see-through pixels; Astro keeps the source path on `fsPath`. */
-const hasTransparency = (image: { fsPath?: string }) => {
-  const file = image.fsPath;
+const hasTransparency = (image: ImageMetadata) => {
+  const file = (image as ImageMetadata & { fsPath?: string }).fsPath;
   if (!file) return Promise.resolve(false);
   if (!transparencyCache.has(file)) {
     transparencyCache.set(

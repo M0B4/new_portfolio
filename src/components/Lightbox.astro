@@ -36,7 +36,7 @@ const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2",
 </dialog>
 
 <script>
-  type Slide = { src: string; alt: string; title: string; meta: string; summary: string; index: number; total: number };
+  type Slide = { src: string; alt: string; cutout?: boolean; title: string; meta: string; summary: string; index: number; total: number };
 
   const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
 
@@ -58,7 +58,7 @@ const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2",
       const list: Slide[] = [];
       document.querySelectorAll<HTMLButtonElement>("[data-lightbox-item]").forEach((item) => {
         if (item.closest("[hidden]")) return;
-        const images = JSON.parse(item.dataset.slides ?? "[]") as { src: string; alt: string }[];
+        const images = JSON.parse(item.dataset.slides ?? "[]") as { src: string; alt: string; cutout?: boolean }[];
         starts.set(item, list.length);
         images.forEach((entry, index) =>
           list.push({
@@ -79,6 +79,8 @@ const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2",
       const slide = slides[current];
       image.src = slide.src;
       image.alt = slide.alt;
+      // Cut-out shirts would vanish on the dark overlay: show them on a sheet of paper
+      image.classList.toggle("is-cutout", Boolean(slide.cutout));
       // Restart the photocopier scan for every slide
       figure.classList.remove("is-scanning");
       void figure.offsetWidth;

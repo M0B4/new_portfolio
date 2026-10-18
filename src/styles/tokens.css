@@ -13,6 +13,15 @@
   /* Stamp red: decoration and large text only */
   --red: #c23a22;
   --tape: rgba(226, 214, 176, 0.82);
+  /* White margin of a photocopy / photo print around every work */
+  --print: #f8f5ee;
+  --print-shadow: 0 12px 20px -12px rgba(14, 13, 12, 0.6);
+  /* Cut out with scissors and glued on: a white paper edge around the outline, then a shadow */
+  --cutout-edge: drop-shadow(3px 0 0 var(--print)) drop-shadow(-3px 0 0 var(--print)) drop-shadow(0 3px 0 var(--print))
+    drop-shadow(0 -3px 0 var(--print));
+  --cutout-shadow: var(--cutout-edge) drop-shadow(0 8px 8px rgba(14, 13, 12, 0.35));
+  /* Halftone screen fading out from the middle, printed behind cut-outs */
+  --halftone-dots: radial-gradient(circle, var(--gold) 2px, transparent 2.5px) 0 0 / 8px 8px;
 
   /* Roles (paper page) */
   --page: var(--paper);

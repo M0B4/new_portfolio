@@ -1,5 +1,5 @@
 ---
-import { getImageUrl, getResponsiveImage } from "../lib/images";
+import { getImageUrl, getResponsiveImage, isTransparent } from "../lib/images";
 import { pick, t, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
 
@@ -30,6 +30,7 @@ const slides = await Promise.all(
   [{ image: project.previewImage, alt: project.alt }, ...project.gallery].map(async (item) => ({
     src: await getImageUrl(item.image, 1800),
     alt: item.alt,
+    cutout: await isTransparent(item.image),
   })),
 );
 const title = pick(lang, project.title, project.titleEn);
@@ -49,8 +50,10 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
     data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
   >
-    <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
+    <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img
+        class={image.transparent ? "is-cutout" : undefined}
+        style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}
         src={image.src}
         srcset={image.srcset}
         sizes={sizes}

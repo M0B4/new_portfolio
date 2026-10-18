@@ -33,6 +33,7 @@ export type SanityImage = {
   width: number;
   height: number;
   lqip?: string;
+  isOpaque?: boolean;
   alt?: string;
 };
 
@@ -110,7 +111,8 @@ const imageProjection = `{
   "url": asset->url,
   "width": asset->metadata.dimensions.width,
   "height": asset->metadata.dimensions.height,
-  "lqip": asset->metadata.lqip
+  "lqip": asset->metadata.lqip,
+  "isOpaque": asset->metadata.isOpaque
 }`;
 
 const clientProjection = `{

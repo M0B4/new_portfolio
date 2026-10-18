@@ -37,6 +37,7 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: "accentDark",
+      hidden: true, // the gold accent is fixed in the design system
       title: "Highlightfarbe Dark Mode",
       type: "string",
       description: "Hex-Farbe, z. B. #e1262f.",
@@ -46,6 +47,7 @@ export const siteSettings = defineType({
     }),
     defineField({
       name: "accentLight",
+      hidden: true, // the gold accent is fixed in the design system
       title: "Highlightfarbe Light Mode",
       type: "string",
       description: "Hex-Farbe, z. B. #b40f1d.",

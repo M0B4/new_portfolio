@@ -1,5 +1,5 @@
-﻿---
-import { localizePath, t, type Alternates, type Lang } from "../lib/i18n";
+---
+import { localizePath, t, workPath, type Alternates, type Lang } from "../lib/i18n";
 
 type Props = {
   lang: Lang;
@@ -14,17 +14,18 @@ const home = localizePath(lang);
 const normalizedPath = Astro.url.pathname.replace(/\/+$/, "/");
 const isHome = normalizedPath === home;
 const sectionHref = (hash: string) => (isHome ? hash : `${home}${hash}`);
+const workHref = workPath(lang);
+const onWorkPage = normalizedPath === workHref;
 ---
 
 <header class="navbar" id="top">
   <nav class="nav-container" aria-label={ui.navLabel}>
     <a href={home} class="logo">
-      <span class="logo-stamp" aria-hidden="true">MB</span>
       <span class="logo-text">Moritz Barz</span><span class="sr-only"> – {ui.home}</span>
     </a>
     <ul class="nav-links" id="primary-navigation">
-      <li><a href={sectionHref("#work")} data-section="work">{ui.navWork}</a></li>
-      <li><a href={sectionHref("#portfolio")} data-section="portfolio">{ui.clientsKicker}</a></li>
+      <li><a href={workHref} aria-current={onWorkPage ? "page" : undefined}>{ui.navWork}</a></li>
+      <li><a href={sectionHref("#clients")} data-section="clients">{ui.navClients}</a></li>
       <li><a href={sectionHref("#about")} data-section="about">{ui.navAbout}</a></li>
       <li><a href={sectionHref("#contact")} data-section="contact">{ui.navContact}</a></li>
     </ul>

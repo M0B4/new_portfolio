@@ -2,6 +2,7 @@
 import ProjectCard from "./ProjectCard.astro";
 import Lightbox from "./Lightbox.astro";
 import type { CategoryInfo } from "../data/site";
+import type { ClientGroup } from "../lib/clients";
 import { t, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
 
@@ -9,9 +10,12 @@ type Props = {
   projects: PortfolioProject[];
   categories: CategoryInfo[];
   lang: Lang;
+  /** Show a filter by field (category). */
   filterable?: boolean;
-  /** "editorial": asymmetric 12-column layout; "masonry": even columns. */
-  layout?: "editorial" | "masonry";
+  /** Also show a filter by client (combined with the field filter). */
+  clients?: ClientGroup[];
+  /** "trio": three equal columns (home highlights); "grid": responsive gallery grid. */
+  layout?: "trio" | "grid";
   /** Render the lightbox dialog. Pages with several grids render it only once. */
   lightbox?: boolean;
   eagerCount?: number;
@@ -24,35 +28,61 @@ const {
   categories,
   lang,
   filterable = false,
-  layout = "editorial",
+  clients = [],
+  layout = "grid",
   lightbox = true,
   eagerCount = 1,
   priorityFirst = false,
 } = Astro.props;
 const ui = t(lang);
 const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
+const clientOf = (project: PortfolioProject) => clients.find((group) => group.projects.includes(project))?.profile.slug;
 const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
-const showFilter = filterable && presentCategories.length > 1;
-// Editorial cards span 4–7 of 12 columns on desktop, half the width on tablets, full width on phones.
+const presentClients = clients.filter((group) => group.projects.some((project) => projects.includes(project)));
+const showFieldFilter = filterable && presentCategories.length > 1;
+const showClientFilter = presentClients.length > 1;
 const sizes =
-  layout === "editorial"
-    ? "(min-width: 820px) 50vw, (min-width: 521px) 46vw, calc(100vw - 2.5rem)"
-    : "(min-width: 820px) 33vw, 50vw";
+  layout === "trio"
+    ? "(min-width: 820px) 31vw, (min-width: 521px) 46vw, calc(100vw - 2.5rem)"
+    : "(min-width: 1100px) 31vw, (min-width: 521px) 46vw, calc(100vw - 2.5rem)";
 ---
 
 <div class="project-grid-wrapper" data-project-grid>
   {
-    showFilter && (
-      <div class="grid-filter" role="group" aria-label={ui.filterLabel}>
-        <button type="button" class="filter-button" data-filter="all" aria-pressed="true">
-          {ui.filterAll} <span class="filter-count">{projects.length}</span>
-        </button>
-        {presentCategories.map((category) => (
-          <button type="button" class="filter-button" data-filter={category.value} aria-pressed="false">
-            {category.label[lang]}{" "}
-            <span class="filter-count">{projects.filter((project) => project.category === category.value).length}</span>
-          </button>
-        ))}
+    (showFieldFilter || showClientFilter) && (
+      <div class="grid-filters">
+        {showFieldFilter && (
+          <div class="grid-filter" role="group" aria-label={ui.filterLabel} data-filter-group="category">
+            <span class="spec grid-filter-label" aria-hidden="true">
+              {ui.field}
+            </span>
+            <button type="button" class="filter-button" data-filter="all" aria-pressed="true">
+              {ui.filterAll}
+            </button>
+            {presentCategories.map((category) => (
+              <button type="button" class="filter-button" data-filter={category.value} aria-pressed="false">
+                {category.label[lang]}{" "}
+                <span class="filter-count">{projects.filter((project) => project.category === category.value).length}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {showClientFilter && (
+          <div class="grid-filter" role="group" aria-label={ui.filterClientLabel} data-filter-group="client">
+            <span class="spec grid-filter-label" aria-hidden="true">
+              {ui.client}
+            </span>
+            <button type="button" class="filter-button" data-filter="all" aria-pressed="true">
+              {ui.filterAll}
+            </button>
+            {presentClients.map((group) => (
+              <button type="button" class="filter-button" data-filter={group.profile.slug} aria-pressed="false">
+                {group.profile.label}{" "}
+                <span class="filter-count">{group.projects.filter((project) => projects.includes(project)).length}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     )
   }
@@ -63,6 +93,7 @@ const sizes =
           project={project}
           lang={lang}
           categoryLabel={labelFor(project.category)}
+          clientSlug={clientOf(project)}
           eager={index < eagerCount}
           priority={priorityFirst && index === 0}
           sizes={sizes}
@@ -70,22 +101,39 @@ const sizes =
       ))
     }
   </div>
+  <p class="grid-empty" role="status" hidden>{ui.filterEmpty}</p>
 </div>
 {lightbox && <Lightbox lang={lang} />}
 
 <script>
+  // Filter groups (field, client) combine with AND; the lightbox only pages through visible cards.
   document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach((grid) => {
-    const buttons = grid.querySelectorAll<HTMLButtonElement>("[data-filter]");
-    const cards = grid.querySelectorAll<HTMLElement>(".project-card");
+    const groups = [...grid.querySelectorAll<HTMLElement>("[data-filter-group]")];
+    const cards = [...grid.querySelectorAll<HTMLElement>(".project-card")];
+    const empty = grid.querySelector<HTMLElement>(".grid-empty");
+    const active: Record<string, string> = {};
 
-    buttons.forEach((button) =>
-      button.addEventListener("click", () => {
-        const filter = button.dataset.filter;
-        buttons.forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
-        cards.forEach((card) => {
-          card.hidden = filter !== "all" && card.dataset.category !== filter;
-        });
-      }),
-    );
+    const apply = () => {
+      let visible = 0;
+      cards.forEach((card) => {
+        const show = Object.entries(active).every(([group, value]) => value === "all" || card.dataset[group] === value);
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      if (empty) empty.hidden = visible > 0;
+    };
+
+    groups.forEach((group) => {
+      const name = group.dataset.filterGroup!;
+      active[name] = "all";
+      const buttons = [...group.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+      buttons.forEach((button) =>
+        button.addEventListener("click", () => {
+          active[name] = button.dataset.filter ?? "all";
+          buttons.forEach((other) => other.setAttribute("aria-pressed", String(other === button)));
+          apply();
+        }),
+      );
+    });
   });
 </script>

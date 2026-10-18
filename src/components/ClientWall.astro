@@ -1,0 +1,38 @@
+---
+// Large logo wall on a black band: the clients as advertising, each tile linking to its work.
+import ClientLogo from "./ClientLogo.astro";
+import type { TourStop } from "../lib/content";
+import { clientPath, t, type Lang } from "../lib/i18n";
+
+type Props = {
+  stops: TourStop[];
+  lang: Lang;
+};
+
+const { stops, lang } = Astro.props;
+const ui = t(lang);
+---
+
+<ul class="client-wall" aria-label={ui.clientsListLabel}>
+  {
+    stops.map((stop) => (
+      <li>
+        <a class="client-tile" href={clientPath(lang, stop.profile.slug)}>
+          <span class="client-tile-logo">
+            {stop.profile.logo ? (
+              <ClientLogo profile={stop.profile} height={110} />
+            ) : (
+              <span class="client-tile-text" aria-hidden="true">
+                {stop.profile.label}
+              </span>
+            )}
+          </span>
+          <span class="client-tile-name">{stop.profile.label}</span>
+          <span class="spec client-tile-meta">
+            {[stop.years, stop.projects.length > 0 ? ui.projectCount(stop.projects.length) : ""].filter(Boolean).join(" · ")}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

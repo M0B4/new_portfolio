@@ -7,15 +7,25 @@ type Props = {
   project: PortfolioProject;
   lang: Lang;
   categoryLabel: string;
+  /** Slug of the client, used by the client filter on the "all work" page. */
+  clientSlug?: string;
   eager?: boolean;
   /** Likely LCP element: load with high priority. */
   priority?: boolean;
   sizes?: string;
 };
 
-const { project, lang, categoryLabel, eager = false, priority = false, sizes = "(min-width: 820px) 33vw, 50vw" } = Astro.props;
+const {
+  project,
+  lang,
+  categoryLabel,
+  clientSlug,
+  eager = false,
+  priority = false,
+  sizes = "(min-width: 820px) 33vw, 50vw",
+} = Astro.props;
 const ui = t(lang);
-const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 70 });
+const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 72 });
 const slides = await Promise.all(
   [{ image: project.previewImage, alt: project.alt }, ...project.gallery].map(async (item) => ({
     src: await getImageUrl(item.image, 1800),
@@ -26,10 +36,10 @@ const title = pick(lang, project.title, project.titleEn);
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
 const clientLabel = project.clientProfile?.label ?? project.client;
-const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" / ");
+const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" / ");
 ---
 
-<article class="project-card" data-category={project.category}>
+<article class="project-card" data-category={project.category} data-client={clientSlug}>
   <button
     type="button"
     class="project-card-trigger"
@@ -39,27 +49,24 @@ const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" /
     data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
   >
-    <span class="print-frame">
-      <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
-        <img
-          class="halftone halftone-reveal"
-          src={image.src}
-          srcset={image.srcset}
-          sizes={sizes}
-          width={image.width}
-          height={image.height}
-          alt={project.alt === project.title ? "" : project.alt}
-          loading={eager || priority ? "eager" : "lazy"}
-          fetchpriority={priority ? "high" : "auto"}
-          decoding="async"
-        />
-      </span>
+    <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
+      <img
+        src={image.src}
+        srcset={image.srcset}
+        sizes={sizes}
+        width={image.width}
+        height={image.height}
+        alt={project.alt === project.title ? "" : project.alt}
+        loading={eager || priority ? "eager" : "lazy"}
+        fetchpriority={priority ? "high" : "auto"}
+        decoding="async"
+      />
       {slides.length > 1 && <span class="card-badge" aria-hidden="true">+{slides.length - 1}</span>}
     </span>
     <span class="card-info">
-      <span class="spec">{meta}</span>
+      <span class="spec card-meta">{meta}</span>
       <span class="card-title">{shortTitle}</span>
-      {project.specs && <span class="spec spec-quiet">{project.specs}</span>}
+      {summary && <span class="card-summary">{summary}</span>}
       <span class="sr-only">{ui.openProjectHint}</span>
     </span>
   </button>

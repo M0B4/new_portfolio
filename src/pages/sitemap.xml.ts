@@ -1,6 +1,6 @@
-﻿import { SITE_URL } from "../data/site";
+import { SITE_URL } from "../data/site";
 import { getActiveCategories, getClientGroupsWithEmpty } from "../lib/content";
-import { categoryPath, clientPath, legalPath, localizePath, type Alternates } from "../lib/i18n";
+import { categoryPath, clientPath, legalPath, localizePath, workPath, type Alternates } from "../lib/i18n";
 
 type SitemapEntry = { alternates: Alternates; priority: string; lastmod?: string };
 
@@ -17,6 +17,11 @@ export async function GET({ site }: { site?: URL }) {
     {
       alternates: { de: localizePath("de"), en: localizePath("en") },
       priority: "1.0",
+      lastmod: latest(allProjects.map((project) => project.updatedAt)),
+    },
+    {
+      alternates: { de: workPath("de"), en: workPath("en") },
+      priority: "0.9",
       lastmod: latest(allProjects.map((project) => project.updatedAt)),
     },
     ...clients.map((group) => ({

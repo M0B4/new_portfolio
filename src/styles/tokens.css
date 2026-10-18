@@ -1,93 +1,94 @@
 /*
- * Look: "Siebdruck & Tour-Shirt" – three spot inks on paper.
- * Dark theme = bone ink on a black shirt, light theme = black ink on poster paper.
+ * Look: "Tourposter" – paper, ink and brass. Light editorial pages with black bands,
+ * modern grotesk type and a single blackletter accent (logo + section numbers).
  */
 
-/* Registered so they can be animated (halftone dot size, misregistration offset). */
-@property --dot {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 6px;
-}
-
-@property --mis {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 3px;
-}
-
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* Inks */
-  --ink: #0d0c0b;
-  --paper: #ebe3d3;
-  --red: #d7262e;
+  --paper: #f2ede3;
+  --ink: #0e0d0c;
+  --gold: #b08a3e;
 
-  /* Roles */
-  --bg: var(--ink);
-  --bg-raise: #171513;
-  --surface: rgba(13, 12, 11, 0.78);
-  --text: var(--paper);
-  --muted: #b7ae9f;
-  --quiet: #8f887c;
-  --line: rgba(235, 227, 211, 0.2);
-  --line-soft: rgba(235, 227, 211, 0.1);
-  --on-image: var(--paper);
-  --on-image-muted: #d2c9b8;
+  /* Roles (paper page) */
+  --bg: var(--paper);
+  --bg-raise: #e9e2d4;
+  --surface: rgba(242, 237, 227, 0.88);
+  --text: var(--ink);
+  --muted: #47423b;
+  --quiet: #68625a;
+  --line: rgba(14, 13, 12, 0.16);
+  --line-strong: rgba(14, 13, 12, 0.85);
+  /* Gold for lines/fills, and a darker brass for small text on paper (≥ 4.5:1) */
+  --accent: var(--gold);
+  --accent-text: #7d5f1d;
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+  --focus: #0b57d0;
+  --logo-filter: grayscale(1) invert(1) brightness(0.25);
 
-  /* Red in three strengths: decoration, small text (≥ 4.5:1), behind white text (≥ 4.5:1) */
-  --accent: var(--red);
-  --accent-rgb: 215, 38, 46;
-  --accent-text: #ff545c;
-  --accent-strong: #c01d25;
-  --on-accent: #fff6ee;
-  --focus: #ffd34d;
-  --mark: var(--quiet);
-
-  /* The backstage pass is printed in the opposite colours of the page */
+  /* The backstage pass is printed on paper even inside a black band */
   --pass-bg: var(--paper);
   --pass-fg: var(--ink);
   --pass-muted: #4a453d;
-  --pass-line: rgba(13, 12, 11, 0.28);
+  --pass-line: rgba(14, 13, 12, 0.28);
 
   /* Type */
-  --display: "Anton", "Impact", "Arial Narrow", system-ui, sans-serif;
-  --sans: "Dinish", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-  --stamp: var(--display);
+  --fraktur: "UnifrakturMaguntia", "Old English Text MT", serif;
 
   /* Layout */
-  --nav-height: 68px;
-  --gutter: clamp(1rem, 4vw, 3.5rem);
-  --container: min(100% - var(--gutter) * 2, 1400px);
-  --section-space: clamp(4rem, 9vw, 8.5rem);
+  --nav-height: 70px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --container: min(100% - var(--gutter) * 2, 1320px);
+  --section-space: clamp(4.5rem, 9vw, 8rem);
+  --radius: 4px;
 
-  /* Texture (Sanity "Hintergrund-Intensität" sets --texture-opacity) */
+  /* Paper grain (Sanity "Hintergrund-Intensität" sets --texture-opacity) */
   --texture-opacity: 0.1;
-  --grain-opacity: calc(0.05 + var(--texture-opacity) * 0.5);
-
-  /* Halftone screen */
-  --halftone-cell: 6px;
+  --grain-opacity: calc(0.04 + var(--texture-opacity) * 0.4);
 }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: var(--paper);
-  --bg-raise: #e2d8c5;
-  --surface: rgba(235, 227, 211, 0.85);
-  --text: var(--ink);
-  --muted: #3e3a33;
-  --quiet: #5d574e;
-  --line: rgba(13, 12, 11, 0.22);
-  --line-soft: rgba(13, 12, 11, 0.11);
-  --accent: #b7151f;
-  --accent-rgb: 183, 21, 31;
-  --accent-text: #a50d1a;
-  --accent-strong: #a50d1a;
-  --focus: #0b57d0;
-  --pass-bg: var(--ink);
-  --pass-fg: var(--paper);
-  --pass-muted: #b7ae9f;
-  --pass-line: rgba(235, 227, 211, 0.3);
+/* Black bands (client wall, contact) – a local colour context inside the paper page */
+.band {
+  --bg: var(--ink);
+  --bg-raise: #1b1916;
+  --text: var(--paper);
+  --muted: #bdb5a7;
+  --quiet: #8f887d;
+  --line: rgba(242, 237, 227, 0.16);
+  --line-strong: rgba(242, 237, 227, 0.85);
+  --accent-text: #d6b25e;
+  --btn-bg: var(--paper);
+  --btn-fg: var(--ink);
+  --focus: #ffd34d;
+  --logo-filter: grayscale(1) brightness(1.6);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Dark mode: ink pages, bands one step lighter */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--ink);
+  --bg-raise: #1b1916;
+  --surface: rgba(14, 13, 12, 0.85);
+  --text: var(--paper);
+  --muted: #bdb5a7;
+  --quiet: #8f887d;
+  --line: rgba(242, 237, 227, 0.16);
+  --line-strong: rgba(242, 237, 227, 0.85);
+  --accent-text: #d6b25e;
+  --btn-bg: var(--paper);
+  --btn-fg: var(--ink);
+  --focus: #ffd34d;
+  --logo-filter: grayscale(1) brightness(1.6);
+}
+
+:root[data-theme="dark"] .band {
+  --bg: #1b1916;
+  --bg-raise: #252220;
 }

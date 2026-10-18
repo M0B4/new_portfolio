@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Header from "../components/Header.astro";
+import ProjectGrid from "../components/ProjectGrid.astro";
+import { OWNER_NAME } from "../data/site";
+import { getClientGroupsWithEmpty, getSiteContent, yearSpan } from "../lib/content";
+import { getAbsoluteImageUrl } from "../lib/images";
+import { localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
+
+type Props = {
+  lang: Lang;
+};
+
+const { lang } = Astro.props;
+const ui = t(lang);
+const { projects, categories } = await getSiteContent();
+const groups = (await getClientGroupsWithEmpty()).filter((group) => group.projects.length > 0);
+const origin = Astro.site ?? Astro.url.origin;
+const alternates = { de: workPath("de"), en: workPath("en") };
+// Newest first when browsing everything.
+const sorted = [...projects].sort((a, b) => b.year.localeCompare(a.year) || a.order - b.order);
+const stats = [ui.projectCount(projects.length), yearSpan(projects), ui.clientCount(groups.length)].filter(Boolean);
+const title = `${ui.workPageTitle} – ${OWNER_NAME}`;
+const ogImage = sorted[0] ? await getAbsoluteImageUrl(sorted[0].previewImage, origin) : undefined;
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description: ui.workPageText,
+    inLanguage: lang,
+    url: new URL(alternates[lang], origin).toString(),
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: sorted.length,
+      itemListElement: sorted.map((project, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: pick(lang, project.title, project.titleEn),
+      })),
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: ui.home, item: new URL(localizePath(lang), origin).toString() },
+      { "@type": "ListItem", position: 2, name: ui.workPageTitle, item: new URL(alternates[lang], origin).toString() },
+    ],
+  },
+];
+---
+
+<BaseLayout lang={lang} title={title} description={ui.workPageText} image={ogImage} alternates={alternates} structuredData={structuredData}>
+  <Header lang={lang} alternates={alternates} />
+
+  <main id="main">
+    <header class="page-hero">
+      <div class="container page-hero-inner">
+        <nav class="breadcrumb" aria-label={ui.breadcrumb}>
+          <ol>
+            <li><a href={localizePath(lang)}>{ui.home}</a></li>
+            <li><span aria-current="page">{ui.workPageTitle}</span></li>
+          </ol>
+        </nav>
+        <p class="section-label">{stats.join(" · ")}</p>
+        <h1 class="page-title">{ui.workPageTitle}</h1>
+        <p class="page-intro">{ui.workPageText}</p>
+      </div>
+    </header>
+
+    <section class="section work-section" aria-label={ui.workPageTitle}>
+      <div class="container">
+        <ProjectGrid projects={sorted} categories={categories} clients={groups} lang={lang} filterable priorityFirst />
+      </div>
+    </section>
+  </main>
+</BaseLayout>

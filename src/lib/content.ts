@@ -89,14 +89,14 @@ export type TourStop = ClientGroup & {
 };
 
 /**
- * Clients with work, styled as the tour dates on the back of a band shirt.
- * Order follows the client order, so `stops[i ± 1]` are the previous/next tour stop.
+ * Clients with their year span and fields, in client order (so `stops[i ± 1]` are previous/next).
+ * `includeEmpty` also returns clients without projects yet – useful for the logo wall.
  */
-export const getTour = async () => {
+export const getTour = async ({ includeEmpty = false } = {}) => {
   const { projects, categories } = await getSiteContent();
   const groups = await getClientGroupsWithEmpty();
   const stops: TourStop[] = groups
-    .filter((group) => group.projects.length > 0)
+    .filter((group) => group.projects.length > 0 || (includeEmpty && group.profile.logo))
     .map((group) => ({
       ...group,
       years: yearSpan(group.projects),

@@ -19,16 +19,16 @@ const next = stops.length > 1 ? stops[(index + 1) % stops.length] : undefined;
 
 {
   (prev || next) && (
-    <nav class="tour-nav container" aria-label={ui.tourStop}>
+    <nav class="tour-nav container" aria-label={ui.clientNav}>
       {prev && (
         <a class="tour-nav-link" href={clientPath(lang, prev.profile.slug)} rel="prev">
-          <span class="spec">← {ui.prevStop}</span>
+          <span class="spec">← {ui.prevClient}</span>
           <span class="tour-nav-name">{prev.profile.label}</span>
         </a>
       )}
       {next && (
         <a class="tour-nav-link tour-nav-next" href={clientPath(lang, next.profile.slug)} rel="next">
-          <span class="spec">{ui.nextStop} →</span>
+          <span class="spec">{ui.nextClient} →</span>
           <span class="tour-nav-name">{next.profile.label}</span>
         </a>
       )}

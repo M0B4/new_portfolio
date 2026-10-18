@@ -22,10 +22,10 @@ const messages = {
 };
 ---
 
-<footer id="contact" class="contact-footer">
+<footer id="contact" class="contact-footer band">
   <div class="container">
-    <p class="section-label"><span class="section-number">→</span> {ui.contactKicker}</p>
-    <h2 class="cta-title misreg">{ui.ctaTitle}</h2>
+    <p class="section-label">{ui.contactKicker}</p>
+    <h2 class="cta-title">{ui.ctaTitle}</h2>
   </div>
   <div class="container contact-layout">
     <div class="footer-contact-copy">
@@ -118,7 +118,7 @@ const messages = {
     </div>
   </div>
   <div class="container footer-meta">
-    <span class="footer-brand"><span class="logo-stamp" aria-hidden="true">MB</span> Moritz Barz <span class="spec footer-host">{SITE_HOST}</span></span>
+    <span class="footer-brand"><span class="logo-text">Moritz Barz</span> <span class="spec footer-host">{SITE_HOST}</span></span>
     <nav aria-label={ui.footerNav}>
       <a href={`${localizePath(lang)}#contact`}>{ui.navContact}</a>
       <a href={legalPath("impressum")} hreflang="de">{ui.imprint}</a>

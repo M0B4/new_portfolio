@@ -1,8 +1,8 @@
 ---
-// Section heading in "print sheet" style: numbered mono label, rule, large title.
+// Section heading: large blackletter number in gold, mono kicker, Archivo headline.
 type Props = {
   id: string;
-  number: string;
+  number?: string;
   kicker: string;
   title: string;
   text?: string;
@@ -12,9 +12,10 @@ const { id, number, kicker, title, text } = Astro.props;
 ---
 
 <div class:list={["section-heading", { "section-heading-split": text }]}>
-  <div>
-    <p class="section-label"><span class="section-number">{number}</span> {kicker}</p>
+  {number && <span class="section-numeral" aria-hidden="true">{number}</span>}
+  <div class="section-heading-copy">
+    <p class="section-label">{kicker}</p>
     <h2 id={id}>{title}</h2>
   </div>
-  {text && <p>{text}</p>}
+  {text && <p class="section-heading-text">{text}</p>}
 </div>

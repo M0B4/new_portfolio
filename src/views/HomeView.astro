@@ -1,20 +1,19 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import CategoryIndex from "../components/CategoryIndex.astro";
+import ClientWall from "../components/ClientWall.astro";
 import Header from "../components/Header.astro";
 import Lightbox from "../components/Lightbox.astro";
-import Marquee from "../components/Marquee.astro";
+import LogoRow from "../components/LogoRow.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
 import SectionHeading from "../components/SectionHeading.astro";
-import Setlist from "../components/Setlist.astro";
-import TourList from "../components/TourList.astro";
 import portrait from "../assets/header.jpg";
 import { OWNER_NAME, SITE_NAME } from "../data/site";
-import { getActiveCategories, getSiteContent, getTour } from "../lib/content";
+import { getSiteContent, getTour } from "../lib/content";
 import { getResponsiveImage } from "../lib/images";
-import { categoryPath, localizePath, pick, t, type Lang } from "../lib/i18n";
+import { localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
 import { assetUrl } from "../lib/url";
+import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
   lang: Lang;
@@ -22,33 +21,30 @@ type Props = {
 
 const { lang } = Astro.props;
 const ui = t(lang);
-const { projects, settings, socialLinks, categories: allCategories } = await getSiteContent();
-const { stops, years } = await getTour();
-const categories = await getActiveCategories();
+const { projects, settings, socialLinks, categories } = await getSiteContent();
+const { stops } = await getTour();
+// Logos are advertising: show every client with a logo, also those whose work is still being curated.
+const { stops: logoStops } = await getTour({ includeEmpty: true });
 const origin = Astro.site ?? Astro.url.origin;
 const alternates = { de: localizePath("de"), en: localizePath("en") };
 
-// Front print: first "Hervorheben" project, otherwise the top project of the first tour stop (Wacken).
-const frontProject = projects.find((project) => project.featured) ?? stops[0]?.projects[0];
-const frontImage = frontProject
-  ? await getResponsiveImage(frontProject.previewImage, [480, 720, 960, 1280], { quality: 75 })
+// Hero work: first "Hervorheben" project, otherwise the top project of the first client.
+const heroProject = projects.find((project) => project.featured) ?? stops[0]?.projects[0];
+const heroImage = heroProject
+  ? await getResponsiveImage(heroProject.previewImage, [480, 720, 960, 1280], { quality: 78 })
   : undefined;
+const heroClient = heroProject ? stops.find((stop) => stop.projects.includes(heroProject))?.profile.label : undefined;
 
-// Merch table: featured first, then round-robin across clients so no single series dominates.
-const pickSelectedWork = (limit: number) => {
-  const picked = projects.filter((project) => project.featured && project !== frontProject);
-  const queues = stops.map((stop) => stop.projects.filter((project) => project !== frontProject));
-  while (picked.length < limit && queues.some((queue) => queue.length > 0)) {
-    for (const queue of queues) {
-      const next = queue.shift();
-      if (next && !picked.includes(next) && picked.length < limit) picked.push(next);
-    }
-  }
-  return picked;
-};
-const selectedWork = pickSelectedWork(8);
+// Three highlights: further "Hervorheben" projects, then one project from each of the next clients.
+const highlights: PortfolioProject[] = projects.filter((project) => project.featured && project !== heroProject);
+for (const stop of stops) {
+  if (highlights.length >= 3) break;
+  const candidate = stop.projects.find((project) => project !== heroProject && !highlights.includes(project));
+  if (candidate && !highlights.some((project) => stop.projects.includes(project))) highlights.push(candidate);
+}
+const selected = highlights.slice(0, 3);
 
-const heroKicker = pick(lang, settings.heroKickerDe || "Moritz Barz / Portfolio", settings.heroKickerEn);
+const heroKicker = pick(lang, settings.heroKickerDe || "Moritz Barz / Grafikdesign", settings.heroKickerEn || "Moritz Barz / Graphic design");
 const heroTitle = pick(
   lang,
   settings.heroTitleDe || "Grafik, Merch und Objekte für laute Kontexte.",
@@ -90,116 +86,77 @@ const structuredData = [
   <Header lang={lang} alternates={alternates} />
 
   <main id="main" class="home">
-    <!-- Front print: name + one piece of work -->
-    <section class="front-print" aria-labelledby="hero-title">
-      <div class="container front-grid">
-        <div class="front-copy">
-          <p class="section-label">
-            <span class="section-number">{heroKicker}</span>
-            {years && <span> / {years}</span>}
-          </p>
-          <p class="front-claim">{heroTitle}</p>
-          <p class="front-text">{heroText}</p>
+    <!-- Hero: claim + one piece of work, client logos underneath -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="section-label">{heroKicker}</p>
+          <h1 id="hero-title" class="hero-title">{heroTitle}</h1>
+          <p class="hero-text">{heroText}</p>
           <div class="hero-actions">
             <a class="btn" href="#contact">{ui.heroCtaPrimary}</a>
-            <a class="btn btn-outline" href="#work">{ui.heroCtaSecondary}</a>
+            <a class="btn btn-outline" href={workPath(lang)}>{ui.heroCtaWork}</a>
           </div>
         </div>
         {
-          frontImage && frontProject && (
-            <figure class="front-figure print-frame">
-              <img
-                class="halftone halftone-hero"
-                src={frontImage.src}
-                srcset={frontImage.srcset}
-                sizes="(min-width: 820px) 42vw, 90vw"
-                width={frontImage.width}
-                height={frontImage.height}
-                alt={frontProject.alt}
-                fetchpriority="high"
-                decoding="async"
-              />
+          heroImage && heroProject && (
+            <figure class="hero-figure">
+              <span class="hero-frame">
+                <img
+                  class="hero-image"
+                  src={heroImage.src}
+                  srcset={heroImage.srcset}
+                  sizes="(min-width: 820px) 46vw, calc(100vw - 2.5rem)"
+                  width={heroImage.width}
+                  height={heroImage.height}
+                  alt={heroProject.alt}
+                  fetchpriority="high"
+                  decoding="async"
+                />
+              </span>
               <figcaption class="spec">
-                {frontProject.clientProfile?.label ?? frontProject.client} / {frontProject.year}
+                {pick(lang, heroProject.title, heroProject.titleEn)}
+                {heroClient && <> / {heroClient}</>} / {heroProject.year}
               </figcaption>
             </figure>
           )
         }
       </div>
-      <h1 id="hero-title" class="container front-name">
-        <span class="misreg misreg-hero">Moritz Barz</span>
-        <span class="sr-only"> – {heroTitle}</span>
-      </h1>
-    </section>
-
-    <Marquee items={categories.map((category) => category.label[lang])} />
-
-    <!-- Merch table: selected work -->
-    <section id="work" class="section work-section" aria-labelledby="work-title">
       <div class="container">
-        <SectionHeading id="work-title" number="01" kicker={ui.merchKicker} title={ui.workTitle} />
-        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} lightbox={false} eagerCount={0} />
+        <LogoRow stops={logoStops} lang={lang} />
       </div>
     </section>
 
-    <!-- Back print: clients as tour dates -->
-    <section id="portfolio" class="section tour-section" aria-labelledby="tour-title">
+    <!-- 1 · Selected work -->
+    <section id="work" class="section selected-section" aria-labelledby="selected-title">
       <div class="container">
-        <p class="section-label tour-kicker"><span class="section-number">02</span> {ui.tourKicker}</p>
-        <h2 id="tour-title" class="tour-title misreg">
-          <span class="tour-star" aria-hidden="true">✶</span>
-          {ui.tourTitle("")}
-          <span class="tour-star" aria-hidden="true">✶</span>
-          {years && <span class="tour-title-years">{years}</span>}
-        </h2>
-        <p class="tour-intro">{ui.tourIntro}</p>
-        <TourList stops={stops} lang={lang} />
+        <SectionHeading id="selected-title" number="1" kicker={ui.selectedKicker} title={ui.selectedTitle} />
+        <ProjectGrid projects={selected} categories={categories} lang={lang} layout="trio" lightbox={false} eagerCount={0} />
+        <p class="section-cta">
+          <a class="btn btn-outline" href={workPath(lang)}>{ui.discoverAll} →</a>
+        </p>
       </div>
     </section>
 
-    <!-- Fields of work -->
-    <section class="section fields-section" aria-labelledby="fields-title">
+    <!-- 2 · Clients: logo wall on a black band -->
+    <section id="clients" class="section band clients-section" aria-labelledby="clients-title">
       <div class="container">
-        <SectionHeading id="fields-title" number="03" kicker={ui.fieldsKicker} title={ui.fieldsTitle} />
-        <CategoryIndex categories={categories} projects={projects} lang={lang} />
+        <SectionHeading id="clients-title" number="2" kicker={ui.clientsKicker} title={ui.clientsTitle} text={ui.clientsText} />
+        <ClientWall stops={logoStops} lang={lang} />
       </div>
     </section>
 
-    <!-- Setlist: process -->
-    <section class="section setlist-section" aria-labelledby="setlist-title">
-      <div class="container">
-        <SectionHeading id="setlist-title" number="04" kicker={ui.setlistKicker} title={ui.setlistTitle} />
-        <Setlist lang={lang} />
-      </div>
-    </section>
-
-    <!-- Backstage: profile -->
-    <section id="about" class="section backstage-section" aria-labelledby="about-title">
-      <div class="container backstage-layout">
-        <figure class="backstage-portrait print-frame">
-          <Image
-            class="halftone halftone-reveal"
-            src={portrait}
-            alt={ui.portraitAlt}
-            widths={[480, 800, 1200]}
-            sizes="(min-width: 820px) 45vw, 100vw"
-            loading="lazy"
-          />
+    <!-- 3 · Profile -->
+    <section id="about" class="section profile-section" aria-labelledby="about-title">
+      <div class="container profile-layout">
+        <figure class="profile-portrait reveal">
+          <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 45vw, 100vw" loading="lazy" />
         </figure>
-        <div class="backstage-copy">
-          <p class="section-label"><span class="section-number">05</span> {ui.backstageKicker}</p>
+        <div class="profile-copy reveal">
+          <span class="section-numeral" aria-hidden="true">3</span>
+          <p class="section-label">{ui.profileKicker}</p>
           <h2 id="about-title">{ui.profileTitle}</h2>
           {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-          <h3 class="spec services-title">{ui.servicesTitle}</h3>
-          <ul class="services-list">
-            {
-              categories.map((category) => (
-                <li>
-                  <a href={categoryPath(lang, category.value)}>{category.label[lang]}</a>
-                </li>
-              ))
-            }
-          </ul>
         </div>
       </div>
     </section>

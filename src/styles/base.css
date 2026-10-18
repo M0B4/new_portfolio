@@ -1,4 +1,4 @@
-/* Reset, base elements and the print primitives used everywhere. */
+/* Reset, base elements and shared primitives. */
 
 * {
   box-sizing: border-box;
@@ -17,11 +17,13 @@ body {
   color: var(--text);
   font-family: var(--sans);
   font-size: 1.0625rem;
-  line-height: 1.55;
+  font-weight: 400;
+  line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Paper grain over everything – a 3 KB tile, no filters or blend modes */
+/* Subtle paper grain – a 3 KB tile, no filters or blend modes */
 body::after {
   content: "";
   position: fixed;
@@ -29,11 +31,11 @@ body::after {
   z-index: 90;
   pointer-events: none;
   background: url("../assets/textures/grain.png") 0 0 / 96px 96px repeat;
-  opacity: min(var(--grain-opacity), 0.35);
+  opacity: min(var(--grain-opacity), 0.28);
 }
 
-:root[data-theme="light"] body::after {
-  opacity: min(calc(var(--grain-opacity) * 0.7), 0.25);
+:root[data-theme="dark"] body::after {
+  opacity: min(calc(var(--grain-opacity) * 1.2), 0.32);
 }
 
 body:has(.nav-links.active),
@@ -65,16 +67,20 @@ textarea {
 h1,
 h2,
 h3 {
-  font-family: var(--display);
-  font-weight: 400;
-  letter-spacing: 0.005em;
-  line-height: 0.95;
-  text-transform: uppercase;
+  font-family: var(--sans);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background: var(--accent-strong);
-  color: var(--on-accent);
+  background: var(--gold);
+  color: var(--ink);
 }
 
 :focus-visible {
@@ -98,8 +104,8 @@ h3 {
   left: 1rem;
   z-index: 100;
   padding: 0.6rem 0.9rem;
-  background: var(--accent-strong);
-  color: var(--on-accent);
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--mono);
   font-size: 0.85rem;
   text-decoration: none;
@@ -119,18 +125,18 @@ h3 {
   padding-block: var(--section-space);
 }
 
-/* ---------- Labels & headings ---------- */
+/* ---------- Labels ---------- */
 
-/* Mono metadata, e.g. "POSTER / METAL IM DORF / 2024" */
+/* Mono metadata, e.g. "WACKEN / SHIRTS / 2026" */
 .spec,
 .section-label,
 .kicker,
 .eyebrow {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  line-height: 1.4;
+  letter-spacing: 0.06em;
+  line-height: 1.45;
   text-transform: uppercase;
 }
 
@@ -138,29 +144,45 @@ h3 {
   color: var(--muted);
 }
 
-.spec-quiet {
-  color: var(--quiet);
-}
-
-.section-number {
+.section-label,
+.kicker,
+.eyebrow {
   color: var(--accent-text);
 }
 
+/* ---------- Section heading with a blackletter numeral ---------- */
+
 .section-heading {
   display: grid;
-  gap: 0.9rem;
-  margin-bottom: clamp(2rem, 4vw, 3.5rem);
-  border-top: 2px solid var(--text);
-  padding-top: 0.9rem;
+  grid-template-columns: auto 1fr;
+  align-items: end;
+  gap: 0.5rem clamp(1rem, 3vw, 2.25rem);
+  margin-bottom: clamp(2rem, 4.5vw, 3.5rem);
+  border-top: 1px solid var(--line);
+  padding-top: clamp(1rem, 2vw, 1.5rem);
+}
+
+.section-numeral {
+  font-family: var(--fraktur);
+  font-size: clamp(4rem, 9vw, 7.5rem);
+  font-weight: 400;
+  line-height: 0.8;
+  color: var(--accent);
+}
+
+.section-heading-copy {
+  display: grid;
+  gap: 0.6rem;
 }
 
 .section-heading h2 {
-  max-width: 14ch;
-  font-size: clamp(2.8rem, 7vw, 6.4rem);
+  max-width: 20ch;
+  font-size: clamp(2rem, 4.4vw, 3.6rem);
 }
 
-.section-heading-split > p {
-  max-width: 460px;
+.section-heading-text {
+  grid-column: 1 / -1;
+  max-width: 560px;
   color: var(--muted);
 }
 
@@ -172,36 +194,35 @@ h3 {
   justify-content: center;
   gap: 0.5rem;
   min-height: 50px;
-  border: 2px solid var(--accent-strong);
-  border-radius: 0;
-  background: var(--accent-strong);
-  color: var(--on-accent);
+  border: 1.5px solid var(--btn-bg);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
   cursor: pointer;
-  font-family: var(--display);
-  font-size: 1.15rem;
-  letter-spacing: 0.04em;
-  padding: 0.6rem 1.4rem;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 0.65rem 1.4rem;
   text-decoration: none;
-  text-transform: uppercase;
-  transition: transform 140ms ease, box-shadow 140ms ease;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
-/* Pressed into the paper, like a stamp */
 .btn:hover,
 .btn:focus-visible {
-  box-shadow: 4px 4px 0 var(--text);
-  transform: translate(-2px, -2px);
+  border-color: var(--gold);
+  background: var(--gold);
+  color: var(--ink);
 }
 
 .btn:active {
-  box-shadow: none;
-  transform: none;
+  transform: translateY(1px);
 }
 
 .btn-outline {
-  border-color: currentColor;
+  border-color: var(--line-strong);
   background: transparent;
-  color: inherit;
+  color: var(--text);
 }
 
 .btn:disabled {
@@ -209,114 +230,35 @@ h3 {
   opacity: 0.7;
 }
 
-/* ---------- Print primitives ---------- */
+/* ---------- Decoration ---------- */
 
-/* Crop marks around an element */
-.print-frame {
-  position: relative;
-  display: block;
+/* Halftone dots – decoration only, never on top of work images */
+.dot-field {
+  background-image: radial-gradient(circle, var(--dot-color, var(--gold)) 1.3px, transparent 1.7px);
+  background-size: 9px 9px;
 }
 
-.print-frame::before {
-  content: "";
-  position: absolute;
-  inset: -9px;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--mark), var(--mark)) left top / 12px 1px,
-    linear-gradient(var(--mark), var(--mark)) left top / 1px 12px,
-    linear-gradient(var(--mark), var(--mark)) right top / 12px 1px,
-    linear-gradient(var(--mark), var(--mark)) right top / 1px 12px,
-    linear-gradient(var(--mark), var(--mark)) left bottom / 12px 1px,
-    linear-gradient(var(--mark), var(--mark)) left bottom / 1px 12px,
-    linear-gradient(var(--mark), var(--mark)) right bottom / 12px 1px,
-    linear-gradient(var(--mark), var(--mark)) right bottom / 1px 12px;
-  background-repeat: no-repeat;
-  transition: inset 200ms ease;
-}
-
-/* Misregistration: a red ink layer printed slightly off */
-.misreg {
-  text-shadow: var(--mis) calc(var(--mis) * 0.6) 0 rgba(var(--accent-rgb), 0.9);
-}
-
-/*
- * Halftone: the image is shown through a dot screen. Static by default (decorative previews);
- * .halftone-reveal / .halftone-hero animate the dots until the screen closes into the full photo.
- */
-.halftone {
-  --dot: 2.4px;
-  -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
-    var(--halftone-cell) var(--halftone-cell);
-  mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
-    var(--halftone-cell);
-}
-
-/* Work images must always be fully visible unless the browser can animate the screen open. */
-.halftone-reveal,
-.halftone-hero {
-  -webkit-mask: none;
-  mask: none;
-}
+/* ---------- Motion (subtle, CSS only) ---------- */
 
 @media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
   @supports (animation-timeline: view()) {
-    .halftone-reveal {
-      -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
-        var(--halftone-cell) var(--halftone-cell);
-      mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
-        var(--halftone-cell);
-      animation: halftone-print linear both;
+    .reveal,
+    .work-grid .project-card,
+    .client-wall li {
+      animation: reveal-in ease-out both;
       animation-timeline: view();
-      animation-range: entry 0% cover 32%;
-    }
-
-    .halftone-hero {
-      --halftone-cell: 7px;
-      -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
-        var(--halftone-cell) var(--halftone-cell);
-      mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
-        var(--halftone-cell);
-      animation: halftone-hero linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 55svh;
-    }
-
-    .misreg-hero {
-      animation: misreg-drift linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 70svh;
+      animation-range: entry 0% entry 40%;
     }
   }
 }
 
-@keyframes halftone-print {
+@keyframes reveal-in {
   from {
-    --dot: 1.2px;
-  }
-
-  to {
-    --dot: 5.5px;
-  }
-}
-
-@keyframes halftone-hero {
-  from {
-    --dot: 3px;
-  }
-
-  to {
-    --dot: 6.5px;
-  }
-}
-
-@keyframes misreg-drift {
-  from {
-    --mis: 3px;
-  }
-
-  to {
-    --mis: 14px;
+    opacity: 0;
+    transform: translateY(1.75rem);
   }
 }

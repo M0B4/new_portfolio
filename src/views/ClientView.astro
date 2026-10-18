@@ -79,18 +79,20 @@ const stats = [projects.length > 0 ? ui.projectCount(projects.length) : "", year
       <div class="container client-hero-inner">
         <nav class="breadcrumb" aria-label={ui.breadcrumb}>
           <ol>
-            <li><a href={`${localizePath(lang)}#portfolio`}>{ui.home}</a></li>
+            <li><a href={localizePath(lang)}>{ui.home}</a></li>
+            <li><a href={`${localizePath(lang)}#clients`}>{ui.navClients}</a></li>
             <li><span aria-current="page">{profile.label}</span></li>
           </ol>
         </nav>
-        <p class="section-label">
-          <span class="section-number">{ui.tourStop}</span>
-          {stats.length > 0 && <span> / {stats.join(" · ")}</span>}
-        </p>
-        <h1 class="client-name misreg">{profile.label}</h1>
-        <div class="client-hero-copy">
-          <ClientLogo class="client-hero-logo" profile={profile} height={56} loading="eager" />
-          <p>{intro}</p>
+        <div class="client-hero-grid">
+          <div class="client-hero-copy">
+            <p class="section-label">{stats.join(" · ")}</p>
+            <h1 class="page-title">{profile.label}</h1>
+            <p class="page-intro">{intro}</p>
+          </div>
+          <span class="client-hero-logo-wrap">
+            <ClientLogo class="client-hero-logo" profile={profile} height={140} loading="eager" />
+          </span>
         </div>
       </div>
     </header>

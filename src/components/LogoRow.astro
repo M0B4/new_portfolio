@@ -1,0 +1,36 @@
+---
+// "Gearbeitet für" – a calm row of client logos in the hero, each linking to the client page.
+import ClientLogo from "./ClientLogo.astro";
+import type { TourStop } from "../lib/content";
+import { clientPath, t, type Lang } from "../lib/i18n";
+
+type Props = {
+  stops: TourStop[];
+  lang: Lang;
+};
+
+const { stops, lang } = Astro.props;
+const ui = t(lang);
+---
+
+<div class="logo-row">
+  <p class="spec logo-row-label">{ui.trustLabel}</p>
+  <ul class="logo-row-list">
+    {
+      stops.map((stop) => (
+        <li>
+          <a class="logo-row-link" href={clientPath(lang, stop.profile.slug)}>
+            {stop.profile.logo ? (
+              <ClientLogo class="logo-row-img" profile={stop.profile} height={44} />
+            ) : (
+              <span class="logo-row-text" aria-hidden="true">
+                {stop.profile.label}
+              </span>
+            )}
+            <span class="sr-only">{ui.viewWorkFor(stop.profile.label)}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>

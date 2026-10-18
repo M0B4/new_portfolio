@@ -2,11 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
-import CategoryIndex from "../components/CategoryIndex.astro";
+
 import { OWNER_NAME, type CategoryInfo } from "../data/site";
 import { getActiveCategories, getSiteContent, yearSpan } from "../lib/content";
 import { getAbsoluteImageUrl } from "../lib/images";
-import { categoryPath, localizePath, pick, t, type Lang } from "../lib/i18n";
+import { categoryPath, localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
 
 type Props = {
   lang: Lang;
@@ -73,17 +73,14 @@ const stats = [ui.projectCount(projects.length), years].filter(Boolean);
       <div class="container client-hero-inner">
         <nav class="breadcrumb" aria-label={ui.breadcrumb}>
           <ol>
-            <li><a href={`${localizePath(lang)}#portfolio`}>{ui.home}</a></li>
+            <li><a href={localizePath(lang)}>{ui.home}</a></li>
+            <li><a href={workPath(lang)}>{ui.navWork}</a></li>
             <li><span aria-current="page">{label}</span></li>
           </ol>
         </nav>
-        <p class="section-label">
-          <span class="section-number">{ui.field}</span> / {stats.join(" · ")}
-        </p>
-        <h1 class="client-name misreg">{label}</h1>
-        <div class="client-hero-copy">
-          <p>{category.intro[lang]}</p>
-        </div>
+        <p class="section-label">{ui.field} · {stats.join(" · ")}</p>
+        <h1 class="page-title">{label}</h1>
+        <p class="page-intro">{category.intro[lang]}</p>
       </div>
     </header>
 
@@ -93,10 +90,23 @@ const stats = [ui.projectCount(projects.length), years].filter(Boolean);
       </div>
     </section>
 
-    <section class="section fields-section" aria-labelledby="more-fields-title">
+    <section class="section related-section" aria-labelledby="more-fields-title">
       <div class="container">
         <h2 id="more-fields-title" class="related-title spec">{ui.moreFields}</h2>
-        <CategoryIndex categories={activeCategories} projects={allProjects} lang={lang} current={category.value} />
+        <ul class="pill-links">
+          {
+            activeCategories
+              .filter((item) => item.value !== category.value)
+              .map((item) => (
+                <li>
+                  <a href={categoryPath(lang, item.value)}>{item.label[lang]}</a>
+                </li>
+              ))
+          }
+          <li>
+            <a href={workPath(lang)}>{ui.discoverAll} →</a>
+          </li>
+        </ul>
       </div>
     </section>
   </main>

@@ -1,14 +1,14 @@
-﻿---
-import "@sarap422/font-dinish/font-face.css";
+---
+import "@fontsource-variable/archivo/wght.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
-import "@fontsource/anton/latin-400.css";
+import "@fontsource/unifrakturmaguntia/latin-400.css";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/components.css";
 import monoFont from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
-import bodyFont from "@sarap422/font-dinish/Dinish-Regular.woff2?url";
-import displayFont from "@fontsource/anton/files/anton-latin-400-normal.woff2?url";
+import sansFont from "@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url";
+import frakturFont from "@fontsource/unifrakturmaguntia/files/unifrakturmaguntia-latin-400-normal.woff2?url";
 import Footer from "../components/Footer.astro";
 import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
 import { getSiteContent } from "../lib/content";
@@ -55,18 +55,9 @@ const alternateLinks = Object.entries(alternates).map(([hreflang, path]) => ({
 }));
 const defaultAlternate = alternateLinks.find((link) => link.hreflang === "de");
 
-const hexToRgb = (hex?: string) => {
-  const match = hex?.match(/^#([0-9a-fA-F]{6})$/);
-  if (!match) return null;
-  const value = Number.parseInt(match[1], 16);
-  return `${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}`;
-};
-const accentDark = hexToRgb(settings.accentDark) ? settings.accentDark : "#e1262f";
-const accentLight = hexToRgb(settings.accentLight) ? settings.accentLight : "#b40f1d";
-const accentDarkRgb = hexToRgb(accentDark) ?? "225, 38, 47";
-const accentLightRgb = hexToRgb(accentLight) ?? "180, 15, 29";
+// The gold accent is part of the design system; only the paper grain is adjustable in Sanity.
 const textureOpacity = Math.min(Math.max(settings.backgroundTextureOpacity ?? 0.1, 0), 1);
-const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};--texture-opacity:${textureOpacity};}:root[data-theme="light"]{--accent:${accentLight};--accent-rgb:${accentLightRgb};}`;
+const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
 ---
 
 <!doctype html>
@@ -79,7 +70,7 @@ const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};
     <meta name="author" content={OWNER_NAME} />
     <meta name="application-name" content={SITE_NAME} />
     <meta name="robots" content={noindex ? "noindex, follow" : "index, follow"} />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="format-detection" content="telephone=no" />
     <script is:inline>
       (() => {
@@ -87,23 +78,21 @@ const settingsCss = `:root{--accent:${accentDark};--accent-rgb:${accentDarkRgb};
         try {
           theme = localStorage.getItem("theme");
         } catch {}
-        if (theme !== "light" && theme !== "dark") {
-          theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-        }
+        // Paper is the default look; dark mode only when chosen via the toggle.
+        if (theme !== "light" && theme !== "dark") theme = "light";
         document.documentElement.dataset.theme = theme;
       })();
     </script>
     <link rel="preconnect" href="https://cdn.sanity.io" />
     {
-      [displayFont, bodyFont, monoFont].map((font) => (
+      [sansFont, monoFont, frakturFont].map((font) => (
         <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
       ))
     }
     <link rel="canonical" href={canonical} />
     {alternateLinks.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
     {defaultAlternate && <link rel="alternate" hreflang="x-default" href={defaultAlternate.href} />}
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#050505" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ece8df" />
+    <meta name="theme-color" content="#f2ede3" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:locale" content={ogLocale[lang]} />

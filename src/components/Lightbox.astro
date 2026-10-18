@@ -41,6 +41,7 @@ const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2",
   const dialog = document.querySelector<HTMLDialogElement>(".lightbox");
 
   if (dialog) {
+    const figure = dialog.querySelector<HTMLElement>(".lightbox-figure")!;
     const image = dialog.querySelector<HTMLImageElement>(".lightbox-image")!;
     const title = dialog.querySelector<HTMLElement>(".lightbox-title")!;
     const meta = dialog.querySelector<HTMLElement>(".lightbox-meta")!;
@@ -78,6 +79,10 @@ const countTemplate = ui.imageCount(1, 2).replace("1", "{current}").replace("2",
       const slide = slides[current];
       image.src = slide.src;
       image.alt = slide.alt;
+      // Restart the photocopier scan for every slide
+      figure.classList.remove("is-scanning");
+      void figure.offsetWidth;
+      figure.classList.add("is-scanning");
       title.textContent = slide.title;
       meta.textContent = slide.meta;
       summary.textContent = slide.summary;

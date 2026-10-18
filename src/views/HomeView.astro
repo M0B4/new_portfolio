@@ -44,6 +44,16 @@ for (const stop of stops) {
 }
 const selected = highlights.slice(0, 3);
 
+// Two more flyers pasted behind the hero work, like posters stacked on a pillar (posters first).
+const stackCandidates = projects.filter((project) => project !== heroProject && !selected.includes(project));
+const stackProjects = [
+  ...stackCandidates.filter((project) => project.category === "poster"),
+  ...stackCandidates.filter((project) => project.category !== "poster"),
+].slice(0, 2);
+const stackImages = await Promise.all(
+  stackProjects.map((project) => getResponsiveImage(project.previewImage, [320, 480], { quality: 70 })),
+);
+
 const heroKicker = pick(lang, settings.heroKickerDe || "Grafikdesign · Poster · Merch · 3D-Druck", settings.heroKickerEn || "Graphic design · Posters · Merch · 3D printing");
 const heroTitle = pick(
   lang,
@@ -101,6 +111,20 @@ const structuredData = [
         {
           heroImage && heroProject && (
             <figure class="hero-figure">
+              {stackImages.map((image, index) => (
+                <img
+                  class={`hero-stack hero-stack-${index + 1}`}
+                  src={image.src}
+                  srcset={image.srcset}
+                  sizes="(min-width: 820px) 22vw, 40vw"
+                  width={image.width}
+                  height={image.height}
+                  alt=""
+                  aria-hidden="true"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ))}
               <span class="hero-frame taped">
                 <img
                   class="hero-image"
@@ -150,7 +174,9 @@ const structuredData = [
     <section id="about" class="section profile-section" aria-labelledby="about-title">
       <div class="container profile-layout">
         <figure class="profile-portrait taped reveal">
-          <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 45vw, 100vw" loading="lazy" />
+          <span class="halftone">
+            <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 45vw, 100vw" loading="lazy" />
+          </span>
         </figure>
         <div class="profile-copy reveal">
           <span class="section-numeral" aria-hidden="true">3</span>

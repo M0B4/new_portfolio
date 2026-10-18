@@ -15,6 +15,7 @@
   --tape: rgba(226, 214, 176, 0.82);
 
   /* Roles (paper page) */
+  --page: var(--paper);
   --bg: var(--paper);
   --bg-raise: #e9e2d4;
   --surface: rgba(242, 237, 227, 0.88);
@@ -75,6 +76,7 @@
 /* Dark mode: ink pages, bands one step lighter */
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --page: var(--ink);
   --bg: var(--ink);
   --bg-raise: #1b1916;
   --surface: rgba(14, 13, 12, 0.85);

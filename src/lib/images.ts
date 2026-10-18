@@ -1,4 +1,5 @@
 import { getImage } from "astro:assets";
+import sharp from "sharp";
 import { isSanityImage, type PortfolioImage } from "./projects";
 import { sanityImageUrl } from "./sanity/client";
 
@@ -8,12 +9,36 @@ export type ResponsiveImage = {
   width: number;
   height: number;
   placeholder?: string;
+  /** Cut-out artwork (e.g. shirt mockups): shown free-standing instead of as a print. */
+  transparent: boolean;
+};
+
+const transparencyCache = new Map<string, Promise<boolean>>();
+
+/** True when a local image has see-through pixels; Astro keeps the source path on `fsPath`. */
+const hasTransparency = (image: { fsPath?: string }) => {
+  const file = image.fsPath;
+  if (!file) return Promise.resolve(false);
+  if (!transparencyCache.has(file)) {
+    transparencyCache.set(
+      file,
+      sharp(file)
+        .stats()
+        .then((stats) => !stats.isOpaque)
+        .catch(() => false),
+    );
+  }
+  return transparencyCache.get(file)!;
 };
 
 const usableWidths = (widths: number[], max: number) => {
   const fitting = widths.filter((width) => width <= max);
   return fitting.length > 0 ? fitting : [max];
 };
+
+/** True for cut-out artwork with see-through pixels, local or from Sanity. */
+export const isTransparent = (image: PortfolioImage) =>
+  isSanityImage(image) ? Promise.resolve(image.isOpaque === false) : hasTransparency(image);
 
 /** Builds src/srcset/dimensions for local (Astro) and Sanity images alike. */
 export const getResponsiveImage = async (
@@ -30,7 +55,9 @@ export const getResponsiveImage = async (
       srcset: sizes.map((width) => `${url(width)} ${width}w`).join(", "),
       width: largest,
       height: Math.round((image.height / image.width) * largest),
-      placeholder: image.lqip,
+      // Sanity's blurred LQIP would show behind see-through pixels.
+      placeholder: image.isOpaque === false ? undefined : image.lqip,
+      transparent: image.isOpaque === false,
     };
   }
 
@@ -42,6 +69,7 @@ export const getResponsiveImage = async (
     srcset: result.srcSet.attribute,
     width: largest,
     height: Math.round((image.height / image.width) * largest),
+    transparent: await hasTransparency(image),
   };
 };
 

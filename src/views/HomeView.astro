@@ -113,7 +113,7 @@ const structuredData = [
             <figure class="hero-figure">
               {stackImages.map((image, index) => (
                 <img
-                  class={`hero-stack hero-stack-${index + 1}`}
+                  class:list={["hero-stack", `hero-stack-${index + 1}`, { "is-cutout": image.transparent }]}
                   src={image.src}
                   srcset={image.srcset}
                   sizes="(min-width: 820px) 22vw, 40vw"
@@ -125,9 +125,9 @@ const structuredData = [
                   decoding="async"
                 />
               ))}
-              <span class="hero-frame taped">
+              <span class:list={["hero-frame", { taped: !heroImage.transparent }]}>
                 <img
-                  class="hero-image"
+                  class:list={["hero-image", { "is-cutout": heroImage.transparent }]}
                   src={heroImage.src}
                   srcset={heroImage.srcset}
                   sizes="(min-width: 820px) 46vw, calc(100vw - 2.5rem)"

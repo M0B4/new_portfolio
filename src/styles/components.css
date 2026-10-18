@@ -215,6 +215,13 @@
   box-shadow: var(--print-shadow);
 }
 
+/* Cut-out artwork (shirt mockups) lies on the paper as it is: no margin, the shadow follows its outline */
+.hero-image.is-cutout {
+  border: 0;
+  box-shadow: none;
+  filter: var(--cutout-shadow);
+}
+
 /* Older flyers peeking out behind the hero work */
 .hero-stack {
   position: absolute;
@@ -224,6 +231,12 @@
   border: 6px solid var(--print);
   box-shadow: var(--print-shadow);
   filter: grayscale(0.35) contrast(1.05);
+}
+
+.hero-stack.is-cutout {
+  border: 0;
+  box-shadow: none;
+  filter: grayscale(0.35) contrast(1.05) var(--cutout-shadow);
 }
 
 .hero-stack-1 {
@@ -359,7 +372,6 @@
   text-align: left;
 }
 
-/* Uniform dark tiles; the work is shown whole (contain), never cropped */
 /* A fixed 4:5 slot keeps the rows even; the work itself sits in it at its own proportions
    as a print with a white margin – no dark letterbox behind it */
 .card-image {
@@ -403,6 +415,26 @@
 .project-card-trigger:active .card-image img {
   box-shadow: 0 6px 10px -6px rgba(14, 13, 12, 0.6);
   transform: rotate(0deg) translateY(1px) scale(0.99);
+}
+
+/* Cut-out artwork: no print margin, the shadow follows the outline of the shirt */
+.card-image img.is-cutout {
+  border: 0;
+  background: none;
+  box-shadow: none;
+  filter: var(--cutout-shadow);
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+.project-card-trigger:hover .card-image img.is-cutout,
+.project-card-trigger:focus-visible .card-image img.is-cutout {
+  box-shadow: none;
+  filter: drop-shadow(0 18px 14px rgba(14, 13, 12, 0.4));
+}
+
+.project-card-trigger:active .card-image img.is-cutout {
+  box-shadow: none;
+  filter: drop-shadow(0 4px 4px rgba(14, 13, 12, 0.45));
 }
 
 .card-badge {
@@ -966,6 +998,12 @@
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.lightbox-image.is-cutout {
+  box-sizing: border-box;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: var(--paper);
 }
 
 .lightbox-caption {

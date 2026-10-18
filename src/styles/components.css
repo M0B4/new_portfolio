@@ -197,30 +197,22 @@
   width: min(100%, 600px);
 }
 
-/* The work sits on a gold halftone "print shadow" */
+/* The hero work is a print taped to the wall: natural proportions, white margin, no backdrop */
 .hero-frame {
   position: relative;
   display: block;
+  width: fit-content;
+  margin-inline: auto;
   transform: rotate(-1.5deg);
 }
 
-.hero-frame::before {
-  content: "";
-  position: absolute;
-  inset: 1.4rem -1.4rem -1.4rem 1.4rem;
-  z-index: -1;
-  background-image: radial-gradient(circle, var(--gold) 1.3px, transparent 1.7px);
-  background-size: 9px 9px;
-  opacity: 0.75;
-}
-
 .hero-image {
-  width: 100%;
+  width: auto;
+  max-width: 100%;
   height: auto;
   max-height: 68svh;
-  object-fit: contain;
-  background: var(--ink);
-  box-shadow: 0 18px 30px -18px rgba(14, 13, 12, 0.6);
+  border: clamp(6px, 0.9vw, 10px) solid var(--print);
+  box-shadow: var(--print-shadow);
 }
 
 /* Older flyers peeking out behind the hero work */
@@ -229,8 +221,8 @@
   z-index: -1;
   width: 44%;
   height: auto;
-  background: var(--ink);
-  box-shadow: 0 14px 24px -14px rgba(14, 13, 12, 0.6);
+  border: 6px solid var(--print);
+  box-shadow: var(--print-shadow);
   filter: grayscale(0.35) contrast(1.05);
 }
 
@@ -368,51 +360,49 @@
 }
 
 /* Uniform dark tiles; the work is shown whole (contain), never cropped */
+/* A fixed 4:5 slot keeps the rows even; the work itself sits in it at its own proportions
+   as a print with a white margin – no dark letterbox behind it */
 .card-image {
   position: relative;
   display: block;
   aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-radius: var(--radius);
-  background-color: #151311;
+}
+
+.card-image img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  border: clamp(5px, 0.7vw, 8px) solid var(--print);
+  background-color: var(--print);
   background-size: cover;
-  box-shadow: 0 12px 20px -14px rgba(14, 13, 12, 0.55);
-}
-
-/* Pinned up like flyers on a wall: a slight, varying tilt */
-.project-card:nth-child(3n + 1) .card-image {
-  transform: rotate(-0.8deg);
-}
-
-.project-card:nth-child(3n + 2) .card-image {
-  transform: rotate(0.6deg);
-}
-
-.project-card:nth-child(3n) .card-image {
-  transform: rotate(-0.3deg);
-}
-
-/* Taking a flyer off the wall: it straightens and lifts */
-.card-image {
+  box-shadow: var(--print-shadow);
+  transform: rotate(var(--tilt, -0.8deg));
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
-.project-card .project-card-trigger:hover .card-image,
-.project-card .project-card-trigger:focus-visible .card-image {
+/* Pinned up like flyers on a wall: a slight, varying tilt */
+.project-card:nth-child(3n + 2) {
+  --tilt: 0.7deg;
+}
+
+.project-card:nth-child(3n) {
+  --tilt: -0.3deg;
+}
+
+/* Taking a flyer off the wall: it straightens and lifts */
+.project-card-trigger:hover .card-image img,
+.project-card-trigger:focus-visible .card-image img {
   box-shadow: 0 26px 34px -18px rgba(14, 13, 12, 0.6);
   transform: rotate(0deg) translateY(-6px);
 }
 
-.project-card .project-card-trigger:active .card-image {
+.project-card-trigger:active .card-image img {
   box-shadow: 0 6px 10px -6px rgba(14, 13, 12, 0.6);
   transform: rotate(0deg) translateY(1px) scale(0.99);
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 450ms ease;
 }
 
 .card-badge {
@@ -450,11 +440,6 @@
   line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-}
-
-.project-card-trigger:hover img,
-.project-card-trigger:focus-visible img {
-  transform: scale(1.035);
 }
 
 .project-card-trigger:hover .card-title,
@@ -604,20 +589,12 @@
   isolation: isolate;
 }
 
-.profile-portrait::before {
-  content: "";
-  position: absolute;
-  inset: -1.4rem 1.4rem 1.4rem -1.4rem;
-  z-index: -1;
-  background-image: radial-gradient(circle, var(--gold) 1.3px, transparent 1.7px);
-  background-size: 9px 9px;
-  opacity: 0.6;
-}
-
-/* Photocopied portrait: hard black and white with a coarse raster on top */
+/* Photocopied portrait: hard black and white with a coarse raster, printed with a white margin */
 .halftone {
   position: relative;
   display: block;
+  border: clamp(6px, 0.9vw, 10px) solid var(--print);
+  box-shadow: var(--print-shadow);
   transform: rotate(1deg);
 }
 
@@ -1336,10 +1313,6 @@
 @media (max-width: 760px) {
   .hero-figure {
     justify-self: stretch;
-  }
-
-  .hero-frame::before {
-    inset: 0.9rem -0.9rem -0.9rem 0.9rem;
   }
 
   .hero-stack {

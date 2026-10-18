@@ -13,6 +13,9 @@
   /* Stamp red: decoration and large text only */
   --red: #c23a22;
   --tape: rgba(226, 214, 176, 0.82);
+  /* White margin of a photocopy / photo print around every work */
+  --print: #f8f5ee;
+  --print-shadow: 0 12px 20px -12px rgba(14, 13, 12, 0.6);
 
   /* Roles (paper page) */
   --page: var(--paper);

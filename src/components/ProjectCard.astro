@@ -49,8 +49,9 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
     data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
     data-summary={summary}
   >
-    <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
+    <span class="card-image">
       <img
+        style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}
         src={image.src}
         srcset={image.srcset}
         sizes={sizes}

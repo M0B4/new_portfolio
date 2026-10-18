@@ -46,36 +46,39 @@ export const fallbackCategories: CategoryInfo[] = [
   {
     value: "poster",
     label: { de: "Poster", en: "Posters" },
-    intro: { de: "Plakative Motive für Bühne, Club und Festival.", en: "Bold visuals for stages, clubs and festivals." },
+    intro: { de: "Plakate für Festivals, Clubnächte und Tribute-Abende.", en: "Posters for festivals, club nights and tribute shows." },
     order: 10,
   },
   {
     value: "clothing",
     label: { de: "Merch", en: "Merch" },
     intro: {
-      de: "Merchandise, der als Motiv und Produkt funktioniert.",
-      en: "Merchandise that works as both artwork and product.",
+      de: "Shirts, Bändchen und Merch, die man gerne trägt.",
+      en: "Shirts, wristbands and merch people actually want to wear.",
     },
     order: 20,
   },
   {
     value: "event",
     label: { de: "Eventdesign", en: "Event design" },
-    intro: { de: "Auftritte mit klarer Hierarchie und Szene-Energie.", en: "Event visuals with clear hierarchy and scene energy." },
+    intro: {
+      de: "Alles rund ums Event, vom Line-up bis zum Social-Post.",
+      en: "Everything around the event, from line-up to social post.",
+    },
     order: 30,
   },
   {
     value: "3d-print",
-    label: { de: "3D-Print", en: "3D print" },
-    intro: { de: "Funktionale Objekte für echte Nutzung.", en: "Functional objects for real use." },
+    label: { de: "3D-Druck", en: "3D printing" },
+    intro: { de: "Konstruiert und gedruckt: Teile, die im Alltag benutzt werden.", en: "Designed and printed: parts made for everyday use." },
     order: 40,
   },
   {
     value: "various",
     label: { de: "Objekte", en: "Objects" },
     intro: {
-      de: "Sonderformate zwischen Grafik, Objekt und Anwendung.",
-      en: "Special formats between graphics, objects and use.",
+      de: "Sammlerstücke und Sonderanfertigungen jenseits von Papier und Stoff.",
+      en: "Collectibles and one-offs beyond paper and fabric.",
     },
     order: 50,
   },

@@ -27,10 +27,20 @@
 }
 
 .logo-text {
-  font-family: var(--fraktur);
-  font-size: 1.85rem;
+  font-family: var(--sans);
+  font-size: 1.3rem;
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   line-height: 1;
+  text-transform: uppercase;
   white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .logo-text {
+    font-size: 1.1rem;
+  }
 }
 
 .logo:hover .logo-text,

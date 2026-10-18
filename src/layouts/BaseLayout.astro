@@ -1,5 +1,5 @@
 ---
-import "@fontsource-variable/archivo/wght.css";
+import "@fontsource-variable/archivo/standard.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
 import "@fontsource/ibm-plex-mono/latin-500.css";
 import "@fontsource/unifrakturmaguntia/latin-400.css";
@@ -7,8 +7,7 @@ import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/components.css";
 import monoFont from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
-import sansFont from "@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url";
-import frakturFont from "@fontsource/unifrakturmaguntia/files/unifrakturmaguntia-latin-400-normal.woff2?url";
+import sansFont from "@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url";
 import Footer from "../components/Footer.astro";
 import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
 import { getSiteContent } from "../lib/content";
@@ -30,13 +29,13 @@ type Props = {
 const { settings } = await getSiteContent();
 const {
   lang,
-  title = `${OWNER_NAME} | Heavy Design, Merch & 3D-Print`,
+  title = `${OWNER_NAME} | ${pick(lang, "Grafikdesign für Festivals & Bands", "Graphic design for festivals & bands")}`,
   description = pick(
     lang,
     settings.description ||
-      "Portfolio von Moritz Barz: Poster, Merchandise, Eventdesign und funktionale 3D-Prints für Metal-Szene, Festivals und Tauchsport.",
+      "Moritz Barz gestaltet Poster, Merch und Eventdesign für Festivals, Bands und die Metal-Szene, dazu funktionale Teile aus dem 3D-Drucker.",
     settings.descriptionEn ||
-      "Portfolio of Moritz Barz: posters, merchandise, event design and functional 3D prints for the metal scene, festivals and diving.",
+      "Moritz Barz designs posters, merch and event visuals for festivals, bands and the metal scene, plus functional 3D-printed parts.",
   ),
   image = "images/header.jpg",
   imageAlt = title,
@@ -85,7 +84,7 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
     </script>
     <link rel="preconnect" href="https://cdn.sanity.io" />
     {
-      [sansFont, monoFont, frakturFont].map((font) => (
+      [sansFont, monoFont].map((font) => (
         <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />
       ))
     }

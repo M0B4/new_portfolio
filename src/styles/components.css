@@ -30,7 +30,7 @@
   font-family: var(--sans);
   font-size: 1.3rem;
   font-stretch: 125%;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1;
   text-transform: uppercase;
@@ -172,9 +172,8 @@
 }
 
 .hero-title {
-  max-width: 15ch;
-  font-size: clamp(2.6rem, 5.4vw, 4.8rem);
-  letter-spacing: -0.035em;
+  max-width: 17ch;
+  font-size: clamp(2rem, 4.1vw, 3.6rem);
   line-height: 0.98;
 }
 
@@ -202,6 +201,7 @@
 .hero-frame {
   position: relative;
   display: block;
+  transform: rotate(-1.5deg);
 }
 
 .hero-frame::before {
@@ -220,7 +220,7 @@
   max-height: 68svh;
   object-fit: contain;
   background: var(--ink);
-  box-shadow: 0 30px 60px -35px rgba(14, 13, 12, 0.55);
+  box-shadow: 0 18px 30px -18px rgba(14, 13, 12, 0.6);
 }
 
 .hero-figure figcaption {
@@ -353,6 +353,20 @@
   border-radius: var(--radius);
   background-color: #151311;
   background-size: cover;
+  box-shadow: 0 12px 20px -14px rgba(14, 13, 12, 0.55);
+}
+
+/* Pinned up like flyers on a wall: a slight, varying tilt */
+.project-card:nth-child(3n + 1) .card-image {
+  transform: rotate(-0.8deg);
+}
+
+.project-card:nth-child(3n + 2) .card-image {
+  transform: rotate(0.6deg);
+}
+
+.project-card:nth-child(3n) .card-image {
+  transform: rotate(-0.3deg);
 }
 
 .card-image img {
@@ -380,9 +394,11 @@
 }
 
 .card-title {
-  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
   line-height: 1.15;
   transition: color 160ms ease;
 }
@@ -530,6 +546,8 @@
   height: auto;
   max-height: 640px;
   border-radius: var(--radius);
+  filter: grayscale(1) contrast(1.25);
+  transform: rotate(1deg);
   object-fit: cover;
   object-position: 58% 40%;
 }
@@ -541,8 +559,8 @@
 }
 
 .profile-copy h2 {
-  max-width: 16ch;
-  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  max-width: 18ch;
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
 }
 
 .profile-copy p:not(.section-label) {
@@ -558,10 +576,9 @@
 }
 
 .cta-title {
-  max-width: 14ch;
+  max-width: 18ch;
   margin-top: 0.75rem;
-  font-size: clamp(2.6rem, 7vw, 6rem);
-  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 5vw, 4.4rem);
   line-height: 0.95;
 }
 
@@ -638,58 +655,47 @@
   --btn-bg: var(--ink);
   --btn-fg: var(--paper);
   --focus: #0b57d0;
+  --tape-tilt: 5deg;
   position: relative;
-  overflow: hidden;
-  border-radius: 16px;
+  border: 2px solid var(--ink);
   background: var(--pass-bg);
   color: var(--pass-fg);
-  box-shadow: 0 40px 70px -40px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.8);
+  transform: rotate(0.8deg);
 }
 
 .pass-head {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   background: var(--gold);
   color: var(--ink);
-  padding: 2.25rem 1.5rem 1rem;
-}
-
-/* Security dot strip along the bottom of the header */
-.pass-head::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 -10px;
-  height: 10px;
-  background-image: radial-gradient(circle, var(--gold) 1.2px, transparent 1.6px);
-  background-size: 7px 7px;
-}
-
-.pass-hole {
-  position: absolute;
-  top: 0.75rem;
-  left: 50%;
-  width: 64px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--ink);
-  transform: translateX(-50%);
+  padding: 1.75rem 1.5rem 1.25rem;
 }
 
 .pass-title {
   font-family: var(--mono);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
+/* "All access" as a red rubber stamp */
 .pass-access {
-  font-family: var(--fraktur);
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  border: 3px solid var(--red);
+  background: var(--paper);
+  color: var(--red);
+  filter: url("#rough");
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-stretch: 125%;
+  font-weight: 900;
   line-height: 1;
+  padding: 0.3rem 0.6rem 0.25rem;
+  text-transform: uppercase;
+  transform: rotate(-5deg);
 }
 
 .contact-form {
@@ -801,7 +807,7 @@
 }
 
 .footer-brand .logo-text {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .footer-host {
@@ -931,7 +937,7 @@
 }
 
 .page-title {
-  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-size: clamp(2.2rem, 5.6vw, 4.6rem);
   letter-spacing: -0.045em;
   line-height: 0.92;
 }
@@ -1065,7 +1071,7 @@
 }
 
 .tour-nav-name {
-  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-size: clamp(1.3rem, 3vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -1096,8 +1102,8 @@
 }
 
 .legal-content h1 {
-  max-width: 16ch;
-  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+  max-width: 18ch;
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
 }
 
 .legal-content h2 {
@@ -1203,8 +1209,10 @@
   }
 
   .nav-links a {
-    font-size: clamp(2rem, 9vw, 3rem);
-    font-weight: 800;
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    font-stretch: 125%;
+    font-weight: 900;
+    text-transform: uppercase;
     text-align: center;
   }
 }
@@ -1223,7 +1231,7 @@
   }
 
   .section-numeral {
-    font-size: 3.6rem;
+    font-size: 3.2rem;
   }
 
   .lightbox-caption {
@@ -1313,6 +1321,7 @@
     --logo-filter: grayscale(1) invert(1);
   }
 
+  body::before,
   body::after,
   .band::before,
   .navbar,

@@ -1,12 +1,10 @@
 ---
 import "@fontsource-variable/archivo/standard.css";
-import "@fontsource/ibm-plex-mono/latin-400.css";
-import "@fontsource/ibm-plex-mono/latin-500.css";
-import "@fontsource/unifrakturmaguntia/latin-400.css";
+import "@fontsource/special-elite/latin-400.css";
 import "../styles/tokens.css";
 import "../styles/base.css";
 import "../styles/components.css";
-import monoFont from "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url";
+import monoFont from "@fontsource/special-elite/files/special-elite-latin-400-normal.woff2?url";
 import sansFont from "@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url";
 import Footer from "../components/Footer.astro";
 import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
@@ -115,6 +113,13 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
     {plausibleDomain && <script is:inline defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
   </head>
   <body>
+    <!-- Rough toner edges for headlines, logo and stamp (filter: url("#rough")) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <filter id="rough" x="-2%" y="-5%" width="104%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="7" result="noise"></feTurbulence>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"></feDisplacementMap>
+      </filter>
+    </svg>
     <a href="#main" class="skip-link">{ui.skip}</a>
     <slot />
     <Footer lang={lang} />

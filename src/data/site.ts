@@ -13,14 +13,14 @@ export const SANITY_STUDIO_URL = "https://mbarz.sanity.studio/";
 
 /**
  * Pflichtangaben für Impressum und Datenschutz (§ 5 DDG, Art. 13 DSGVO).
- * TODO: Platzhalter durch echte Daten ersetzen – der Build warnt, solange sie gesetzt sind.
+ * Der Build warnt, falls hier wieder Platzhalter stehen.
  */
 export const legal = {
   name: OWNER_NAME,
-  street: "Straße Hausnummer",
-  city: "12345 Stadt",
+  street: "Ober dem Reiterweg 3",
+  city: "66885 Altenglan",
   country: "Deutschland",
-  email: "",
+  email: "kontakt@mbarz.de",
   phone: "",
   vatId: "",
 };

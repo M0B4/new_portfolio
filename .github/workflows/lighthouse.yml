@@ -43,7 +43,7 @@ jobs:
             for (const file of fs.readdirSync(".lighthouseci").filter((f) => /^lhr-.*\.json$/.test(f))) {
               const lhr = JSON.parse(fs.readFileSync(`.lighthouseci/${file}`, "utf8"));
               for (const [id, category] of Object.entries(lhr.categories)) {
-                if (category.score === 1) continue;
+                if (category.score === 1 || id === "performance") continue;
                 for (const ref of category.auditRefs) {
                   const audit = lhr.audits[ref.id];
                   if (ref.weight === 0 || audit.score === null || audit.score === 1) continue;

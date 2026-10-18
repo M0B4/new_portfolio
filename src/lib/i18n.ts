@@ -49,7 +49,7 @@ export const ui = {
     switchLanguage: "Switch to English",
     themeToLight: "Hellen Modus aktivieren",
     themeToDark: "Dunklen Modus aktivieren",
-    home: "Start",
+    home: "Startseite",
     breadcrumb: "Brotkrumen-Navigation",
 
     // Home

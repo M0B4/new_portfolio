@@ -10,8 +10,8 @@ type Props = {
   categories: CategoryInfo[];
   lang: Lang;
   filterable?: boolean;
-  /** Number of columns on wide screens. */
-  columns?: 2 | 3;
+  /** "editorial": asymmetric 12-column layout; "masonry": even columns. */
+  layout?: "editorial" | "masonry";
   /** Render the lightbox dialog. Pages with several grids render it only once. */
   lightbox?: boolean;
   eagerCount?: number;
@@ -19,12 +19,25 @@ type Props = {
   priorityFirst?: boolean;
 };
 
-const { projects, categories, lang, filterable = false, columns = 3, lightbox = true, eagerCount = 4, priorityFirst = false } = Astro.props;
+const {
+  projects,
+  categories,
+  lang,
+  filterable = false,
+  layout = "editorial",
+  lightbox = true,
+  eagerCount = 1,
+  priorityFirst = false,
+} = Astro.props;
 const ui = t(lang);
 const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
 const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
 const showFilter = filterable && presentCategories.length > 1;
-const sizes = columns === 2 ? "(min-width: 820px) 50vw, 100vw" : "(min-width: 820px) 33vw, 50vw";
+// Editorial cards span 4–7 of 12 columns on desktop, half the width on tablets, full width on phones.
+const sizes =
+  layout === "editorial"
+    ? "(min-width: 820px) 50vw, (min-width: 521px) 46vw, calc(100vw - 2.5rem)"
+    : "(min-width: 820px) 33vw, 50vw";
 ---
 
 <div class="project-grid-wrapper" data-project-grid>
@@ -43,7 +56,7 @@ const sizes = columns === 2 ? "(min-width: 820px) 50vw, 100vw" : "(min-width: 82
       </div>
     )
   }
-  <div class:list={["client-work-grid", { "grid-two": columns === 2 }]}>
+  <div class:list={["work-grid", `work-grid-${layout}`]}>
     {
       projects.map((project, index) => (
         <ProjectCard

@@ -1,0 +1,322 @@
+/* Reset, base elements and the print primitives used everywhere. */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
+
+body {
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+/* Paper grain over everything – a 3 KB tile, no filters or blend modes */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: url("../assets/textures/grain.png") 0 0 / 96px 96px repeat;
+  opacity: min(var(--grain-opacity), 0.35);
+}
+
+:root[data-theme="light"] body::after {
+  opacity: min(calc(var(--grain-opacity) * 0.7), 0.25);
+}
+
+body:has(.nav-links.active),
+body:has(.lightbox[open]) {
+  overflow: hidden;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+ul[class],
+ol[class] {
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+::selection {
+  background: var(--accent-strong);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  top: -3rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.6rem 0.9rem;
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: top 160ms ease;
+}
+
+.skip-link:focus-visible {
+  top: 0.5rem;
+}
+
+.container {
+  width: var(--container);
+  margin-inline: auto;
+}
+
+.section {
+  padding-block: var(--section-space);
+}
+
+/* ---------- Labels & headings ---------- */
+
+/* Mono metadata, e.g. "POSTER / METAL IM DORF / 2024" */
+.spec,
+.section-label,
+.kicker,
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.spec {
+  color: var(--muted);
+}
+
+.spec-quiet {
+  color: var(--quiet);
+}
+
+.section-number {
+  color: var(--accent-text);
+}
+
+.section-heading {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  border-top: 2px solid var(--text);
+  padding-top: 0.9rem;
+}
+
+.section-heading h2 {
+  max-width: 14ch;
+  font-size: clamp(2.8rem, 7vw, 6.4rem);
+}
+
+.section-heading-split > p {
+  max-width: 460px;
+  color: var(--muted);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 50px;
+  border: 2px solid var(--accent-strong);
+  border-radius: 0;
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  padding: 0.6rem 1.4rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+/* Pressed into the paper, like a stamp */
+.btn:hover,
+.btn:focus-visible {
+  box-shadow: 4px 4px 0 var(--text);
+  transform: translate(-2px, -2px);
+}
+
+.btn:active {
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-outline {
+  border-color: currentColor;
+  background: transparent;
+  color: inherit;
+}
+
+.btn:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+/* ---------- Print primitives ---------- */
+
+/* Crop marks around an element */
+.print-frame {
+  position: relative;
+  display: block;
+}
+
+.print-frame::before {
+  content: "";
+  position: absolute;
+  inset: -9px;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--mark), var(--mark)) left top / 12px 1px,
+    linear-gradient(var(--mark), var(--mark)) left top / 1px 12px,
+    linear-gradient(var(--mark), var(--mark)) right top / 12px 1px,
+    linear-gradient(var(--mark), var(--mark)) right top / 1px 12px,
+    linear-gradient(var(--mark), var(--mark)) left bottom / 12px 1px,
+    linear-gradient(var(--mark), var(--mark)) left bottom / 1px 12px,
+    linear-gradient(var(--mark), var(--mark)) right bottom / 12px 1px,
+    linear-gradient(var(--mark), var(--mark)) right bottom / 1px 12px;
+  background-repeat: no-repeat;
+  transition: inset 200ms ease;
+}
+
+/* Misregistration: a red ink layer printed slightly off */
+.misreg {
+  text-shadow: var(--mis) calc(var(--mis) * 0.6) 0 rgba(var(--accent-rgb), 0.9);
+}
+
+/*
+ * Halftone: the image is shown through a dot screen. Static by default (decorative previews);
+ * .halftone-reveal / .halftone-hero animate the dots until the screen closes into the full photo.
+ */
+.halftone {
+  --dot: 2.4px;
+  -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
+    var(--halftone-cell) var(--halftone-cell);
+  mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
+    var(--halftone-cell);
+}
+
+/* Work images must always be fully visible unless the browser can animate the screen open. */
+.halftone-reveal,
+.halftone-hero {
+  -webkit-mask: none;
+  mask: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .halftone-reveal {
+      -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
+        var(--halftone-cell) var(--halftone-cell);
+      mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
+        var(--halftone-cell);
+      animation: halftone-print linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 32%;
+    }
+
+    .halftone-hero {
+      --halftone-cell: 7px;
+      -webkit-mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 /
+        var(--halftone-cell) var(--halftone-cell);
+      mask: radial-gradient(circle, #000 var(--dot), transparent calc(var(--dot) + 0.6px)) 0 0 / var(--halftone-cell)
+        var(--halftone-cell);
+      animation: halftone-hero linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 55svh;
+    }
+
+    .misreg-hero {
+      animation: misreg-drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 70svh;
+    }
+  }
+}
+
+@keyframes halftone-print {
+  from {
+    --dot: 1.2px;
+  }
+
+  to {
+    --dot: 5.5px;
+  }
+}
+
+@keyframes halftone-hero {
+  from {
+    --dot: 3px;
+  }
+
+  to {
+    --dot: 6.5px;
+  }
+}
+
+@keyframes misreg-drift {
+  from {
+    --mis: 3px;
+  }
+
+  to {
+    --mis: 14px;
+  }
+}

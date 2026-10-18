@@ -2,9 +2,9 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
-import RelatedLinks from "../components/RelatedLinks.astro";
+import CategoryIndex from "../components/CategoryIndex.astro";
 import { OWNER_NAME, type CategoryInfo } from "../data/site";
-import { getActiveCategories, getSiteContent } from "../lib/content";
+import { getActiveCategories, getSiteContent, yearSpan } from "../lib/content";
 import { getAbsoluteImageUrl } from "../lib/images";
 import { categoryPath, localizePath, pick, t, type Lang } from "../lib/i18n";
 
@@ -54,9 +54,8 @@ const structuredData = [
   },
 ];
 
-const otherCategories = activeCategories
-  .filter((item) => item.value !== category.value)
-  .map((item) => ({ label: item.label[lang], href: categoryPath(lang, item.value) }));
+const years = yearSpan(projects);
+const stats = [ui.projectCount(projects.length), years].filter(Boolean);
 ---
 
 <BaseLayout
@@ -78,9 +77,11 @@ const otherCategories = activeCategories
             <li><span aria-current="page">{label}</span></li>
           </ol>
         </nav>
+        <p class="section-label">
+          <span class="section-number">{ui.field}</span> / {stats.join(" · ")}
+        </p>
+        <h1 class="client-name misreg">{label}</h1>
         <div class="client-hero-copy">
-          <p class="eyebrow">{ui.field}</p>
-          <h1>{label}</h1>
           <p>{category.intro[lang]}</p>
         </div>
       </div>
@@ -92,6 +93,11 @@ const otherCategories = activeCategories
       </div>
     </section>
 
-    <RelatedLinks title={ui.moreFields} links={otherCategories} />
+    <section class="section fields-section" aria-labelledby="more-fields-title">
+      <div class="container">
+        <h2 id="more-fields-title" class="related-title spec">{ui.moreFields}</h2>
+        <CategoryIndex categories={activeCategories} projects={allProjects} lang={lang} current={category.value} />
+      </div>
+    </section>
   </main>
 </BaseLayout>

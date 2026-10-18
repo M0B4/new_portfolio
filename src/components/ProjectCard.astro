@@ -15,7 +15,7 @@ type Props = {
 
 const { project, lang, categoryLabel, eager = false, priority = false, sizes = "(min-width: 820px) 33vw, 50vw" } = Astro.props;
 const ui = t(lang);
-const image = await getResponsiveImage(project.previewImage, [400, 640, 960, 1280]);
+const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 70 });
 const slides = await Promise.all(
   [{ image: project.previewImage, alt: project.alt }, ...project.gallery].map(async (item) => ({
     src: await getImageUrl(item.image, 1800),
@@ -42,6 +42,7 @@ const meta = [categoryLabel, clientLabel, project.year].filter(Boolean).join(" /
     <span class="print-frame">
       <span class="card-image" style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}>
         <img
+          class="halftone halftone-reveal"
           src={image.src}
           srcset={image.srcset}
           sizes={sizes}

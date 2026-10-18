@@ -3,10 +3,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ClientLogo from "../components/ClientLogo.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
-import RelatedLinks from "../components/RelatedLinks.astro";
+import TourNav from "../components/TourNav.astro";
 import { OWNER_NAME } from "../data/site";
 import type { ClientGroup } from "../lib/clients";
-import { getClientGroupsWithEmpty, getSiteContent } from "../lib/content";
+import { getSiteContent, getTour, yearSpan } from "../lib/content";
 import { getAbsoluteImageUrl } from "../lib/images";
 import { clientPath, localizePath, pick, t, type Lang } from "../lib/i18n";
 import { assetUrl } from "../lib/url";
@@ -19,7 +19,7 @@ type Props = {
 const { lang, group } = Astro.props;
 const ui = t(lang);
 const { categories } = await getSiteContent();
-const clientGroups = await getClientGroupsWithEmpty();
+const { stops } = await getTour();
 const origin = Astro.site ?? Astro.url.origin;
 const { profile, projects } = group;
 const alternates = { de: clientPath("de", profile.slug), en: clientPath("en", profile.slug) };
@@ -60,9 +60,8 @@ const structuredData = [
   },
 ];
 
-const otherClients = clientGroups
-  .filter((item) => item.profile.slug !== profile.slug && item.projects.length > 0)
-  .map((item) => ({ label: item.profile.label, href: clientPath(lang, item.profile.slug) }));
+const years = yearSpan(projects);
+const stats = [projects.length > 0 ? ui.projectCount(projects.length) : "", years, categoryLabels.join(" / ")].filter(Boolean);
 ---
 
 <BaseLayout
@@ -77,7 +76,6 @@ const otherClients = clientGroups
 
   <main id="main">
     <header class="client-hero">
-      <ClientLogo class="client-hero-logo-bg" profile={profile} height={360} loading="eager" />
       <div class="container client-hero-inner">
         <nav class="breadcrumb" aria-label={ui.breadcrumb}>
           <ol>
@@ -85,9 +83,13 @@ const otherClients = clientGroups
             <li><span aria-current="page">{profile.label}</span></li>
           </ol>
         </nav>
+        <p class="section-label">
+          <span class="section-number">{ui.tourStop}</span>
+          {stats.length > 0 && <span> / {stats.join(" · ")}</span>}
+        </p>
+        <h1 class="client-name misreg">{profile.label}</h1>
         <div class="client-hero-copy">
-          <p class="eyebrow">{categoryLabels.length > 0 ? categoryLabels.join(" / ") : "Portfolio"}</p>
-          <h1>{profile.label}</h1>
+          <ClientLogo class="client-hero-logo" profile={profile} height={56} loading="eager" />
           <p>{intro}</p>
         </div>
       </div>
@@ -105,6 +107,6 @@ const otherClients = clientGroups
       </div>
     </section>
 
-    <RelatedLinks title={ui.moreClients} links={otherClients} />
+    <TourNav stops={stops} currentSlug={profile.slug} lang={lang} />
   </main>
 </BaseLayout>

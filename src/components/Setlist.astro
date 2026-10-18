@@ -1,0 +1,28 @@
+---
+// The process as a band setlist taped to the stage floor.
+import { t, type Lang } from "../lib/i18n";
+
+type Props = {
+  lang: Lang;
+};
+
+const ui = t(Astro.props.lang);
+---
+
+<div class="setlist">
+  <ol class="setlist-songs">
+    {
+      ui.processSteps.map((step, index) => (
+        <li class="setlist-song">
+          <span class="setlist-number">{String(index + 1).padStart(2, "0")}</span>
+          <h3 class="setlist-title">{step.title}</h3>
+          <p>{step.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="setlist-encore">
+    <span class="spec">{ui.setlistEncore}</span>
+    {ui.setlistEncoreText}
+  </p>
+</div>

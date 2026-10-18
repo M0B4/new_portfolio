@@ -1,0 +1,62 @@
+---
+// Fields of work as a giant typographic index; hovering a word reveals one piece as a halftone print.
+import type { CategoryInfo } from "../data/site";
+import { categoryPath, t, type Lang } from "../lib/i18n";
+import { getResponsiveImage } from "../lib/images";
+import type { PortfolioProject } from "../lib/projects";
+
+type Props = {
+  categories: CategoryInfo[];
+  projects: PortfolioProject[];
+  lang: Lang;
+  /** Highlight the current category (category pages). */
+  current?: string;
+};
+
+const { categories, projects, lang, current } = Astro.props;
+const ui = t(lang);
+const entries = await Promise.all(
+  categories.map(async (category) => {
+    const inCategory = projects.filter((project) => project.category === category.value);
+    return {
+      category,
+      count: inCategory.length,
+      preview: inCategory[0] ? await getResponsiveImage(inCategory[0].previewImage, [320, 480], { quality: 70 }) : undefined,
+    };
+  }),
+);
+---
+
+<ul class="category-index">
+  {
+    entries.map(({ category, count, preview }) => (
+      <li>
+        <a
+          class="category-link"
+          href={categoryPath(lang, category.value)}
+          aria-current={current === category.value ? "page" : undefined}
+        >
+          <span class="category-word">{category.label[lang]}</span>
+          <sup class="category-count">
+            {count}
+            <span class="sr-only"> – {ui.projectCount(count)}</span>
+          </sup>
+          <span class="category-intro">{category.intro[lang]}</span>
+          {preview && (
+            <img
+              class="category-preview halftone"
+              src={preview.src}
+              srcset={preview.srcset}
+              sizes="280px"
+              width={preview.width}
+              height={preview.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </a>
+      </li>
+    ))
+  }
+</ul>

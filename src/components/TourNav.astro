@@ -1,0 +1,37 @@
+---
+// Previous / next tour stop at the end of a client page.
+import type { TourStop } from "../lib/content";
+import { clientPath, t, type Lang } from "../lib/i18n";
+
+type Props = {
+  stops: TourStop[];
+  currentSlug: string;
+  lang: Lang;
+};
+
+const { stops, currentSlug, lang } = Astro.props;
+const ui = t(lang);
+const index = stops.findIndex((stop) => stop.profile.slug === currentSlug);
+// Wrap around, like a tour that starts over.
+const prev = stops.length > 1 && index !== -1 ? stops[(index - 1 + stops.length) % stops.length] : undefined;
+const next = stops.length > 1 ? stops[(index + 1) % stops.length] : undefined;
+---
+
+{
+  (prev || next) && (
+    <nav class="tour-nav container" aria-label={ui.tourStop}>
+      {prev && (
+        <a class="tour-nav-link" href={clientPath(lang, prev.profile.slug)} rel="prev">
+          <span class="spec">← {ui.prevStop}</span>
+          <span class="tour-nav-name">{prev.profile.label}</span>
+        </a>
+      )}
+      {next && (
+        <a class="tour-nav-link tour-nav-next" href={clientPath(lang, next.profile.slug)} rel="next">
+          <span class="spec">{ui.nextStop} →</span>
+          <span class="tour-nav-name">{next.profile.label}</span>
+        </a>
+      )}
+    </nav>
+  )
+}

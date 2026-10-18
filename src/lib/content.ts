@@ -1,5 +1,5 @@
 import { fallbackCategories, legalPlaceholders, socialLinks, type CategoryInfo } from "../data/site";
-import { clientProfiles, fromSanityClient, getClientGroups, type ClientProfile } from "./clients";
+import { clientProfiles, fromSanityClient, getClientGroups, type ClientGroup, type ClientProfile } from "./clients";
 import { fromSanityProject, getLocalProjects, isProjectCategory, type PortfolioProject } from "./projects";
 import { fetchSanityContent, type SiteSettings } from "./sanity/client";
 
@@ -72,4 +72,36 @@ export const getClientGroupsWithEmpty = async () => {
 export const getActiveCategories = async () => {
   const { projects, categories } = await getSiteContent();
   return categories.filter((category) => projects.some((project) => project.category === category.value));
+};
+
+/** "2022–2026" (or "2026") from the project years; empty when no year is known. */
+export const yearSpan = (projects: PortfolioProject[]) => {
+  const years = projects.map((project) => Number.parseInt(project.year, 10)).filter(Number.isFinite);
+  if (years.length === 0) return "";
+  const first = Math.min(...years);
+  const last = Math.max(...years);
+  return first === last ? String(first) : `${first}–${last}`;
+};
+
+export type TourStop = ClientGroup & {
+  years: string;
+  categories: CategoryInfo[];
+};
+
+/**
+ * Clients with work, styled as the tour dates on the back of a band shirt.
+ * Order follows the client order, so `stops[i ± 1]` are the previous/next tour stop.
+ */
+export const getTour = async () => {
+  const { projects, categories } = await getSiteContent();
+  const groups = await getClientGroupsWithEmpty();
+  const stops: TourStop[] = groups
+    .filter((group) => group.projects.length > 0)
+    .map((group) => ({
+      ...group,
+      years: yearSpan(group.projects),
+      categories: categories.filter((category) => group.projects.some((project) => project.category === category.value)),
+    }));
+
+  return { stops, years: yearSpan(projects) };
 };

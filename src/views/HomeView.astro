@@ -1,19 +1,20 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ClientLogo from "../components/ClientLogo.astro";
+import CategoryIndex from "../components/CategoryIndex.astro";
 import Header from "../components/Header.astro";
 import Lightbox from "../components/Lightbox.astro";
+import Marquee from "../components/Marquee.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
 import SectionHeading from "../components/SectionHeading.astro";
+import Setlist from "../components/Setlist.astro";
+import TourList from "../components/TourList.astro";
 import portrait from "../assets/header.jpg";
 import { OWNER_NAME, SITE_NAME } from "../data/site";
-import type { ClientGroup } from "../lib/clients";
-import { getActiveCategories, getClientGroupsWithEmpty, getSiteContent } from "../lib/content";
+import { getActiveCategories, getSiteContent, getTour } from "../lib/content";
 import { getResponsiveImage } from "../lib/images";
-import { categoryPath, clientPath, localizePath, pick, t, type Lang } from "../lib/i18n";
+import { categoryPath, localizePath, pick, t, type Lang } from "../lib/i18n";
 import { assetUrl } from "../lib/url";
-import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
   lang: Lang;
@@ -22,25 +23,21 @@ type Props = {
 const { lang } = Astro.props;
 const ui = t(lang);
 const { projects, settings, socialLinks, categories: allCategories } = await getSiteContent();
-const clientGroups = await getClientGroupsWithEmpty();
-const activeGroups = clientGroups.filter((group) => group.projects.length > 0);
+const { stops, years } = await getTour();
 const categories = await getActiveCategories();
 const origin = Astro.site ?? Astro.url.origin;
 const alternates = { de: localizePath("de"), en: localizePath("en") };
-const groupOf = (project: PortfolioProject) => clientGroups.find((group) => group.projects.includes(project))!;
 
-// Spotlight: first "Hervorheben" project, otherwise the top project of the first client (Wacken).
-const spotlightProject = projects.find((project) => project.featured) ?? activeGroups[0]?.projects[0];
-const spotlightGroup: ClientGroup | undefined = spotlightProject ? groupOf(spotlightProject) : undefined;
-// The backdrop is darkened, so a lower quality is invisible but saves a lot on the LCP image.
-const heroImage = spotlightProject
-  ? await getResponsiveImage(spotlightProject.previewImage, [640, 960, 1440, 1920], { quality: 55 })
+// Front print: first "Hervorheben" project, otherwise the top project of the first tour stop (Wacken).
+const frontProject = projects.find((project) => project.featured) ?? stops[0]?.projects[0];
+const frontImage = frontProject
+  ? await getResponsiveImage(frontProject.previewImage, [480, 720, 960, 1280], { quality: 75 })
   : undefined;
 
-// Selected work: featured first, then round-robin across clients so no single series dominates.
+// Merch table: featured first, then round-robin across clients so no single series dominates.
 const pickSelectedWork = (limit: number) => {
-  const picked = projects.filter((project) => project.featured);
-  const queues = activeGroups.map((group) => [...group.projects]);
+  const picked = projects.filter((project) => project.featured && project !== frontProject);
+  const queues = stops.map((stop) => stop.projects.filter((project) => project !== frontProject));
   while (picked.length < limit && queues.some((queue) => queue.length > 0)) {
     for (const queue of queues) {
       const next = queue.shift();
@@ -50,29 +47,6 @@ const pickSelectedWork = (limit: number) => {
   return picked;
 };
 const selectedWork = pickSelectedWork(8);
-
-// The spotlight shows another piece of the same client so hero and grid are not repeated.
-const spotlightPiece =
-  spotlightGroup?.projects.find((project) => project !== spotlightProject && !selectedWork.includes(project)) ??
-  spotlightProject;
-const spotlightImage = spotlightPiece ? await getResponsiveImage(spotlightPiece.previewImage, [640, 960, 1280, 1600]) : undefined;
-
-// Latest: newest year first (then last edit in Sanity), excluding what is already shown above.
-const latest = projects
-  .filter((project) => !selectedWork.includes(project) && project !== spotlightPiece)
-  .sort((a, b) => b.year.localeCompare(a.year) || (b.updatedAt ?? "").localeCompare(a.updatedAt ?? ""))
-  .slice(0, 3);
-
-const categoryEntries = await Promise.all(
-  categories.map(async (category) => {
-    const project = projects.find((item) => item.category === category.value)!;
-    return {
-      category,
-      image: await getResponsiveImage(project.previewImage, [400, 640, 900]),
-      href: categoryPath(lang, category.value),
-    };
-  }),
-);
 
 const heroKicker = pick(lang, settings.heroKickerDe || "Moritz Barz / Portfolio", settings.heroKickerEn);
 const heroTitle = pick(
@@ -116,205 +90,117 @@ const structuredData = [
   <Header lang={lang} alternates={alternates} />
 
   <main id="main" class="home">
-    <section class="home-hero" aria-labelledby="hero-title">
-      {
-        heroImage && spotlightProject && (
-          <img
-            class="hero-backdrop"
-            src={heroImage.src}
-            srcset={heroImage.srcset}
-            sizes="(max-width: 760px) 340px, 100vw"
-            width={heroImage.width}
-            height={heroImage.height}
-            alt=""
-            fetchpriority="high"
-            decoding="async"
-          />
-        )
-      }
-      <div class="container hero-content">
-        <p class="section-label">{heroKicker}</p>
-        <h1 id="hero-title">{heroTitle}</h1>
-        <p class="hero-text">{heroText}</p>
-        <div class="hero-actions">
-          <a class="btn" href="#contact">{ui.heroCtaPrimary}</a>
-          <a class="btn btn-outline" href="#work">{ui.heroCtaSecondary}</a>
+    <!-- Front print: name + one piece of work -->
+    <section class="front-print" aria-labelledby="hero-title">
+      <div class="container front-grid">
+        <div class="front-copy">
+          <p class="section-label">
+            <span class="section-number">{heroKicker}</span>
+            {years && <span> / {years}</span>}
+          </p>
+          <p class="front-claim">{heroTitle}</p>
+          <p class="front-text">{heroText}</p>
+          <div class="hero-actions">
+            <a class="btn" href="#contact">{ui.heroCtaPrimary}</a>
+            <a class="btn btn-outline" href="#work">{ui.heroCtaSecondary}</a>
+          </div>
         </div>
-        <p class="spec hero-spec">{ui.heroSpec}</p>
-      </div>
-    </section>
-
-    <section class="trust-strip" aria-label={ui.trustLabel}>
-      <div class="container trust-inner">
-        <p class="spec">{ui.trustLabel}</p>
-        <ul class="trust-logos">
-          {
-            clientGroups
-              .filter((group) => group.profile.logo)
-              .map((group) => (
-                <li>
-                  <a href={clientPath(lang, group.profile.slug)} aria-label={ui.viewWorkFor(group.profile.label)}>
-                    <ClientLogo profile={group.profile} height={40} />
-                  </a>
-                </li>
-              ))
-          }
-        </ul>
-      </div>
-    </section>
-
-    <section id="work" class="section work-section" aria-labelledby="work-title">
-      <div class="container">
-        <SectionHeading id="work-title" number="01" kicker={ui.workKicker} title={ui.workTitle} />
-        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} columns={2} lightbox={false} eagerCount={0} />
-      </div>
-    </section>
-
-    {
-      spotlightGroup && spotlightPiece && spotlightImage && (
-        <section class="section spotlight-section" aria-labelledby="spotlight-title">
-          <div class="container spotlight-layout">
-            <figure class="spotlight-figure print-frame">
+        {
+          frontImage && frontProject && (
+            <figure class="front-figure print-frame">
               <img
-                src={spotlightImage.src}
-                srcset={spotlightImage.srcset}
-                sizes="(min-width: 820px) 55vw, 100vw"
-                width={spotlightImage.width}
-                height={spotlightImage.height}
-                alt={spotlightPiece.alt}
-                loading="lazy"
+                class="halftone halftone-hero"
+                src={frontImage.src}
+                srcset={frontImage.srcset}
+                sizes="(min-width: 820px) 42vw, 90vw"
+                width={frontImage.width}
+                height={frontImage.height}
+                alt={frontProject.alt}
+                fetchpriority="high"
                 decoding="async"
               />
+              <figcaption class="spec">
+                {frontProject.clientProfile?.label ?? frontProject.client} / {frontProject.year}
+              </figcaption>
             </figure>
-            <div class="spotlight-copy">
-              <p class="section-label">
-                <span class="section-number">02</span> {ui.highlightKicker}
-              </p>
-              {spotlightGroup.profile.logo && (
-                <ClientLogo class="spotlight-logo" profile={spotlightGroup.profile} height={64} />
-              )}
-              <h2 id="spotlight-title">{spotlightGroup.profile.label}</h2>
-              <p>{pick(lang, spotlightGroup.profile.intro, spotlightGroup.profile.introEn)}</p>
-              <p class="spec">{ui.projectCount(spotlightGroup.projects.length)}</p>
-              <a class="btn btn-outline" href={clientPath(lang, spotlightGroup.profile.slug)}>
-                {ui.highlightCta(spotlightGroup.profile.label)}
-              </a>
-            </div>
-          </div>
-        </section>
-      )
-    }
+          )
+        }
+      </div>
+      <h1 id="hero-title" class="container front-name">
+        <span class="misreg misreg-hero">Moritz Barz</span>
+        <span class="sr-only"> – {heroTitle}</span>
+      </h1>
+    </section>
 
-    {
-      latest.length > 0 && (
-        <section class="section latest-section" aria-labelledby="latest-title">
-          <div class="container">
-            <SectionHeading id="latest-title" number="03" kicker={ui.latestKicker} title={ui.latestTitle} />
-            <ProjectGrid projects={latest} categories={allCategories} lang={lang} lightbox={false} eagerCount={0} />
-          </div>
-        </section>
-      )
-    }
+    <Marquee items={categories.map((category) => category.label[lang])} />
 
-    <section id="portfolio" class="section portfolio-section" aria-labelledby="client-title">
+    <!-- Merch table: selected work -->
+    <section id="work" class="section work-section" aria-labelledby="work-title">
       <div class="container">
-        <SectionHeading id="client-title" number="04" kicker={ui.clientsKicker} title={ui.clientsTitle} text={ui.clientsText} />
-        <ul class="client-grid" aria-label={ui.clientsListLabel}>
-          {
-            clientGroups.map((group) => (
-              <li>
-                <a class="client-card" href={clientPath(lang, group.profile.slug)}>
-                  {group.profile.logo ? (
-                    <span class="client-logo-mark" aria-hidden="true">
-                      <ClientLogo profile={group.profile} height={100} />
-                    </span>
-                  ) : (
-                    <span class="client-logo-mark client-logo-text" aria-hidden="true">
-                      {group.profile.label}
-                    </span>
-                  )}
-                  <span class="client-card-label">
-                    <span class="client-card-name">{group.profile.label}</span>
-                    {group.projects.length > 0 && (
-                      <span class="spec client-card-count">{ui.projectCount(group.projects.length)}</span>
-                    )}
-                  </span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+        <SectionHeading id="work-title" number="01" kicker={ui.merchKicker} title={ui.workTitle} />
+        <ProjectGrid projects={selectedWork} categories={allCategories} lang={lang} lightbox={false} eagerCount={0} />
       </div>
     </section>
 
-    <section class="section discipline-section" aria-labelledby="discipline-title">
+    <!-- Back print: clients as tour dates -->
+    <section id="portfolio" class="section tour-section" aria-labelledby="tour-title">
       <div class="container">
-        <SectionHeading id="discipline-title" number="05" kicker={ui.fieldsKicker} title={ui.fieldsTitle} />
-        <ul class="discipline-grid">
-          {
-            categoryEntries.map(({ category, image, href }) => (
-              <li>
-                <a class="discipline-card" href={href}>
-                  <img
-                    src={image.src}
-                    srcset={image.srcset}
-                    sizes="(min-width: 820px) 20vw, 50vw"
-                    width={image.width}
-                    height={image.height}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <span class="discipline-card-title">{category.label[lang]}</span>
-                  <span class="discipline-card-text">{category.intro[lang]}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
+        <p class="section-label tour-kicker"><span class="section-number">02</span> {ui.tourKicker}</p>
+        <h2 id="tour-title" class="tour-title misreg">
+          <span class="tour-star" aria-hidden="true">✶</span>
+          {ui.tourTitle("")}
+          <span class="tour-star" aria-hidden="true">✶</span>
+          {years && <span class="tour-title-years">{years}</span>}
+        </h2>
+        <p class="tour-intro">{ui.tourIntro}</p>
+        <TourList stops={stops} lang={lang} />
       </div>
     </section>
 
-    <section class="section process-section" aria-labelledby="process-title">
+    <!-- Fields of work -->
+    <section class="section fields-section" aria-labelledby="fields-title">
       <div class="container">
-        <SectionHeading id="process-title" number="06" kicker={ui.processKicker} title={ui.processTitle} />
-        <ol class="process-steps">
-          {
-            ui.processSteps.map((step, index) => (
-              <li class="process-step">
-                <span class="spec process-number">{String(index + 1).padStart(2, "0")}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
-              </li>
-            ))
-          }
-        </ol>
+        <SectionHeading id="fields-title" number="03" kicker={ui.fieldsKicker} title={ui.fieldsTitle} />
+        <CategoryIndex categories={categories} projects={projects} lang={lang} />
       </div>
     </section>
 
-    <section id="about" class="section statement-section" aria-labelledby="about-title">
-      <div class="container statement-layout">
-        <div class="statement-content">
-          <p class="section-label"><span class="section-number">07</span> {ui.profileKicker}</p>
+    <!-- Setlist: process -->
+    <section class="section setlist-section" aria-labelledby="setlist-title">
+      <div class="container">
+        <SectionHeading id="setlist-title" number="04" kicker={ui.setlistKicker} title={ui.setlistTitle} />
+        <Setlist lang={lang} />
+      </div>
+    </section>
+
+    <!-- Backstage: profile -->
+    <section id="about" class="section backstage-section" aria-labelledby="about-title">
+      <div class="container backstage-layout">
+        <figure class="backstage-portrait print-frame">
+          <Image
+            class="halftone halftone-reveal"
+            src={portrait}
+            alt={ui.portraitAlt}
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 820px) 45vw, 100vw"
+            loading="lazy"
+          />
+        </figure>
+        <div class="backstage-copy">
+          <p class="section-label"><span class="section-number">05</span> {ui.backstageKicker}</p>
           <h2 id="about-title">{ui.profileTitle}</h2>
           {aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
-          <h3 class="services-title">{ui.servicesTitle}</h3>
+          <h3 class="spec services-title">{ui.servicesTitle}</h3>
           <ul class="services-list">
             {
               categories.map((category) => (
                 <li>
-                  <a href={categoryPath(lang, category.value)}>
-                    <strong>{category.label[lang]}</strong>
-                    <span>{category.intro[lang]}</span>
-                  </a>
+                  <a href={categoryPath(lang, category.value)}>{category.label[lang]}</a>
                 </li>
               ))
             }
           </ul>
         </div>
-        <figure class="statement-portrait print-frame">
-          <Image src={portrait} alt={ui.portraitAlt} widths={[480, 800, 1200]} sizes="(min-width: 820px) 50vw, 100vw" loading="lazy" />
-        </figure>
       </div>
     </section>
   </main>

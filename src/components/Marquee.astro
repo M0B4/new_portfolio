@@ -1,0 +1,26 @@
+---
+// "Absperrband" ticker. Purely decorative (the same words are links further down), so hidden from
+// assistive tech; the CSS pauses it on hover and for reduced motion.
+type Props = {
+  items: string[];
+};
+
+const { items } = Astro.props;
+// Repeat until one run is wide enough, then render it twice for a seamless loop.
+const run = Array.from({ length: Math.max(2, Math.ceil(8 / Math.max(items.length, 1))) }, () => items).flat();
+---
+
+<div class="marquee" aria-hidden="true">
+  {
+    [0, 1].map(() => (
+      <ul class="marquee-track">
+        {run.map((item) => (
+          <li>
+            {item}
+            <span class="marquee-star">✶</span>
+          </li>
+        ))}
+      </ul>
+    ))
+  }
+</div>

@@ -23,11 +23,13 @@ const messages = {
 ---
 
 <footer id="contact" class="contact-footer">
+  <div class="container">
+    <p class="section-label"><span class="section-number">→</span> {ui.contactKicker}</p>
+    <h2 class="cta-title misreg">{ui.ctaTitle}</h2>
+  </div>
   <div class="container contact-layout">
     <div class="footer-contact-copy">
-      <p class="section-label"><span class="section-number">→</span> {ui.contactKicker}</p>
-      <h2 class="cta-title">{ui.ctaTitle}</h2>
-      <p>{ui.ctaText}</p>
+      <p class="cta-text">{ui.ctaText}</p>
       {
         (legal.email || legal.phone) && (
           <dl class="contact-direct">
@@ -64,6 +66,12 @@ const messages = {
         )
       }
     </div>
+    <div class="backstage-pass">
+      <div class="pass-head" aria-hidden="true">
+        <span class="pass-hole"></span>
+        <span class="pass-title">{ui.passTitle}</span>
+        <span class="pass-access">{ui.passAccess}</span>
+      </div>
     <form
       id="contact-form"
       class="contact-form"
@@ -107,9 +115,10 @@ const messages = {
         <p id="contact-form-status" class="form-status" role="status" aria-live="polite"></p>
       </div>
     </form>
+    </div>
   </div>
   <div class="container footer-meta">
-    <span>MORITZ<span>BARZ</span> <span class="spec footer-host">{SITE_HOST}</span></span>
+    <span class="footer-brand"><span class="logo-stamp" aria-hidden="true">MB</span> Moritz Barz <span class="spec footer-host">{SITE_HOST}</span></span>
     <nav aria-label={ui.footerNav}>
       <a href={`${localizePath(lang)}#contact`}>{ui.navContact}</a>
       <a href={legalPath("impressum")} hreflang="de">{ui.imprint}</a>

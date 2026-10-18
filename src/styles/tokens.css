@@ -1,6 +1,6 @@
 /*
- * Look: "Tourposter" – paper, ink and brass. Light editorial pages with black bands,
- * modern grotesk type (the logo in Archivo Expanded) and a blackletter accent on the section numbers.
+ * Look: "Kopierer-Flyer" – a photocopied gig flyer on paper, ink and brass. Expanded grotesk
+ * headlines with rough toner edges, typewriter labels, tape strips and a red stamp.
  */
 
 :root {
@@ -10,8 +10,12 @@
   --paper: #f2ede3;
   --ink: #0e0d0c;
   --gold: #b08a3e;
+  /* Stamp red: decoration and large text only */
+  --red: #c23a22;
+  --tape: rgba(226, 214, 176, 0.82);
 
   /* Roles (paper page) */
+  --page: var(--paper);
   --bg: var(--paper);
   --bg-raise: #e9e2d4;
   --surface: rgba(242, 237, 227, 0.88);
@@ -37,15 +41,14 @@
   /* Type */
   --sans: "Archivo Variable", "Archivo", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
-  --fraktur: "UnifrakturMaguntia", "Old English Text MT", serif;
+  --mono: "Special Elite", "Courier New", ui-monospace, monospace;
 
   /* Layout */
   --nav-height: 70px;
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
   --container: min(100% - var(--gutter) * 2, 1320px);
   --section-space: clamp(4.5rem, 9vw, 8rem);
-  --radius: 4px;
+  --radius: 0;
 
   /* Paper grain (Sanity "Hintergrund-Intensität" sets --texture-opacity) */
   --texture-opacity: 0.1;
@@ -73,6 +76,7 @@
 /* Dark mode: ink pages, bands one step lighter */
 :root[data-theme="dark"] {
   color-scheme: dark;
+  --page: var(--ink);
   --bg: var(--ink);
   --bg-raise: #1b1916;
   --surface: rgba(14, 13, 12, 0.85);
@@ -86,6 +90,7 @@
   --btn-fg: var(--ink);
   --focus: #ffd34d;
   --logo-filter: grayscale(1) brightness(1.6);
+  --tape: rgba(200, 188, 150, 0.55);
 }
 
 :root[data-theme="dark"] .band {

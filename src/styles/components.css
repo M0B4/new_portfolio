@@ -30,7 +30,7 @@
   font-family: var(--sans);
   font-size: 1.3rem;
   font-stretch: 125%;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: 0.01em;
   line-height: 1;
   text-transform: uppercase;
@@ -172,9 +172,8 @@
 }
 
 .hero-title {
-  max-width: 15ch;
-  font-size: clamp(2.6rem, 5.4vw, 4.8rem);
-  letter-spacing: -0.035em;
+  max-width: 17ch;
+  font-size: clamp(2rem, 4.1vw, 3.6rem);
   line-height: 0.98;
 }
 
@@ -202,6 +201,7 @@
 .hero-frame {
   position: relative;
   display: block;
+  transform: rotate(-1.5deg);
 }
 
 .hero-frame::before {
@@ -220,7 +220,30 @@
   max-height: 68svh;
   object-fit: contain;
   background: var(--ink);
-  box-shadow: 0 30px 60px -35px rgba(14, 13, 12, 0.55);
+  box-shadow: 0 18px 30px -18px rgba(14, 13, 12, 0.6);
+}
+
+/* Older flyers peeking out behind the hero work */
+.hero-stack {
+  position: absolute;
+  z-index: -1;
+  width: 44%;
+  height: auto;
+  background: var(--ink);
+  box-shadow: 0 14px 24px -14px rgba(14, 13, 12, 0.6);
+  filter: grayscale(0.35) contrast(1.05);
+}
+
+.hero-stack-1 {
+  top: -3%;
+  left: -12%;
+  transform: rotate(-8deg);
+}
+
+.hero-stack-2 {
+  right: -5%;
+  bottom: 10%;
+  transform: rotate(7deg);
 }
 
 .hero-figure figcaption {
@@ -353,6 +376,36 @@
   border-radius: var(--radius);
   background-color: #151311;
   background-size: cover;
+  box-shadow: 0 12px 20px -14px rgba(14, 13, 12, 0.55);
+}
+
+/* Pinned up like flyers on a wall: a slight, varying tilt */
+.project-card:nth-child(3n + 1) .card-image {
+  transform: rotate(-0.8deg);
+}
+
+.project-card:nth-child(3n + 2) .card-image {
+  transform: rotate(0.6deg);
+}
+
+.project-card:nth-child(3n) .card-image {
+  transform: rotate(-0.3deg);
+}
+
+/* Taking a flyer off the wall: it straightens and lifts */
+.card-image {
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.project-card .project-card-trigger:hover .card-image,
+.project-card .project-card-trigger:focus-visible .card-image {
+  box-shadow: 0 26px 34px -18px rgba(14, 13, 12, 0.6);
+  transform: rotate(0deg) translateY(-6px);
+}
+
+.project-card .project-card-trigger:active .card-image {
+  box-shadow: 0 6px 10px -6px rgba(14, 13, 12, 0.6);
+  transform: rotate(0deg) translateY(1px) scale(0.99);
 }
 
 .card-image img {
@@ -380,9 +433,11 @@
 }
 
 .card-title {
-  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  font-stretch: 125%;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
   line-height: 1.15;
   transition: color 160ms ease;
 }
@@ -418,45 +473,74 @@
   position: relative;
 }
 
-/* Dotted brass edge at the top of each band */
-.band::before {
+/* Torn paper edge: the page above hangs into the band like a ripped sheet */
+.band::before,
+.clients-section::after {
   content: "";
   position: absolute;
-  inset: 0 0 auto;
-  height: 28px;
-  background-image: radial-gradient(circle, var(--gold) 1.2px, transparent 1.6px);
-  background-size: 9px 9px;
-  -webkit-mask: linear-gradient(to bottom, #000, transparent);
-  mask: linear-gradient(to bottom, #000, transparent);
-  opacity: 0.8;
+  inset: -1px 0 auto;
+  height: clamp(14px, 1.8vw, 24px);
+  background: var(--page);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 24' preserveAspectRatio='none'%3E%3Cpath d='M0 0H240V9L232 14 221 8 209 16 197 10 188 18 176 9 163 15 151 7 140 17 128 11 117 19 104 9 92 14 80 6 69 16 57 10 45 18 33 8 21 15 10 9 0 13Z'/%3E%3C/svg%3E") 0 0 / 240px 100% repeat-x;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 24' preserveAspectRatio='none'%3E%3Cpath d='M0 0H240V9L232 14 221 8 209 16 197 10 188 18 176 9 163 15 151 7 140 17 128 11 117 19 104 9 92 14 80 6 69 16 57 10 45 18 33 8 21 15 10 9 0 13Z'/%3E%3C/svg%3E") 0 0 / 240px 100% repeat-x;
   pointer-events: none;
+}
+
+/* …and the paper below starts with a rip, too */
+.clients-section::after {
+  inset: auto 0 -1px;
+  transform: scaleY(-1);
 }
 
 /* ---------- Client wall ---------- */
 
-/* Hairline grid: container draws top/left, tiles draw right/bottom – no grey gaps in short rows */
+/* Sticker wall: every client is a die-cut sticker slapped on at a slight angle */
 .client-wall {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-}
-
-.client-wall li {
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  gap: clamp(1rem, 2.4vw, 1.75rem);
 }
 
 .client-tile {
+  --worn: url("#worn-1");
+  position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-rows: 1fr auto auto;
   gap: 0.35rem;
   height: 100%;
   min-height: clamp(210px, 22vw, 280px);
-  background: var(--bg);
-  padding: clamp(1.25rem, 2.5vw, 2rem);
+  padding: clamp(1.1rem, 2.2vw, 1.75rem);
   text-decoration: none;
-  transition: background 200ms ease;
+  transform: rotate(var(--tilt, -1deg));
+  transition: transform 220ms ease;
+}
+
+/* The sticker itself sits behind the content: worn, ragged edges and scuffs (#worn-*), logo and text stay crisp */
+.client-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 4px solid var(--paper);
+  border-radius: 14px;
+  background: var(--bg-raise);
+  filter: var(--worn) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.7));
+  transition: filter 220ms ease;
+}
+
+.client-wall li:nth-child(4n + 2) .client-tile {
+  --tilt: 1.2deg;
+  --worn: url("#worn-2");
+}
+
+.client-wall li:nth-child(4n + 3) .client-tile {
+  --tilt: -0.4deg;
+}
+
+.client-wall li:nth-child(4n) .client-tile {
+  --tilt: 1.8deg;
+  --worn: url("#worn-2");
 }
 
 .client-tile-logo {
@@ -489,7 +573,12 @@
 
 .client-tile:hover,
 .client-tile:focus-visible {
-  background: var(--bg-raise);
+  transform: rotate(0deg) translateY(-4px);
+}
+
+.client-tile:hover::before,
+.client-tile:focus-visible::before {
+  filter: var(--worn) drop-shadow(0 14px 14px rgba(0, 0, 0, 0.8));
 }
 
 .client-tile:hover .client-tile-logo img,
@@ -525,11 +614,28 @@
   opacity: 0.6;
 }
 
+/* Photocopied portrait: hard black and white with a coarse raster on top */
+.halftone {
+  position: relative;
+  display: block;
+  transform: rotate(1deg);
+}
+
+.halftone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(14, 13, 12, 0.55) 0.8px, transparent 1.3px) 0 0 / 4px 4px;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
 .profile-portrait img {
   width: 100%;
   height: auto;
   max-height: 640px;
   border-radius: var(--radius);
+  filter: grayscale(1) contrast(1.5) brightness(1.05);
   object-fit: cover;
   object-position: 58% 40%;
 }
@@ -541,8 +647,8 @@
 }
 
 .profile-copy h2 {
-  max-width: 16ch;
-  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  max-width: 18ch;
+  font-size: clamp(1.7rem, 3.4vw, 2.8rem);
 }
 
 .profile-copy p:not(.section-label) {
@@ -558,10 +664,9 @@
 }
 
 .cta-title {
-  max-width: 14ch;
+  max-width: 18ch;
   margin-top: 0.75rem;
-  font-size: clamp(2.6rem, 7vw, 6rem);
-  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 5vw, 4.4rem);
   line-height: 0.95;
 }
 
@@ -638,58 +743,47 @@
   --btn-bg: var(--ink);
   --btn-fg: var(--paper);
   --focus: #0b57d0;
+  --tape-tilt: 5deg;
   position: relative;
-  overflow: hidden;
-  border-radius: 16px;
+  border: 2px solid var(--ink);
   background: var(--pass-bg);
   color: var(--pass-fg);
-  box-shadow: 0 40px 70px -40px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.8);
+  transform: rotate(0.8deg);
 }
 
 .pass-head {
   position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   background: var(--gold);
   color: var(--ink);
-  padding: 2.25rem 1.5rem 1rem;
-}
-
-/* Security dot strip along the bottom of the header */
-.pass-head::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 -10px;
-  height: 10px;
-  background-image: radial-gradient(circle, var(--gold) 1.2px, transparent 1.6px);
-  background-size: 7px 7px;
-}
-
-.pass-hole {
-  position: absolute;
-  top: 0.75rem;
-  left: 50%;
-  width: 64px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--ink);
-  transform: translateX(-50%);
+  padding: 1.75rem 1.5rem 1.25rem;
 }
 
 .pass-title {
   font-family: var(--mono);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
+/* "All access" as a red rubber stamp */
 .pass-access {
-  font-family: var(--fraktur);
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  border: 3px solid var(--red);
+  background: var(--paper);
+  color: var(--red);
+  filter: url("#rough");
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  font-stretch: 125%;
+  font-weight: 900;
   line-height: 1;
+  padding: 0.3rem 0.6rem 0.25rem;
+  text-transform: uppercase;
+  transform: rotate(-5deg);
 }
 
 .contact-form {
@@ -801,7 +895,7 @@
 }
 
 .footer-brand .logo-text {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
 }
 
 .footer-host {
@@ -858,9 +952,37 @@
 }
 
 .lightbox-figure {
+  position: relative;
   display: grid;
   place-items: center;
   min-height: 0;
+  overflow: hidden;
+}
+
+/* Photocopier flash: a bright scan bar sweeps over each newly shown work */
+.lightbox-figure.is-scanning::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 22%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 248, 225, 0.5) 45%, rgba(255, 252, 240, 0.85) 50%, transparent);
+  animation: copier-scan 700ms ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes copier-scan {
+  from {
+    transform: translateY(-100%);
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(460%);
+  }
 }
 
 .lightbox-image {
@@ -931,7 +1053,7 @@
 }
 
 .page-title {
-  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-size: clamp(2.2rem, 5.6vw, 4.6rem);
   letter-spacing: -0.045em;
   line-height: 0.92;
 }
@@ -1065,7 +1187,7 @@
 }
 
 .tour-nav-name {
-  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-size: clamp(1.3rem, 3vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -1096,8 +1218,8 @@
 }
 
 .legal-content h1 {
-  max-width: 16ch;
-  font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+  max-width: 18ch;
+  font-size: clamp(2rem, 4.4vw, 3.4rem);
 }
 
 .legal-content h2 {
@@ -1203,8 +1325,10 @@
   }
 
   .nav-links a {
-    font-size: clamp(2rem, 9vw, 3rem);
-    font-weight: 800;
+    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    font-stretch: 125%;
+    font-weight: 900;
+    text-transform: uppercase;
     text-align: center;
   }
 }
@@ -1218,12 +1342,24 @@
     inset: 0.9rem -0.9rem -0.9rem 0.9rem;
   }
 
+  .hero-stack {
+    width: 40%;
+  }
+
+  .hero-stack-1 {
+    left: -4%;
+  }
+
+  .hero-stack-2 {
+    right: 1%;
+  }
+
   .hero-image {
     max-height: 56svh;
   }
 
   .section-numeral {
-    font-size: 3.6rem;
+    font-size: 3.2rem;
   }
 
   .lightbox-caption {
@@ -1313,6 +1449,7 @@
     --logo-filter: grayscale(1) invert(1);
   }
 
+  body::before,
   body::after,
   .band::before,
   .navbar,

@@ -2,7 +2,7 @@
 
 export type { ProjectCategory };
 
-/** Single source of truth for the production domain (must match public/CNAME). */
+/** Single source of truth for the production domain (also the custom domain of the Cloudflare Pages project). */
 export const SITE_URL = "https://mbarz.de";
 export const SITE_HOST = new URL(SITE_URL).host;
 export const SITE_NAME = "Moritz Barz Portfolio";

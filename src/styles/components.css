@@ -588,8 +588,8 @@
 
 /* ---------- Client wall ---------- */
 
-/* Sticker wall: every client is a die-cut vinyl sticker slapped on at an angle – white cut edge,
-   a bit of gloss, now and then a corner peeling off. Wide logos make flat stickers, round ones discs. */
+/* Sticker wall: every client is a worn logo sticker slapped on at an angle, cut to its logo –
+   wide logos make flat stickers or pills, round ones discs */
 .client-wall {
   --logo-unit: clamp(64px, 8.5vw, 112px);
   display: flex;
@@ -604,47 +604,29 @@
 }
 
 .client-tile {
-  /* Sticker colours: ink with light logo, paper / gold with dark logo, stamp red with light logo */
-  --sticker: var(--ink);
-  --sticker-logo: grayscale(1) brightness(1.6);
-  --sticker-radius: 18px;
-  --peel: 0px;
+  --worn: url("#worn-1");
+  --sticker-radius: 14px;
   position: relative;
   isolation: isolate;
   display: grid;
   place-items: center;
-  padding: clamp(1rem, 2vw, 1.4rem) clamp(1.2rem, 2.4vw, 1.8rem);
+  padding: clamp(1.1rem, 2.2vw, 1.5rem) clamp(1.25rem, 2.6vw, 1.9rem);
   text-decoration: none;
-  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.55));
-  transform: rotate(var(--tilt, -2deg));
-  transition: transform 220ms ease, filter 220ms ease;
+  transform: rotate(var(--tilt, -1.5deg));
+  transition: transform 220ms ease;
 }
 
-/* The vinyl: white die-cut edge, colour, and a soft diagonal gloss */
+/* The sticker itself sits behind the logo: worn, ragged edges and scuffs (#worn-*), the logo stays crisp */
 .client-tile::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  border: clamp(4px, 0.5vw, 6px) solid var(--print);
+  border: 4px solid var(--paper);
   border-radius: var(--sticker-radius);
-  background:
-    linear-gradient(118deg, transparent 38%, rgba(255, 255, 255, 0.16) 47%, rgba(255, 255, 255, 0.04) 55%, transparent 62%),
-    var(--sticker);
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--peel)), calc(100% - var(--peel)) 100%, 0 100%);
-}
-
-/* Peeled corner: the white backing of the sticker folds up over the cut-off corner */
-.client-tile::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: var(--peel);
-  height: var(--peel);
-  background: linear-gradient(135deg, #fffdf8 30%, #d9d2c3 75%, #b9b1a2);
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-  filter: drop-shadow(-2px -2px 3px rgba(0, 0, 0, 0.35));
+  background: var(--bg-raise);
+  filter: var(--worn) drop-shadow(0 8px 10px rgba(0, 0, 0, 0.7));
+  transition: filter 220ms ease;
 }
 
 .client-tile[data-shape="pill"] {
@@ -659,29 +641,17 @@
 }
 
 .client-wall li:nth-child(4n + 2) .client-tile {
-  --tilt: 3deg;
-  --sticker: var(--print);
-  --sticker-logo: grayscale(1) invert(1) brightness(0.2);
+  --tilt: 2deg;
+  --worn: url("#worn-2");
 }
 
 .client-wall li:nth-child(4n + 3) .client-tile {
-  --tilt: -0.8deg;
-  --sticker: var(--gold);
-  --sticker-logo: grayscale(1) invert(1) brightness(0.15);
+  --tilt: -0.6deg;
 }
 
 .client-wall li:nth-child(4n) .client-tile {
-  --tilt: 4deg;
-  --sticker: var(--red);
-}
-
-.client-wall li:nth-child(5n + 2) .client-tile,
-.client-wall li:nth-child(5n + 5) .client-tile {
-  --tilt: -3.5deg;
-}
-
-.client-wall li:nth-child(3n + 1) .client-tile[data-shape="label"] {
-  --peel: clamp(18px, 2vw, 26px);
+  --tilt: 2.6deg;
+  --worn: url("#worn-2");
 }
 
 .client-wall li:nth-child(odd) {
@@ -693,7 +663,7 @@
   max-width: min(100%, calc(100vw - var(--gutter) * 2 - 4rem));
   height: auto;
   object-fit: contain;
-  filter: var(--sticker-logo);
+  filter: var(--logo-filter);
   transition: transform 220ms ease;
 }
 
@@ -710,8 +680,17 @@
 .client-tile:hover,
 .client-tile:focus-visible {
   z-index: 1;
-  filter: drop-shadow(0 14px 12px rgba(0, 0, 0, 0.6));
-  transform: rotate(0deg) translateY(-4px) scale(1.03);
+  transform: rotate(0deg) translateY(-4px);
+}
+
+.client-tile:hover::before,
+.client-tile:focus-visible::before {
+  filter: var(--worn) drop-shadow(0 14px 14px rgba(0, 0, 0, 0.8));
+}
+
+.client-tile:hover .client-tile-logo,
+.client-tile:focus-visible .client-tile-logo {
+  transform: scale(1.04);
 }
 
 /* ---------- Profile ---------- */

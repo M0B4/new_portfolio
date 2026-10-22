@@ -1,5 +1,5 @@
 ---
-// Large logo wall on a black band: the clients as advertising, each tile linking to its work.
+// Sticker wall on a black band: only the client logos, each a worn sticker cut to its logo and linking to its work.
 import ClientLogo from "./ClientLogo.astro";
 import type { TourStop } from "../lib/content";
 import { clientPath, t, type Lang } from "../lib/i18n";
@@ -11,26 +11,27 @@ type Props = {
 
 const { stops, lang } = Astro.props;
 const ui = t(lang);
+// The sticker is die-cut to the logo: a pill for wide logos, a disc for round ones, a rounded label otherwise.
+const shapeOf = (stop: TourStop) => {
+  const logo = stop.profile.logo;
+  const ratio = logo ? logo.width / logo.height : 3;
+  return ratio >= 3.5 ? "pill" : ratio <= 1.25 ? "round" : "label";
+};
 ---
 
 <ul class="client-wall" aria-label={ui.clientsListLabel}>
   {
     stops.map((stop) => (
       <li>
-        <a class="client-tile" href={clientPath(lang, stop.profile.slug)}>
-          <span class="client-tile-logo">
-            {stop.profile.logo ? (
-              <ClientLogo profile={stop.profile} height={110} />
-            ) : (
-              <span class="client-tile-text" aria-hidden="true">
-                {stop.profile.label}
-              </span>
-            )}
-          </span>
-          <span class="client-tile-name">{stop.profile.label}</span>
-          <span class="spec client-tile-meta">
-            {[stop.years, stop.projects.length > 0 ? ui.projectCount(stop.projects.length) : ""].filter(Boolean).join(" · ")}
-          </span>
+        <a class="client-tile" href={clientPath(lang, stop.profile.slug)} data-shape={shapeOf(stop)}>
+          {stop.profile.logo ? (
+            <ClientLogo class="client-tile-logo" profile={stop.profile} height={180} />
+          ) : (
+            <span class="client-tile-text" aria-hidden="true">
+              {stop.profile.label}
+            </span>
+          )}
+          <span class="sr-only">{ui.viewWorkFor(stop.profile.label)}</span>
         </a>
       </li>
     ))

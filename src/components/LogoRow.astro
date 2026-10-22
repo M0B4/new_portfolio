@@ -1,5 +1,5 @@
 ---
-// "Gearbeitet für" – a calm row of client logos in the hero, each linking to the client page.
+// "Ausgewählte Kunden" – one calm line of client logos in the hero that runs endlessly, each linking to the client page.
 import ClientLogo from "./ClientLogo.astro";
 import type { TourStop } from "../lib/content";
 import { clientPath, t, type Lang } from "../lib/i18n";
@@ -11,26 +11,34 @@ type Props = {
 
 const { stops, lang } = Astro.props;
 const ui = t(lang);
+// The list is printed twice so the strip can loop seamlessly; the copy is hidden from assistive tech and keyboard.
+const copies = [false, true];
 ---
 
 <div class="logo-row">
   <p class="spec logo-row-label">{ui.trustLabel}</p>
-  <ul class="logo-row-list">
-    {
-      stops.map((stop) => (
-        <li>
-          <a class="logo-row-link" href={clientPath(lang, stop.profile.slug)}>
-            {stop.profile.logo ? (
-              <ClientLogo class="logo-row-img" profile={stop.profile} height={44} />
-            ) : (
-              <span class="logo-row-text" aria-hidden="true">
-                {stop.profile.label}
-              </span>
-            )}
-            <span class="sr-only">{ui.viewWorkFor(stop.profile.label)}</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <div class="logo-row-viewport">
+    <div class="logo-row-track" style={`--logo-count: ${stops.length}`}>
+      {
+        copies.map((copy) => (
+          <ul class="logo-row-list" aria-hidden={copy ? "true" : undefined}>
+            {stops.map((stop) => (
+              <li>
+                <a class="logo-row-link" href={clientPath(lang, stop.profile.slug)} tabindex={copy ? -1 : undefined}>
+                  {stop.profile.logo ? (
+                    <ClientLogo class="logo-row-img" profile={stop.profile} height={44} />
+                  ) : (
+                    <span class="logo-row-text" aria-hidden="true">
+                      {stop.profile.label}
+                    </span>
+                  )}
+                  <span class="sr-only">{ui.viewWorkFor(stop.profile.label)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ))
+      }
+    </div>
+  </div>
 </div>

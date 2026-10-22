@@ -69,6 +69,17 @@ Siehe `.env.example`. Für GitHub Pages:
 - Variable `PUBLIC_PLAUSIBLE_DOMAIN` – optional, aktiviert cookielose Statistik mit Plausible
   (der Datenschutz-Abschnitt dazu erscheint dann automatisch)
 
+## Cloudflare Pages
+
+Ziel-Hosting (ersetzt GitHub Pages, sobald die Domain umgestellt ist). Cloudflare baut jeden Push selbst:
+`main` geht live, jeder andere Branch bekommt eine Vorschau unter `*.pages.dev` (per `X-Robots-Tag` von der
+Indexierung ausgeschlossen).
+
+- Build-Befehl `npm run build`, Ausgabeordner `dist`, Node-Version aus `.node-version`
+- Umgebungsvariablen: `PUBLIC_FORMSPREE_ENDPOINT`, optional `PUBLIC_PLAUSIBLE_DOMAIN`,
+  `ASTRO_TELEMETRY_DISABLED=1`. `PUBLIC_SITE_URL` und `PUBLIC_BASE_PATH` nicht setzen, die Standardwerte passen.
+- Cache- und Sicherheits-Header stehen in `public/_headers`.
+
 ## GitHub Pages
 
 `.github/workflows/deploy.yml` baut und deployt bei jedem Push auf `main`, bei Sanity-Änderungen und manuell.

@@ -75,7 +75,8 @@ Ziel-Hosting (ersetzt GitHub Pages, sobald die Domain umgestellt ist). Cloudflar
 `main` geht live, jeder andere Branch bekommt eine Vorschau unter `*.pages.dev` (per `X-Robots-Tag` von der
 Indexierung ausgeschlossen).
 
-- Build-Befehl `npm run build`, Ausgabeordner `dist`, Node-Version aus `.node-version`
+- Build-Befehl `npm run build`, Ausgabeordner `dist`, Node-Version aus `.node-version` (zusätzlich
+  `NODE_VERSION=24` im Dashboard setzen, damit auch Builds ohne diese Datei npm 11 bekommen)
 - Umgebungsvariablen: `PUBLIC_FORMSPREE_ENDPOINT`, optional `PUBLIC_PLAUSIBLE_DOMAIN`,
   `ASTRO_TELEMETRY_DISABLED=1`. `PUBLIC_SITE_URL` und `PUBLIC_BASE_PATH` nicht setzen, die Standardwerte passen.
 - Cache- und Sicherheits-Header stehen in `public/_headers`.

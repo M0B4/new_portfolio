@@ -17,6 +17,8 @@ const densities = [1, 2, 3].filter((density) => logo && height * density <= logo
 const rendition = logo
   ? await getImage({ src: logo, height, densities: densities.length > 0 ? densities : [1], format: "webp" })
   : undefined;
+// Square root of the aspect ratio: sized as `unit × --logo-scale` wide, wide and round logos carry similar weight.
+const scale = logo ? Math.sqrt(logo.width / logo.height).toFixed(3) : undefined;
 ---
 
 {
@@ -27,6 +29,7 @@ const rendition = logo
       srcset={rendition.srcSet.attribute}
       width={width}
       height={height}
+      style={`--logo-scale: ${scale}`}
       alt=""
       loading={loading}
       decoding="async"

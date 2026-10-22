@@ -267,23 +267,59 @@
   padding-top: 1.5rem;
 }
 
-.logo-row-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: clamp(1.5rem, 4vw, 3.25rem);
+/* One line that runs endlessly: two identical lists side by side, shifted by one list width */
+.logo-row-viewport {
+  overflow: hidden;
+  margin-inline: calc(var(--gutter) * -1);
+  mask-image: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent);
 }
 
-.logo-row-link {
-  display: block;
-  padding: 0.3rem 0;
-  text-decoration: none;
+.logo-row-track {
+  display: flex;
+  width: max-content;
+  animation: logo-run calc(var(--logo-count, 8) * 4s) linear infinite;
+}
+
+.logo-row-viewport:hover .logo-row-track,
+.logo-row-viewport:focus-within .logo-row-track {
+  animation-play-state: paused;
+}
+
+.logo-row-list {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: clamp(2.5rem, 5vw, 4.5rem);
+  padding-inline-end: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+@keyframes logo-run {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Without motion the line simply scrolls sideways */
+@media (prefers-reduced-motion: reduce) {
+  .logo-row-viewport {
+    overflow-x: auto;
+    padding-inline: var(--gutter);
+    mask-image: none;
+  }
+
+  .logo-row-track {
+    animation: none;
+  }
+
+  .logo-row-list[aria-hidden="true"] {
+    display: none;
+  }
 }
 
 .logo-row-img {
-  width: auto;
-  height: clamp(30px, 3.4vw, 44px);
-  max-width: 150px;
+  --logo-unit: clamp(46px, 4.6vw, 58px);
+  width: calc(var(--logo-unit) * var(--logo-scale, 2));
+  height: auto;
   object-fit: contain;
   filter: var(--logo-filter);
   opacity: 0.78;
@@ -529,11 +565,19 @@
 
 /* ---------- Client wall ---------- */
 
-/* Sticker wall: every client is a die-cut sticker slapped on at a slight angle */
+/* Sticker wall: every client is a die-cut logo sticker slapped on at a slight angle,
+   cut to its logo – wide logos make flat stickers, round ones tall stickers */
 .client-wall {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1rem, 2.4vw, 1.75rem);
+  --logo-unit: clamp(64px, 8.5vw, 112px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem) clamp(1rem, 2.6vw, 2.25rem);
+}
+
+.client-wall li {
+  max-width: 100%;
 }
 
 .client-tile {
@@ -541,17 +585,14 @@
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-rows: 1fr auto auto;
-  gap: 0.35rem;
-  height: 100%;
-  min-height: clamp(210px, 22vw, 280px);
-  padding: clamp(1.1rem, 2.2vw, 1.75rem);
+  place-items: center;
+  padding: clamp(1.1rem, 2.2vw, 1.6rem) clamp(1.25rem, 2.6vw, 2rem);
   text-decoration: none;
-  transform: rotate(var(--tilt, -1deg));
+  transform: rotate(var(--tilt, -1.5deg));
   transition: transform 220ms ease;
 }
 
-/* The sticker itself sits behind the content: worn, ragged edges and scuffs (#worn-*), logo and text stay crisp */
+/* The sticker itself sits behind the logo: worn, ragged edges and scuffs (#worn-*), the logo stays crisp */
 .client-tile::before {
   content: "";
   position: absolute;
@@ -565,30 +606,27 @@
 }
 
 .client-wall li:nth-child(4n + 2) .client-tile {
-  --tilt: 1.2deg;
+  --tilt: 2deg;
   --worn: url("#worn-2");
 }
 
 .client-wall li:nth-child(4n + 3) .client-tile {
-  --tilt: -0.4deg;
+  --tilt: -0.6deg;
 }
 
 .client-wall li:nth-child(4n) .client-tile {
-  --tilt: 1.8deg;
+  --tilt: 2.6deg;
   --worn: url("#worn-2");
 }
 
-.client-tile-logo {
-  display: grid;
-  place-items: center;
-  min-height: 120px;
+.client-wall li:nth-child(odd) {
+  translate: 0 0.6rem;
 }
 
-.client-tile-logo img {
-  width: auto;
-  max-width: 85%;
+.client-tile-logo {
+  width: calc(var(--logo-unit) * var(--logo-scale, 1.6));
+  max-width: min(100%, calc(100vw - var(--gutter) * 2 - 4rem));
   height: auto;
-  max-height: 110px;
   object-fit: contain;
   filter: var(--logo-filter);
   transition: transform 220ms ease;
@@ -598,12 +636,6 @@
   font-size: clamp(1.4rem, 2.6vw, 2rem);
   font-weight: 800;
   text-align: center;
-}
-
-.client-tile-name {
-  margin-top: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 700;
 }
 
 .client-tile:hover,
@@ -616,14 +648,9 @@
   filter: var(--worn) drop-shadow(0 14px 14px rgba(0, 0, 0, 0.8));
 }
 
-.client-tile:hover .client-tile-logo img,
-.client-tile:focus-visible .client-tile-logo img {
-  transform: translateY(-4px) scale(1.04);
-}
-
-.client-tile:hover .client-tile-name,
-.client-tile:focus-visible .client-tile-name {
-  color: var(--accent-text);
+.client-tile:hover .client-tile-logo,
+.client-tile:focus-visible .client-tile-logo {
+  transform: scale(1.04);
 }
 
 /* ---------- Profile ---------- */
@@ -1283,6 +1310,32 @@
   }
 }
 
+/* Phones and small tablets: the three highlights become a row of flyers you swipe through sideways */
+@media (max-width: 819px) {
+  .work-grid.work-grid-trio {
+    display: flex;
+    gap: 1.25rem;
+    margin-inline: calc(var(--gutter) * -1);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding: 0.75rem var(--gutter) 1.25rem;
+    scroll-padding-inline: var(--gutter);
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .work-grid.work-grid-trio::-webkit-scrollbar {
+    display: none;
+  }
+
+  .work-grid.work-grid-trio .project-card {
+    flex: 0 0 min(78%, 340px);
+    scroll-snap-align: start;
+    /* The scroll-driven reveal would watch the sideways scroller, so the flyers are simply there */
+    animation: none;
+  }
+}
+
 @media (min-width: 820px) {
   .hero-grid {
     grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -1294,10 +1347,6 @@
 
   .work-grid-trio {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .client-wall {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .profile-layout {
@@ -1405,16 +1454,6 @@
     flex-basis: 100%;
   }
 
-  .logo-row-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem 1rem;
-  }
-
-  .logo-row-img {
-    height: 36px;
-    max-width: 100%;
-  }
 }
 
 @media (max-width: 520px) {

@@ -1,5 +1,5 @@
 ---
-// Large logo wall on a black band: the clients as advertising, each tile linking to its work.
+// Sticker wall on a black band: only the client logos, each sticker cut to its logo and linking to its work.
 import ClientLogo from "./ClientLogo.astro";
 import type { TourStop } from "../lib/content";
 import { clientPath, t, type Lang } from "../lib/i18n";
@@ -18,19 +18,14 @@ const ui = t(lang);
     stops.map((stop) => (
       <li>
         <a class="client-tile" href={clientPath(lang, stop.profile.slug)}>
-          <span class="client-tile-logo">
-            {stop.profile.logo ? (
-              <ClientLogo profile={stop.profile} height={110} />
-            ) : (
-              <span class="client-tile-text" aria-hidden="true">
-                {stop.profile.label}
-              </span>
-            )}
-          </span>
-          <span class="client-tile-name">{stop.profile.label}</span>
-          <span class="spec client-tile-meta">
-            {[stop.years, stop.projects.length > 0 ? ui.projectCount(stop.projects.length) : ""].filter(Boolean).join(" · ")}
-          </span>
+          {stop.profile.logo ? (
+            <ClientLogo class="client-tile-logo" profile={stop.profile} height={180} />
+          ) : (
+            <span class="client-tile-text" aria-hidden="true">
+              {stop.profile.label}
+            </span>
+          )}
+          <span class="sr-only">{ui.viewWorkFor(stop.profile.label)}</span>
         </a>
       </li>
     ))

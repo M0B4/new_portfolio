@@ -1,6 +1,6 @@
 # Moritz Barz Portfolio
 
-Astro-Portfolio (statisch, GitHub Pages) unter **https://mbarz.de**. Inhalte kommen aus Sanity; lokale
+Astro-Portfolio (statisch, Cloudflare Pages) unter **https://mbarz.de**. Inhalte kommen aus Sanity; lokale
 Markdown-Dateien dienen als Offline-Fallback.
 
 ## Entwicklung
@@ -50,27 +50,34 @@ eine Warnung aus.
 
 ## Sanity → automatischer Rebuild
 
-Der Deploy-Workflow reagiert auf das `repository_dispatch`-Event `sanity-content-changed`:
+Sanity-Änderungen lösen über einen Deploy Hook einen neuen Build aus:
 
-1. GitHub: Fine-grained Personal Access Token mit Berechtigung **Contents: Read and write** für dieses Repo
-   erstellen.
+1. Cloudflare → Pages-Projekt → **Settings → Builds → Deploy hooks**: Hook für den Branch `main` anlegen.
 2. Sanity → Project → API → Webhooks → **Create webhook**:
-   - URL: `https://api.github.com/repos/<owner>/<repo>/dispatches`
+   - URL: die Deploy-Hook-URL aus Schritt 1
    - Trigger on: Create, Update, Delete · Filter: `_type in ["project", "client", "category", "siteSettings"]`
    - HTTP method: `POST`
-   - HTTP headers: `Authorization: Bearer <token>`, `Accept: application/vnd.github+json`
-   - Projection: `{"event_type": "sanity-content-changed"}`
 
 ## Umgebungsvariablen
 
-Siehe `.env.example`. Für GitHub Pages:
+Siehe `.env.example`. Im Cloudflare-Pages-Projekt:
 
-- Secret `PUBLIC_FORMSPREE_ENDPOINT` – Formspree-Endpunkt des Kontaktformulars
-- Variable `PUBLIC_PLAUSIBLE_DOMAIN` – optional, aktiviert cookielose Statistik mit Plausible
+- `PUBLIC_FORMSPREE_ENDPOINT` – Formspree-Endpunkt des Kontaktformulars
+- `PUBLIC_PLAUSIBLE_DOMAIN` – optional, aktiviert cookielose Statistik mit Plausible
   (der Datenschutz-Abschnitt dazu erscheint dann automatisch)
 
-## GitHub Pages
+## Cloudflare Pages
 
-`.github/workflows/deploy.yml` baut und deployt bei jedem Push auf `main`, bei Sanity-Änderungen und manuell.
-Die Domain kommt aus `public/CNAME`. `.github/workflows/lighthouse.yml` prüft Pull Requests mit Lighthouse
-(Schwellenwerte in `lighthouserc.json`).
+Cloudflare baut jeden Push selbst: `main` geht live, jeder andere Branch bekommt eine Vorschau unter
+`*.pages.dev` (per `X-Robots-Tag` von der Indexierung ausgeschlossen).
+
+- Build-Befehl `npm run build`, Ausgabeordner `dist`, Node-Version aus `.node-version` (zusätzlich
+  `NODE_VERSION=24` im Dashboard setzen, damit auch Builds ohne diese Datei npm 11 bekommen)
+- Umgebungsvariablen: `PUBLIC_FORMSPREE_ENDPOINT`, optional `PUBLIC_PLAUSIBLE_DOMAIN`,
+  `ASTRO_TELEMETRY_DISABLED=1`. `PUBLIC_SITE_URL` und `PUBLIC_BASE_PATH` nicht setzen, die Standardwerte passen.
+- Cache- und Sicherheits-Header stehen in `public/_headers`.
+
+## Lighthouse
+
+`.github/workflows/lighthouse.yml` prüft Pull Requests mit `astro check` und Lighthouse (Schwellenwerte in
+`lighthouserc.json`).

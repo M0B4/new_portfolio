@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 
-// Keep in sync with SITE_URL in src/data/site.ts and public/CNAME.
+// Keep in sync with SITE_URL in src/data/site.ts.
 const productionUrl = "https://mbarz.de";
 
 export default defineConfig({

@@ -36,7 +36,7 @@ const slides = await Promise.all(
 const title = pick(lang, project.title, project.titleEn);
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
-const clientLabel = project.clientProfile?.label ?? project.client;
+const clientLabel = project.clientProfile.label;
 const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" / ");
 ---
 
@@ -53,7 +53,6 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
     <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img
         class={image.transparent ? "is-cutout" : undefined}
-        style={image.placeholder ? `background-image:url(${image.placeholder})` : undefined}
         src={image.src}
         srcset={image.srcset}
         sizes={sizes}

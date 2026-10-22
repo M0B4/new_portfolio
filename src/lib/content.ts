@@ -1,10 +1,11 @@
-import { fallbackCategories, legalPlaceholders, socialLinks, type CategoryInfo } from "../data/site";
-import { clientProfiles, fromSanityClient, getClientGroups, type ClientGroup, type ClientProfile } from "./clients";
-import { fromSanityProject, getLocalProjects, isProjectCategory, type PortfolioProject } from "./projects";
-import { fetchSanityContent, type SiteSettings } from "./sanity/client";
+import { getEntry, type CollectionEntry } from "astro:content";
+import { legalPlaceholders, type CategoryInfo } from "../data/site";
+import { getClientGroups, loadClients, type ClientGroup, type ClientProfile } from "./clients";
+import { loadProjects, projectCategories, type PortfolioProject } from "./projects";
+
+export type SiteSettings = CollectionEntry<"site">["data"];
 
 export type SiteContent = {
-  source: "sanity" | "local";
   projects: PortfolioProject[];
   categories: CategoryInfo[];
   /** All known client profiles, including ones without projects yet. */
@@ -13,21 +14,20 @@ export type SiteContent = {
   socialLinks: { label: string; url: string }[];
 };
 
-const loadCategories = (fromSanity: Awaited<ReturnType<typeof fetchSanityContent>>): CategoryInfo[] => {
-  const sanityCategories = fromSanity?.categories ?? [];
+const loadCategories = async (): Promise<CategoryInfo[]> => {
+  const entry = await getEntry("categories", "categories");
+  if (!entry) throw new Error("src/content/settings/categories.yaml fehlt.");
 
-  return fallbackCategories
-    .map((fallback) => {
-      const doc = sanityCategories.find((category) => category.value === fallback.value);
-      if (!doc) return fallback;
+  return projectCategories
+    .map((value) => {
+      const doc = entry.data[value];
       return {
-        value: fallback.value,
-        label: { de: doc.title || fallback.label.de, en: doc.titleEn || doc.title || fallback.label.en },
-        intro: { de: doc.introDe || fallback.intro.de, en: doc.introEn || fallback.intro.en },
-        order: doc.order ?? fallback.order,
+        value,
+        label: { de: doc.title, en: doc.titleEn ?? doc.title },
+        intro: { de: doc.intro ?? "", en: doc.introEn ?? doc.intro ?? "" },
+        order: doc.order,
       };
     })
-    .filter((category) => isProjectCategory(category.value))
     .sort((a, b) => a.order - b.order);
 };
 
@@ -36,25 +36,16 @@ const loadContent = async (): Promise<SiteContent> => {
     console.warn(`[legal] Impressum/Datenschutz enthalten noch Platzhalter: ${legalPlaceholders.join(", ")} (src/data/site.ts)`);
   }
 
-  const sanity = await fetchSanityContent();
-  const sanityProjects = (sanity?.projects ?? [])
-    .map((project, index) => fromSanityProject(project, index, fromSanityClient))
-    .filter((project): project is PortfolioProject => Boolean(project));
-
-  const useSanity = sanityProjects.length > 0;
-  const projects = (useSanity ? sanityProjects : await getLocalProjects()).sort((a, b) => a.order - b.order);
-  const clients = useSanity && sanity?.clients.length ? sanity.clients.map(fromSanityClient) : Object.values(clientProfiles);
-  const sanitySocial = (sanity?.settings?.socialLinks ?? []).filter(
-    (link): link is { label: string; url: string } => Boolean(link.label && link.url),
-  );
+  const clients = await loadClients();
+  const site = await getEntry("site", "site");
+  if (!site) throw new Error("src/content/settings/site.yaml fehlt.");
 
   return {
-    source: useSanity ? "sanity" : "local",
-    projects,
-    categories: loadCategories(sanity),
+    projects: await loadProjects(clients),
+    categories: await loadCategories(),
     clients,
-    settings: sanity?.settings ?? {},
-    socialLinks: sanitySocial.length > 0 ? sanitySocial : socialLinks,
+    settings: site.data,
+    socialLinks: site.data.socialLinks,
   };
 };
 

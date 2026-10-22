@@ -2,7 +2,6 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 import type { ImageMetadata } from "astro";
 import type { ClientProfile } from "./clients";
-import type { SanityImage, SanityProject } from "./sanity/client";
 
 export type ProjectCategory = "event" | "poster" | "clothing" | "3d-print" | "various";
 
@@ -11,9 +10,7 @@ export const projectCategories: ProjectCategory[] = ["event", "poster", "clothin
 export const isProjectCategory = (value: unknown): value is ProjectCategory =>
   projectCategories.includes(value as ProjectCategory);
 
-export type PortfolioImage = ImageMetadata | SanityImage;
-
-export const isSanityImage = (image: PortfolioImage): image is SanityImage => "assetId" in image;
+export type PortfolioImage = ImageMetadata;
 
 export type GalleryImage = { image: PortfolioImage; alt: string };
 
@@ -27,6 +24,7 @@ export type PortfolioProject = {
   category: ProjectCategory;
   summary: string;
   summaryEn?: string;
+  /** Full client name, e.g. "Wacken Open Air". */
   client: string;
   year: string;
   previewImage: PortfolioImage;
@@ -37,69 +35,43 @@ export type PortfolioProject = {
   gallery: GalleryImage[];
   order: number;
   featured: boolean;
-  updatedAt?: string;
-  clientProfile?: ClientProfile;
+  clientProfile: ClientProfile;
 };
 
-const toSlug = (id: string) => id.replace(/\.md$/, "");
-
-const fromContentProject = (project: CollectionEntry<"work">): PortfolioProject => ({
-  id: project.id,
-  slug: toSlug(project.id),
-  title: project.data.title,
-  titleEn: project.data.titleEn,
-  shortTitle: project.data.shortTitle,
-  shortTitleEn: project.data.shortTitleEn,
-  category: project.data.category,
-  summary: project.data.summary,
-  summaryEn: project.data.summaryEn,
-  client: project.data.client,
-  year: project.data.year,
-  previewImage: project.data.previewImage,
-  alt: project.data.alt ?? project.data.title,
-  specs: project.data.specs,
-  gallery: (project.data.gallery ?? [])
-    .filter((item) => item.image.src !== project.data.previewImage.src)
-    .map((item) => ({ image: item.image, alt: item.title ?? project.data.title })),
-  order: project.data.order,
-  featured: project.data.featured ?? false,
-});
-
-export const getLocalProjects = async () => {
-  const projects = await getCollection("work");
-  return projects.map(fromContentProject).sort((a, b) => a.order - b.order);
-};
-
-export const fromSanityProject = (
-  project: SanityProject,
-  index: number,
-  toClientProfile: (client: NonNullable<SanityProject["client"]>) => ClientProfile,
-): PortfolioProject | null => {
-  const { title, category, client, previewImage } = project;
-  const clientName = client?.title || client?.label;
-  if (!title || !isProjectCategory(category) || !client || !clientName || !previewImage?.assetId) return null;
-
+const fromEntry = (project: CollectionEntry<"projects">, clientProfile: ClientProfile): PortfolioProject => {
+  const { data } = project;
   return {
-    id: project._id,
-    slug: project.slug ?? project._id,
-    title,
-    titleEn: project.titleEn,
-    shortTitle: project.shortTitle ?? title,
-    shortTitleEn: project.shortTitleEn,
-    category,
-    summary: project.summary ?? "",
-    summaryEn: project.summaryEn,
-    client: clientName,
-    year: project.year ?? "",
-    previewImage,
-    alt: previewImage.alt || title,
-    specs: project.specs,
-    gallery: (project.gallery ?? [])
-      .filter((image) => image.assetId && image.assetId !== previewImage.assetId)
-      .map((image) => ({ image, alt: image.alt || title })),
-    order: project.order ?? index + 1,
-    featured: project.featured ?? false,
-    updatedAt: project._updatedAt,
-    clientProfile: toClientProfile(client),
+    id: project.id,
+    slug: project.id,
+    title: data.title,
+    titleEn: data.titleEn,
+    shortTitle: data.shortTitle ?? data.title,
+    shortTitleEn: data.shortTitleEn,
+    category: data.category,
+    summary: data.summary,
+    summaryEn: data.summaryEn,
+    client: clientProfile.title ?? clientProfile.label,
+    year: data.year,
+    previewImage: data.previewImage,
+    alt: data.alt ?? data.title,
+    specs: data.specs,
+    gallery: data.gallery
+      .filter((item) => item.image.src !== data.previewImage.src)
+      .map((item) => ({ image: item.image, alt: item.alt ?? data.title })),
+    order: data.order,
+    featured: data.featured,
+    clientProfile,
   };
+};
+
+/** All projects in display order; each one's client must exist in src/content/clients. */
+export const loadProjects = async (clients: ClientProfile[]) => {
+  const entries = await getCollection("projects");
+  return entries
+    .map((entry) => {
+      const profile = clients.find((client) => client.slug === entry.data.client);
+      if (!profile) throw new Error(`Projekt „${entry.id}“: Kunde „${entry.data.client}“ fehlt in src/content/clients.`);
+      return fromEntry(entry, profile);
+    })
+    .sort((a, b) => a.order - b.order);
 };

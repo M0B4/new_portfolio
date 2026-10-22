@@ -1,6 +1,6 @@
 ---
+import { getImage } from "astro:assets";
 import type { ClientProfile } from "../lib/clients";
-import { assetUrl } from "../lib/url";
 
 type Props = {
   profile: ClientProfile;
@@ -11,21 +11,22 @@ type Props = {
 };
 
 const { profile, height, class: className, loading = "lazy" } = Astro.props;
-const src = assetUrl(profile.logo);
-const isSanity = src.startsWith("https://cdn.sanity.io/");
-// Sanity CDN resizes on the fly; local fallback logos are served as they are.
-const sized = (h: number) => `${src}?h=${h}&fit=max&auto=format`;
-const ratio = profile.logoWidth && profile.logoHeight ? profile.logoWidth / profile.logoHeight : undefined;
+const logo = profile.logo;
+const width = logo ? Math.round((logo.width / logo.height) * height) : 0;
+const densities = [1, 2, 3].filter((density) => logo && height * density <= logo.height);
+const rendition = logo
+  ? await getImage({ src: logo, height, densities: densities.length > 0 ? densities : [1], format: "webp" })
+  : undefined;
 ---
 
 {
-  profile.logo && (
+  rendition && (
     <img
       class={className}
-      src={isSanity ? sized(height * 2) : src}
-      srcset={isSanity ? `${sized(height)} 1x, ${sized(height * 2)} 2x, ${sized(height * 3)} 3x` : undefined}
-      width={ratio ? Math.round(height * ratio) : undefined}
-      height={ratio ? height : undefined}
+      src={rendition.src}
+      srcset={rendition.srcSet.attribute}
+      width={width}
+      height={height}
       alt=""
       loading={loading}
       decoding="async"

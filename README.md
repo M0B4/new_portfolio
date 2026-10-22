@@ -1,14 +1,13 @@
 # Moritz Barz Portfolio
 
-Astro-Portfolio (statisch, Cloudflare Pages) unter **https://mbarz.de**. Inhalte kommen aus Sanity; lokale
-Markdown-Dateien dienen als Offline-Fallback.
+Astro-Portfolio (statisch, Cloudflare Pages) unter **https://mbarz.de**. Alle Inhalte liegen als YAML-Dateien
+und Bilder im Repo und werden lokal mit [Keystatic](https://keystatic.com) bearbeitet.
 
 ## Entwicklung
 
 ```bash
 npm install
-npm run dev        # Website auf http://127.0.0.1:4321
-npm run studio     # Sanity Studio lokal
+npm run dev        # Website auf http://127.0.0.1:4321, Keystatic auf http://127.0.0.1:4321/keystatic
 npm run check      # Typecheck (läuft auch in CI)
 npm run build      # Statischer Build nach dist/
 ```
@@ -19,10 +18,12 @@ npm run build      # Statischer Build nach dist/
 | --- | --- |
 | `src/views/` | Seitenlayouts (Start, Kunde, Kategorie), sprachunabhängig |
 | `src/pages/` | Routen: Deutsch unter `/`, Englisch unter `/en/` |
-| `src/lib/content.ts` | Lädt alle Inhalte einmal pro Build (Sanity → Fallback Markdown) |
+| `src/content/` | Inhalte: `projects/`, `clients/`, `settings/site.yaml`, `settings/categories.yaml` |
+| `src/assets/projects/`, `src/assets/logos/` | Projektbilder und Kundenlogos |
+| `src/lib/content.ts` | Lädt alle Inhalte einmal pro Build |
 | `src/lib/i18n.ts` | UI-Texte DE/EN, lokalisierte Pfade |
-| `src/data/site.ts` | Domain, Impressumsdaten, Fallback-Kategorien, Social Links |
-| `sanity/schemas/` | Sanity-Schemas |
+| `src/data/site.ts` | Domain, Impressumsdaten |
+| `keystatic.config.ts` | Felder und Beschriftungen der Keystatic-Oberfläche |
 
 ### URLs
 
@@ -35,28 +36,19 @@ npm run build      # Statischer Build nach dist/
 
 ## Inhalte pflegen
 
-Projekte, Kunden, Kategorien, Startseiten-/Profiltexte und Social Links werden im Sanity Studio gepflegt
-(siehe [sanity/README.md](sanity/README.md)). Englische Felder sind optional – ohne Eintrag wird der deutsche
-Text verwendet.
+1. `npm run dev` starten und http://127.0.0.1:4321/keystatic öffnen.
+2. Projekte, Kunden, Arbeitsarten oder Website-Texte bearbeiten und **Save** klicken. Keystatic schreibt die
+   Änderungen direkt in `src/content/` und `src/assets/`.
+3. Committen und auf `main` pushen. Cloudflare baut die Seite neu.
 
-Ist Sanity nicht erreichbar oder leer, baut die Seite aus `src/content/work/*.md` und den Fallback-Daten in
-`src/lib/clients.ts` / `src/data/site.ts`. Ein Build ohne Sanity lässt sich mit
-`PUBLIC_SANITY_PROJECT_ID= npm run build` erzwingen.
+Englische Felder sind optional, ohne Eintrag wird der deutsche Text verwendet. Keystatic läuft nur mit
+`npm run dev`, der Build für Cloudflare bleibt rein statisch. Jedes Projekt verweist auf einen Kunden in
+`src/content/clients/`; fehlt er, bricht der Build mit einer Meldung ab.
 
 ## Impressum & Datenschutz
 
 Die Pflichtangaben stehen in `src/data/site.ts` (`legal`). Solange Platzhalter gesetzt sind, gibt der Build
 eine Warnung aus.
-
-## Sanity → automatischer Rebuild
-
-Sanity-Änderungen lösen über einen Deploy Hook einen neuen Build aus:
-
-1. Cloudflare → Pages-Projekt → **Settings → Builds → Deploy hooks**: Hook für den Branch `main` anlegen.
-2. Sanity → Project → API → Webhooks → **Create webhook**:
-   - URL: die Deploy-Hook-URL aus Schritt 1
-   - Trigger on: Create, Update, Delete · Filter: `_type in ["project", "client", "category", "siteSettings"]`
-   - HTTP method: `POST`
 
 ## Umgebungsvariablen
 

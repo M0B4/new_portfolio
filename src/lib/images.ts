@@ -1,15 +1,13 @@
 import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import sharp from "sharp";
-import { isSanityImage, type PortfolioImage } from "./projects";
-import { sanityImageUrl } from "./sanity/client";
+import type { PortfolioImage } from "./projects";
 
 export type ResponsiveImage = {
   src: string;
   srcset: string;
   width: number;
   height: number;
-  placeholder?: string;
   /** Cut-out artwork (e.g. shirt mockups): shown free-standing instead of as a print. */
   transparent: boolean;
 };
@@ -37,31 +35,15 @@ const usableWidths = (widths: number[], max: number) => {
   return fitting.length > 0 ? fitting : [max];
 };
 
-/** True for cut-out artwork with see-through pixels, local or from Sanity. */
-export const isTransparent = (image: PortfolioImage) =>
-  isSanityImage(image) ? Promise.resolve(image.isOpaque === false) : hasTransparency(image);
+/** True for cut-out artwork with see-through pixels. */
+export const isTransparent = (image: PortfolioImage) => hasTransparency(image);
 
-/** Builds src/srcset/dimensions for local (Astro) and Sanity images alike. */
+/** Builds src/srcset/dimensions for an Astro image. */
 export const getResponsiveImage = async (
   image: PortfolioImage,
   widths: number[],
   { quality = 80 }: { quality?: number } = {},
 ): Promise<ResponsiveImage> => {
-  if (isSanityImage(image)) {
-    const sizes = usableWidths(widths, image.width);
-    const largest = sizes[sizes.length - 1];
-    const url = (width: number) => sanityImageUrl(image.assetId, width, undefined, quality);
-    return {
-      src: url(largest),
-      srcset: sizes.map((width) => `${url(width)} ${width}w`).join(", "),
-      width: largest,
-      height: Math.round((image.height / image.width) * largest),
-      // Sanity's blurred LQIP would show behind see-through pixels.
-      placeholder: image.isOpaque === false ? undefined : image.lqip,
-      transparent: image.isOpaque === false,
-    };
-  }
-
   const sizes = usableWidths(widths, image.width);
   const largest = sizes[sizes.length - 1];
   const result = await getImage({ src: image, widths: sizes, width: largest, format: "webp", quality });
@@ -76,9 +58,6 @@ export const getResponsiveImage = async (
 
 /** Single large rendition, e.g. for the lightbox or Open Graph. */
 export const getImageUrl = async (image: PortfolioImage, width: number, format: "jpg" | "webp" = "webp") => {
-  if (isSanityImage(image)) {
-    return sanityImageUrl(image.assetId, Math.min(width, image.width), format === "jpg" ? "jpg" : undefined);
-  }
   const result = await getImage({ src: image, width: Math.min(width, image.width), format });
   return result.src;
 };

@@ -59,7 +59,7 @@
   --section-space: clamp(4.5rem, 9vw, 8rem);
   --radius: 0;
 
-  /* Paper grain (Sanity "Hintergrund-Intensität" sets --texture-opacity) */
+  /* Paper grain (Keystatic "Hintergrund-Intensität" sets --texture-opacity) */
   --texture-opacity: 0.1;
   --grain-opacity: calc(0.04 + var(--texture-opacity) * 0.4);
 }

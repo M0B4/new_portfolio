@@ -52,7 +52,7 @@ const alternateLinks = Object.entries(alternates).map(([hreflang, path]) => ({
 }));
 const defaultAlternate = alternateLinks.find((link) => link.hreflang === "de");
 
-// The gold accent is part of the design system; only the paper grain is adjustable in Sanity.
+// The gold accent is part of the design system; only the paper grain is adjustable in Keystatic.
 const textureOpacity = Math.min(Math.max(settings.backgroundTextureOpacity ?? 0.1, 0), 1);
 const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
 ---
@@ -80,7 +80,6 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
         document.documentElement.dataset.theme = theme;
       })();
     </script>
-    <link rel="preconnect" href="https://cdn.sanity.io" />
     {
       [sansFont, monoFont].map((font) => (
         <link rel="preload" href={font} as="font" type="font/woff2" crossorigin />

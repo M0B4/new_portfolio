@@ -1,0 +1,25 @@
+poster:
+  title: Poster
+  intro: Plakative Motive für Bühne, Club und Festival.
+  introEn: Bold visuals for stages, clubs and festivals.
+  order: 10
+clothing:
+  title: Shirts
+  intro: Merchandise, der als Motiv und Produkt funktioniert.
+  introEn: Merchandise that works as both artwork and product.
+  order: 20
+event:
+  title: Eventdesign
+  intro: Auftritte mit klarer Hierarchie und Szene-Energie.
+  introEn: Event visuals with clear hierarchy and scene energy.
+  order: 30
+3d-print:
+  title: 3D-Print
+  intro: Funktionale Objekte für echte Nutzung.
+  introEn: Functional objects for real use.
+  order: 40
+various:
+  title: Objekte
+  intro: Sonderformate zwischen Grafik, Objekt und Anwendung.
+  introEn: Special formats between graphics, objects and use.
+  order: 50

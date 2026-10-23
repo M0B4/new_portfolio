@@ -1,26 +1,26 @@
 {
-  "name": "Moritz Barz Portfolio",
+  "name": "Moritz Barz – Grafikdesign",
   "short_name": "Moritz Barz",
   "lang": "de",
   "start_url": "/",
   "icons": [
     {
-      "src": "android-icon-192x192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "favicon-256x256.png",
-      "sizes": "256x256",
+      "src": "icon-512.png",
+      "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "ms-icon-310x310.png",
-      "sizes": "310x310",
-      "type": "image/png"
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
-  "theme_color": "#030303",
-  "background_color": "#030303",
+  "theme_color": "#f2ede3",
+  "background_color": "#f2ede3",
   "display": "standalone"
 }

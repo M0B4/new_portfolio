@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
-    "logos": "node scripts/trim-logos.mjs"
+    "logos": "node scripts/trim-logos.mjs",
+    "favicons": "node scripts/favicons.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.0",

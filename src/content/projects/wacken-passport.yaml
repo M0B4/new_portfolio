@@ -5,6 +5,7 @@ year: '2026'
 previewImage: ../../assets/projects/wacken-passport/previewImage.webp
 alt: Wacken Passport
 summary: Merchandise-Grafik zwischen Reise-Dokument und Festivalidentität.
-featured: false
+gallery: []
+featured: true
 shortTitle: Wacken Passport
 order: 40

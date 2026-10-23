@@ -11,11 +11,11 @@ type Props = {
 
 const { stops, lang } = Astro.props;
 const ui = t(lang);
-// The sticker is die-cut to the logo: a pill for wide logos, a disc for round ones, a rounded label otherwise.
+// The sticker is cut to the logo: a long strip for wide logos, a cut-corner block for round ones, a label otherwise.
 const shapeOf = (stop: ClientGroup) => {
   const logo = stop.profile.logo;
   const ratio = logo ? logo.width / logo.height : 3;
-  return ratio >= 3.5 ? "pill" : ratio <= 1.25 ? "round" : "label";
+  return ratio >= 3.5 ? "strip" : ratio <= 1.25 ? "block" : "label";
 };
 ---
 
@@ -24,6 +24,7 @@ const shapeOf = (stop: ClientGroup) => {
     stops.map((stop) => (
       <li>
         <a class="client-tile" href={clientPath(lang, stop.profile.slug)} data-shape={shapeOf(stop)}>
+          <span class="client-sticker" aria-hidden="true" />
           {stop.profile.logo ? (
             <ClientLogo class="client-tile-logo" profile={stop.profile} height={180} />
           ) : (

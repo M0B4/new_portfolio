@@ -113,7 +113,7 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
     {plausibleDomain && <script is:inline defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
   </head>
   <body>
-    <!-- Rough toner edges for headlines, logo and stamp (#rough); worn sticker edges and scuffs (#worn-1/2) -->
+    <!-- Rough toner edges for headlines, logo and stamp (#rough); ragged, frayed sticker edges and scuffs (#worn-1/2) -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
       <filter id="rough" x="-2%" y="-5%" width="104%" height="110%">
         <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="7" result="noise"></feTurbulence>
@@ -121,7 +121,7 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
       </filter>
       <filter id="worn-1" x="-5%" y="-5%" width="110%" height="110%">
         <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3" result="warp"></feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="warp" scale="14" xChannelSelector="R" yChannelSelector="G" result="bent"></feDisplacementMap>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G" result="bent"></feDisplacementMap>
         <feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="2" seed="11" result="fray"></feTurbulence>
         <feDisplacementMap in="bent" in2="fray" scale="5" xChannelSelector="G" yChannelSelector="R" result="ragged"></feDisplacementMap>
         <feTurbulence type="fractalNoise" baseFrequency="0.05 0.7" numOctaves="2" seed="17" result="streaks"></feTurbulence>
@@ -134,7 +134,7 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
       </filter>
       <filter id="worn-2" x="-5%" y="-5%" width="110%" height="110%">
         <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="8" result="warp"></feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="warp" scale="14" xChannelSelector="R" yChannelSelector="G" result="bent"></feDisplacementMap>
+        <feDisplacementMap in="SourceGraphic" in2="warp" scale="3" xChannelSelector="R" yChannelSelector="G" result="bent"></feDisplacementMap>
         <feTurbulence type="fractalNoise" baseFrequency="0.18" numOctaves="2" seed="23" result="fray"></feTurbulence>
         <feDisplacementMap in="bent" in2="fray" scale="5" xChannelSelector="G" yChannelSelector="R" result="ragged"></feDisplacementMap>
         <feTurbulence type="fractalNoise" baseFrequency="0.05 0.7" numOctaves="2" seed="31" result="streaks"></feTurbulence>

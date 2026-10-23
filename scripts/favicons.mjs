@@ -1,5 +1,6 @@
 // Renders every icon file from public/favicon.svg (the M logo on a black tile).
-// Run after changing the SVG: npm run favicons
+// The logo's lightning and notch turn to mush at 16 px, so that size comes from a hand-made
+// plain M (src/assets/brand/favicon-16.png). Run after changing either: npm run favicons
 import { readFile, writeFile } from "node:fs/promises";
 import sharp from "sharp";
 
@@ -17,9 +18,11 @@ for (const [file, source, size] of [
   await writeFile(`public/${file}`, await render(source, size));
 }
 
-// favicon.ico for old browsers and crawlers: 16, 32 and 48 px PNGs in one ICO container
+// favicon.ico holds all tab sizes: the plain M at 16 px, the logo at 32 and 48 px
 const sizes = [16, 32, 48];
-const images = await Promise.all(sizes.map((size) => render(svg, size)));
+const images = await Promise.all(
+  sizes.map((size) => (size === 16 ? sharp("src/assets/brand/favicon-16.png").png().toBuffer() : render(svg, size))),
+);
 const header = Buffer.alloc(6 + 16 * sizes.length);
 header.writeUInt16LE(1, 2);
 header.writeUInt16LE(sizes.length, 4);

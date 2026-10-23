@@ -103,8 +103,8 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={absoluteImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
-    <link rel="icon" href={`${base}favicon.ico`} sizes="32x32" />
-    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <!-- No SVG icon link: browsers would scale it down to 16 px instead of using the plain M in the ICO -->
+    <link rel="icon" href={`${base}favicon.ico`} sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
     <link rel="manifest" href={`${base}manifest.json`} />
     <style is:inline set:html={settingsCss}></style>

@@ -89,24 +89,8 @@ export default config({
         summary: fields.text({
           label: "Kurztext",
           multiline: true,
-          description: "Ein bis zwei Sätze. Erscheint in der Großansicht.",
+          description: "Ein bis zwei Sätze. Erscheint unter dem Bild.",
           validation: { isRequired: true, length: { max: 220 } },
-        }),
-        gallery: fields.array(
-          fields.object({
-            image: projectImage("Bild"),
-            alt: fields.text({ label: "Alt-Text" }),
-          }),
-          {
-            label: "Weitere Bilder",
-            description: "Fotos im Einsatz (Shirt am Stand, Poster an der Wand) oder Details.",
-            itemLabel: (props) => props.fields.alt.value || "Bild",
-          },
-        ),
-        specs: fields.text({
-          label: "Druckangaben",
-          description: "Kurz und technisch, z. B. „A2 · Siebdruck“. Erscheint unter dem Bild.",
-          validation: { length: { max: 60 } },
         }),
         featured: fields.checkbox({
           label: "Hervorheben",

@@ -88,13 +88,6 @@ export const ui = {
     nextClient: "Nächster Kunde",
     clientNav: "Weitere Kunden",
 
-    // Lightbox
-    openProjectHint: "– vergrößert ansehen",
-    lightboxClose: "Schließen",
-    lightboxPrev: "Vorherige Arbeit",
-    lightboxNext: "Nächste Arbeit",
-    imageCount: (current: number, total: number) => `Bild ${current} / ${total}`,
-
     // Contact
     contactKicker: "Kontakt",
     ctaTitle: "Du planst ein Festival, eine Tour oder neues Merch?",
@@ -177,11 +170,6 @@ export const ui = {
     nextClient: "Next client",
     clientNav: "More clients",
 
-    openProjectHint: "– view enlarged",
-    lightboxClose: "Close",
-    lightboxPrev: "Previous project",
-    lightboxNext: "Next project",
-    imageCount: (current: number, total: number) => `Image ${current} / ${total}`,
 
     contactKicker: "Contact",
     ctaTitle: "Planning a festival, a tour or new merch?",

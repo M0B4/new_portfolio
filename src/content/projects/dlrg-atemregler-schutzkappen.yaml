@@ -3,8 +3,9 @@ client: dlrg-duisburg
 category: 3d-print
 year: '2026'
 previewImage: ../../assets/projects/dlrg-atemregler-schutzkappen/previewImage.webp
-alt: DLRG Atemregler-Schutzkappen
+alt: "Rote 3D-gedruckte Schutzkappen für Atemregler mit DLRG-Prägung, zwei Kappen in Nahaufnahme und eine ganze Platte voll"
 summary: Funktionale 3D-Druckteile für Tauchausrüstung im Einsatzkontext.
+summaryEn: "Functional 3D-printed parts for diving gear used in rescue operations."
 featured: false
 shortTitle: DLRG Schutzkappen
 order: 60

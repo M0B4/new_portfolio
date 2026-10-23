@@ -12,8 +12,6 @@ export const isProjectCategory = (value: unknown): value is ProjectCategory =>
 
 export type PortfolioImage = ImageMetadata;
 
-export type GalleryImage = { image: PortfolioImage; alt: string };
-
 export type PortfolioProject = {
   id: string;
   slug: string;
@@ -29,10 +27,6 @@ export type PortfolioProject = {
   year: string;
   previewImage: PortfolioImage;
   alt: string;
-  /** Print/production specs, e.g. "A2 · Siebdruck". */
-  specs?: string;
-  /** Additional images (in use, details) shown in the lightbox after the main image. */
-  gallery: GalleryImage[];
   order: number;
   featured: boolean;
   clientProfile: ClientProfile;
@@ -54,10 +48,6 @@ const fromEntry = (project: CollectionEntry<"projects">, clientProfile: ClientPr
     year: data.year,
     previewImage: data.previewImage,
     alt: data.alt ?? data.title,
-    specs: data.specs,
-    gallery: data.gallery
-      .filter((item) => item.image.src !== data.previewImage.src)
-      .map((item) => ({ image: item.image, alt: item.alt ?? data.title })),
     order: data.order,
     featured: data.featured,
     clientProfile,

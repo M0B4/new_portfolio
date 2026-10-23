@@ -18,8 +18,6 @@ const projects = defineCollection({
       previewImage: image(),
       alt: optionalText,
       summary: z.string(),
-      gallery: z.array(z.object({ image: image(), alt: optionalText })).default([]),
-      specs: optionalText,
       featured: z.boolean().default(false),
       shortTitle: optionalText,
       titleEn: optionalText,

@@ -1368,6 +1368,38 @@
   }
 }
 
+/* Phones: always two stickers side by side, each filling its column */
+@media (max-width: 640px) {
+  .client-wall {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: 1.1rem 0.75rem;
+  }
+
+  .client-wall .client-tile {
+    width: 100%;
+    padding: 0.9rem 0.85rem;
+  }
+
+  .client-wall .client-tile[data-shape="block"] {
+    width: min(100%, 8rem);
+    margin-inline: auto;
+    padding: 0.7rem;
+  }
+
+  .client-wall .client-tile-logo,
+  .client-wall .client-tile[data-shape="block"] .client-tile-logo {
+    width: 100%;
+    max-width: none;
+    max-height: 4.5rem;
+  }
+
+  .client-wall li:nth-child(odd) {
+    translate: 0 0.4rem;
+  }
+}
+
 /* ---------- Motion ---------- */
 
 @media (prefers-reduced-motion: no-preference) {

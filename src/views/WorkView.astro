@@ -3,7 +3,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
 import { OWNER_NAME } from "../data/site";
-import { getClientGroupsWithEmpty, getSiteContent, yearSpan } from "../lib/content";
+import { getSiteContent, yearSpan } from "../lib/content";
 import { getAbsoluteImageUrl } from "../lib/images";
 import { localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
 
@@ -13,8 +13,8 @@ type Props = {
 
 const { lang } = Astro.props;
 const ui = t(lang);
-const { projects, categories } = await getSiteContent();
-const groups = (await getClientGroupsWithEmpty()).filter((group) => group.projects.length > 0);
+const { projects, categories, clients } = await getSiteContent();
+const groups = clients.filter((group) => group.projects.length > 0);
 const origin = Astro.site ?? Astro.url.origin;
 const alternates = { de: workPath("de"), en: workPath("en") };
 // Newest first when browsing everything.

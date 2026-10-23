@@ -134,7 +134,6 @@ export default config({
             description: "Teil der URL: mbarz.de/kunden/<slug>/. Später nicht mehr ändern, sonst brechen Links.",
           },
         }),
-        title: fields.text({ label: "Vollständiger Name", description: "Optional, z. B. „Wacken Open Air“." }),
         logo: fields.image({
           label: "Logo",
           description: "Am besten weiß oder hell auf transparentem Hintergrund (PNG/WebP). Wird automatisch in Graustufen gezeigt.",

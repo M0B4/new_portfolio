@@ -1,7 +1,6 @@
 ---
 import CategoryView from "../../../views/CategoryView.astro";
-import type { CategoryInfo } from "../../../data/site";
-import { getActiveCategories } from "../../../lib/content";
+import { getActiveCategories, type CategoryInfo } from "../../../lib/content";
 
 export async function getStaticPaths() {
   const categories = await getActiveCategories();

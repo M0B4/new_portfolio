@@ -32,7 +32,6 @@ const clients = defineCollection({
   schema: ({ image }) =>
     z.object({
       label: z.string(),
-      title: optionalText,
       logo: image().nullish(),
       intro: optionalText,
       summary: optionalText,

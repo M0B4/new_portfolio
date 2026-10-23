@@ -1,7 +1,7 @@
 ---
 import ProjectCard from "./ProjectCard.astro";
-import type { CategoryInfo } from "../data/site";
 import type { ClientGroup } from "../lib/clients";
+import type { CategoryInfo } from "../lib/content";
 import { t, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
 
@@ -32,7 +32,6 @@ const {
 } = Astro.props;
 const ui = t(lang);
 const labelFor = (value: string) => categories.find((category) => category.value === value)?.label[lang] ?? value;
-const clientOf = (project: PortfolioProject) => clients.find((group) => group.projects.includes(project))?.profile.slug;
 const presentCategories = categories.filter((category) => projects.some((project) => project.category === category.value));
 const presentClients = clients.filter((group) => group.projects.some((project) => projects.includes(project)));
 const showFieldFilter = filterable && presentCategories.length > 1;
@@ -89,7 +88,6 @@ const sizes =
           project={project}
           lang={lang}
           categoryLabel={labelFor(project.category)}
-          clientSlug={clientOf(project)}
           eager={index < eagerCount}
           priority={priorityFirst && index === 0}
           sizes={sizes}

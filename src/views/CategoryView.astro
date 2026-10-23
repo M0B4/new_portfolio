@@ -2,9 +2,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import ProjectGrid from "../components/ProjectGrid.astro";
-
-import { OWNER_NAME, type CategoryInfo } from "../data/site";
-import { getActiveCategories, getSiteContent, yearSpan } from "../lib/content";
+import { OWNER_NAME } from "../data/site";
+import { getActiveCategories, getSiteContent, yearSpan, type CategoryInfo } from "../lib/content";
 import { getAbsoluteImageUrl } from "../lib/images";
 import { categoryPath, localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
 

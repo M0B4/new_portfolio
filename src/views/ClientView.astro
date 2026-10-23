@@ -6,8 +6,8 @@ import ProjectGrid from "../components/ProjectGrid.astro";
 import TourNav from "../components/TourNav.astro";
 import { OWNER_NAME } from "../data/site";
 import type { ClientGroup } from "../lib/clients";
-import { getSiteContent, getTour, yearSpan } from "../lib/content";
-import { getAbsoluteImageUrl, getImageUrl } from "../lib/images";
+import { getSiteContent, yearSpan } from "../lib/content";
+import { getAbsoluteImageUrl } from "../lib/images";
 import { clientPath, localizePath, pick, t, type Lang } from "../lib/i18n";
 
 type Props = {
@@ -17,8 +17,8 @@ type Props = {
 
 const { lang, group } = Astro.props;
 const ui = t(lang);
-const { categories } = await getSiteContent();
-const { stops } = await getTour();
+const { categories, clients } = await getSiteContent();
+const stops = clients.filter((client) => client.projects.length > 0);
 const origin = Astro.site ?? Astro.url.origin;
 const { profile, projects } = group;
 const alternates = { de: clientPath("de", profile.slug), en: clientPath("en", profile.slug) };
@@ -31,7 +31,7 @@ const seoTitle = lang === "de" ? `${profile.label} | Arbeiten von ${OWNER_NAME}`
 const ogImage = projects[0]
   ? await getAbsoluteImageUrl(projects[0].previewImage, origin)
   : profile.logo
-    ? new URL(await getImageUrl(profile.logo, 1200), origin).toString()
+    ? await getAbsoluteImageUrl(profile.logo, origin)
     : undefined;
 const projectImages = await Promise.all(projects.map((project) => getAbsoluteImageUrl(project.previewImage, origin, 800)));
 

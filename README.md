@@ -10,6 +10,8 @@ npm install
 npm run dev        # Website auf http://127.0.0.1:4321, Keystatic auf http://127.0.0.1:4321/keystatic
 npm run check      # Typecheck (läuft auch in CI)
 npm run build      # Statischer Build nach dist/
+npm run logos      # Neue Kundenlogos auf ihren Inhalt zuschneiden
+npm run favicons   # Icons aus public/favicon.svg neu erzeugen
 ```
 
 ## Struktur
@@ -20,7 +22,7 @@ npm run build      # Statischer Build nach dist/
 | `src/pages/` | Routen: Deutsch unter `/`, Englisch unter `/en/` |
 | `src/content/` | Inhalte: `projects/`, `clients/`, `settings/site.yaml`, `settings/categories.yaml` |
 | `src/assets/projects/`, `src/assets/logos/` | Projektbilder und Kundenlogos |
-| `src/lib/content.ts` | Lädt alle Inhalte einmal pro Build |
+| `src/lib/content.ts` | Lädt alle Inhalte (Projekte, Kunden, Kategorien, Einstellungen) einmal pro Build |
 | `src/lib/i18n.ts` | UI-Texte DE/EN, lokalisierte Pfade |
 | `src/data/site.ts` | Domain, Impressumsdaten |
 | `keystatic.config.ts` | Felder und Beschriftungen der Keystatic-Oberfläche |
@@ -47,8 +49,7 @@ Englische Felder sind optional, ohne Eintrag wird der deutsche Text verwendet. K
 
 ## Impressum & Datenschutz
 
-Die Pflichtangaben stehen in `src/data/site.ts` (`legal`). Solange Platzhalter gesetzt sind, gibt der Build
-eine Warnung aus.
+Die Pflichtangaben stehen in `src/data/site.ts` (`legal`).
 
 ## Umgebungsvariablen
 
@@ -66,7 +67,7 @@ Cloudflare baut jeden Push selbst: `main` geht live, jeder andere Branch bekommt
 - Build-Befehl `npm run build`, Ausgabeordner `dist`, Node-Version aus `.node-version` (zusätzlich
   `NODE_VERSION=24` im Dashboard setzen, damit auch Builds ohne diese Datei npm 11 bekommen)
 - Umgebungsvariablen: `PUBLIC_FORMSPREE_ENDPOINT`, optional `PUBLIC_PLAUSIBLE_DOMAIN`,
-  `ASTRO_TELEMETRY_DISABLED=1`. `PUBLIC_SITE_URL` und `PUBLIC_BASE_PATH` nicht setzen, die Standardwerte passen.
+  `ASTRO_TELEMETRY_DISABLED=1`.
 - Cache- und Sicherheits-Header stehen in `public/_headers`.
 
 ## Lighthouse

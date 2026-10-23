@@ -1,10 +1,10 @@
 ---
-// Previous / next tour stop at the end of a client page.
-import type { TourStop } from "../lib/content";
+// Previous / next client at the end of a client page.
+import type { ClientGroup } from "../lib/clients";
 import { clientPath, t, type Lang } from "../lib/i18n";
 
 type Props = {
-  stops: TourStop[];
+  stops: ClientGroup[];
   currentSlug: string;
   lang: Lang;
 };

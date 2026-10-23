@@ -1,16 +1,6 @@
 import type { ImageMetadata } from "astro";
 import { getImage } from "astro:assets";
 import sharp from "sharp";
-import type { PortfolioImage } from "./projects";
-
-export type ResponsiveImage = {
-  src: string;
-  srcset: string;
-  width: number;
-  height: number;
-  /** Cut-out artwork (e.g. shirt mockups): shown free-standing instead of as a print. */
-  transparent: boolean;
-};
 
 const transparencyCache = new Map<string, Promise<boolean>>();
 
@@ -30,21 +20,10 @@ const hasTransparency = (image: ImageMetadata) => {
   return transparencyCache.get(file)!;
 };
 
-const usableWidths = (widths: number[], max: number) => {
-  const fitting = widths.filter((width) => width <= max);
-  return fitting.length > 0 ? fitting : [max];
-};
-
-/** True for cut-out artwork with see-through pixels. */
-export const isTransparent = (image: PortfolioImage) => hasTransparency(image);
-
 /** Builds src/srcset/dimensions for an Astro image. */
-export const getResponsiveImage = async (
-  image: PortfolioImage,
-  widths: number[],
-  { quality = 80 }: { quality?: number } = {},
-): Promise<ResponsiveImage> => {
-  const sizes = usableWidths(widths, image.width);
+export const getResponsiveImage = async (image: ImageMetadata, widths: number[], { quality = 80 } = {}) => {
+  const fitting = widths.filter((width) => width <= image.width);
+  const sizes = fitting.length > 0 ? fitting : [image.width];
   const largest = sizes[sizes.length - 1];
   const result = await getImage({ src: image, widths: sizes, width: largest, format: "webp", quality });
   return {
@@ -52,16 +31,13 @@ export const getResponsiveImage = async (
     srcset: result.srcSet.attribute,
     width: largest,
     height: Math.round((image.height / image.width) * largest),
+    /** Cut-out artwork (e.g. shirt mockups): shown free-standing instead of as a print. */
     transparent: await hasTransparency(image),
   };
 };
 
-/** Single large rendition, e.g. for Open Graph. */
-export const getImageUrl = async (image: PortfolioImage, width: number, format: "jpg" | "webp" = "webp") => {
-  const result = await getImage({ src: image, width: Math.min(width, image.width), format });
-  return result.src;
+/** Absolute JPEG URL of a single large rendition – social platforms handle JPEG most reliably. */
+export const getAbsoluteImageUrl = async (image: ImageMetadata, origin: string | URL, width = 1200) => {
+  const result = await getImage({ src: image, width: Math.min(width, image.width), format: "jpg" });
+  return new URL(result.src, origin).toString();
 };
-
-/** Absolute JPEG URL – social platforms handle JPEG most reliably. */
-export const getAbsoluteImageUrl = async (image: PortfolioImage, origin: string | URL, width = 1200) =>
-  new URL(await getImageUrl(image, width, "jpg"), origin).toString();

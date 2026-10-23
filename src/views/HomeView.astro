@@ -8,10 +8,9 @@ import ProjectGrid from "../components/ProjectGrid.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import portrait from "../assets/header.jpg";
 import { OWNER_NAME, SITE_NAME } from "../data/site";
-import { getSiteContent, getTour } from "../lib/content";
-import { getResponsiveImage } from "../lib/images";
+import { getSiteContent } from "../lib/content";
+import { getAbsoluteImageUrl, getResponsiveImage } from "../lib/images";
 import { localizePath, pick, t, workPath, type Lang } from "../lib/i18n";
-import { assetUrl } from "../lib/url";
 import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
@@ -20,10 +19,10 @@ type Props = {
 
 const { lang } = Astro.props;
 const ui = t(lang);
-const { projects, settings, socialLinks, categories } = await getSiteContent();
-const { stops } = await getTour();
+const { projects, settings, categories, clients } = await getSiteContent();
+const stops = clients.filter((group) => group.projects.length > 0);
 // Logos are advertising: show every client with a logo, also those whose work is still being curated.
-const { stops: logoStops } = await getTour({ includeEmpty: true });
+const logoStops = clients.filter((group) => group.projects.length > 0 || group.profile.logo);
 const origin = Astro.site ?? Astro.url.origin;
 const alternates = { de: localizePath("de"), en: localizePath("en") };
 
@@ -32,7 +31,6 @@ const heroProject = projects.find((project) => project.featured) ?? stops[0]?.pr
 const heroImage = heroProject
   ? await getResponsiveImage(heroProject.previewImage, [480, 720, 960, 1280], { quality: 78 })
   : undefined;
-const heroClient = heroProject ? stops.find((stop) => stop.projects.includes(heroProject))?.profile.label : undefined;
 
 // Three highlights: further "Hervorheben" projects, then one project from each of the next clients.
 const highlights: PortfolioProject[] = projects.filter((project) => project.featured && project !== heroProject);
@@ -83,10 +81,10 @@ const structuredData = [
     "@type": "Person",
     name: OWNER_NAME,
     url: homeUrl,
-    image: new URL(assetUrl("images/header.jpg"), origin).toString(),
+    image: await getAbsoluteImageUrl(portrait, origin),
     jobTitle: lang === "de" ? "Grafikdesigner" : "Graphic designer",
     knowsAbout: ["Poster Design", "Merchandise Design", "Event Design", "3D Printing"],
-    ...(socialLinks.length > 0 ? { sameAs: socialLinks.map((link) => link.url) } : {}),
+    ...(settings.socialLinks.length > 0 ? { sameAs: settings.socialLinks.map((link) => link.url) } : {}),
   },
 ];
 ---
@@ -139,7 +137,7 @@ const structuredData = [
               </span>
               <figcaption class="spec">
                 {pick(lang, heroProject.title, heroProject.titleEn)}
-                {heroClient && <> / {heroClient}</>} / {heroProject.year}
+                / {heroProject.clientProfile.label} / {heroProject.year}
               </figcaption>
             </figure>
           )

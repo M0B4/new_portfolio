@@ -1,12 +1,12 @@
 import { SITE_URL } from "../data/site";
-import { getActiveCategories, getClientGroupsWithEmpty } from "../lib/content";
+import { getActiveCategories, getSiteContent } from "../lib/content";
 import { categoryPath, clientPath, legalPath, localizePath, workPath, type Alternates } from "../lib/i18n";
 
 type SitemapEntry = { alternates: Alternates; priority: string };
 
 export async function GET({ site }: { site?: URL }) {
   const origin = site ?? new URL(SITE_URL);
-  const clients = await getClientGroupsWithEmpty();
+  const { clients } = await getSiteContent();
   const categories = await getActiveCategories();
 
   const entries: SitemapEntry[] = [

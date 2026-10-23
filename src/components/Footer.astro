@@ -10,7 +10,8 @@ type Props = {
 
 const { lang } = Astro.props;
 const ui = t(lang);
-const { socialLinks } = await getSiteContent();
+const { settings } = await getSiteContent();
+const { socialLinks } = settings;
 const categories = await getActiveCategories();
 const messages = {
   sending: ui.formSending,
@@ -71,49 +72,49 @@ const messages = {
         <span class="pass-title">{ui.passTitle}</span>
         <span class="pass-access">{ui.passAccess}</span>
       </div>
-    <form
-      id="contact-form"
-      class="contact-form"
-      name="contact"
-      method="POST"
-      action={formspreeEndpoint}
-      novalidate
-      data-messages={JSON.stringify(messages)}
-    >
-      <div class="form-field">
-        <label for="footer-name">{ui.formName}</label>
-        <input id="footer-name" name="name" type="text" autocomplete="name" required aria-describedby="footer-name-error" />
-        <p class="field-error" id="footer-name-error"></p>
-      </div>
-      <div class="form-field">
-        <label for="footer-email">{ui.formEmail}</label>
-        <input id="footer-email" name="email" type="email" autocomplete="email" required aria-describedby="footer-email-error" />
-        <p class="field-error" id="footer-email-error"></p>
-      </div>
-      <div class="form-field">
-        <label for="footer-type">{ui.formType}</label>
-        <select id="footer-type" name="projectType">
-          <option value="">{ui.formTypeChoose}</option>
-          {categories.map((category) => <option value={category.label.de}>{category.label[lang]}</option>)}
-          <option value="Sonstiges">{ui.formTypeOther}</option>
-        </select>
-      </div>
-      <div class="form-field contact-message">
-        <label for="footer-message">{ui.formMessage}</label>
-        <textarea id="footer-message" name="message" rows="4" required aria-describedby="footer-message-error"></textarea>
-        <p class="field-error" id="footer-message-error"></p>
-      </div>
-      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" aria-hidden="true" />
-      <input type="hidden" name="_subject" value={`Neue Projektanfrage über ${SITE_HOST}`} />
-      <input type="hidden" name="language" value={lang} />
-      <p class="form-privacy">
-        {ui.formPrivacy} <a href={legalPath("datenschutz")}>{ui.privacy}</a>.
-      </p>
-      <div class="contact-actions">
-        <button type="submit" class="btn">{ui.formSend}</button>
-        <p id="contact-form-status" class="form-status" role="status" aria-live="polite"></p>
-      </div>
-    </form>
+      <form
+        id="contact-form"
+        class="contact-form"
+        name="contact"
+        method="POST"
+        action={formspreeEndpoint}
+        novalidate
+        data-messages={JSON.stringify(messages)}
+      >
+        <div class="form-field">
+          <label for="footer-name">{ui.formName}</label>
+          <input id="footer-name" name="name" type="text" autocomplete="name" required aria-describedby="footer-name-error" />
+          <p class="field-error" id="footer-name-error"></p>
+        </div>
+        <div class="form-field">
+          <label for="footer-email">{ui.formEmail}</label>
+          <input id="footer-email" name="email" type="email" autocomplete="email" required aria-describedby="footer-email-error" />
+          <p class="field-error" id="footer-email-error"></p>
+        </div>
+        <div class="form-field">
+          <label for="footer-type">{ui.formType}</label>
+          <select id="footer-type" name="projectType">
+            <option value="">{ui.formTypeChoose}</option>
+            {categories.map((category) => <option value={category.label.de}>{category.label[lang]}</option>)}
+            <option value="Sonstiges">{ui.formTypeOther}</option>
+          </select>
+        </div>
+        <div class="form-field contact-message">
+          <label for="footer-message">{ui.formMessage}</label>
+          <textarea id="footer-message" name="message" rows="4" required aria-describedby="footer-message-error"></textarea>
+          <p class="field-error" id="footer-message-error"></p>
+        </div>
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden-field" aria-hidden="true" />
+        <input type="hidden" name="_subject" value={`Neue Projektanfrage über ${SITE_HOST}`} />
+        <input type="hidden" name="language" value={lang} />
+        <p class="form-privacy">
+          {ui.formPrivacy} <a href={legalPath("datenschutz")}>{ui.privacy}</a>.
+        </p>
+        <div class="contact-actions">
+          <button type="submit" class="btn">{ui.formSend}</button>
+          <p id="contact-form-status" class="form-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </div>
   </div>
   <div class="container footer-meta">

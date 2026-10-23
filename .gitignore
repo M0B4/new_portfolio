@@ -1,11 +1,5 @@
 node_modules/
 dist/
 .astro/
-studio-dist/
+.env
 npm-debug.log*
-# Raw Sanity export used for the one-time Keystatic migration
-sanity-export*/
-sanity-export*.tar.gz
-
-# Sanity is gone; its CLI may still drop a runtime folder here
-.sanity/

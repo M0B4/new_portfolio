@@ -1,11 +1,10 @@
 import { SITE_URL } from "../data/site";
 
 export function GET({ site }: { site?: URL }) {
-  const sitemap = new URL(`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}sitemap.xml`, site ?? SITE_URL);
+  const sitemap = new URL("/sitemap.xml", site ?? SITE_URL);
 
   return new Response(`User-agent: *
 Allow: /
-Disallow: /studio/
 
 Sitemap: ${sitemap}
 `, {

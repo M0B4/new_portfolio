@@ -1,8 +1,4 @@
-import { basePath as base } from "./url";
-
-export const languages = ["de", "en"] as const;
-export type Lang = (typeof languages)[number];
-export const defaultLang: Lang = "de";
+export type Lang = "de" | "en";
 
 export const htmlLang: Record<Lang, string> = { de: "de", en: "en" };
 export const ogLocale: Record<Lang, string> = { de: "de_DE", en: "en_US" };
@@ -16,10 +12,10 @@ export const routeSegments = {
 
 export type Alternates = Partial<Record<Lang, string>>;
 
-/** Builds a base-aware path, prefixed with `/en/` for English. */
+/** Root-relative path, prefixed with `/en/` for English. */
 export const localizePath = (lang: Lang, path = "") => {
   const clean = path.replace(/^\/+/, "");
-  return `${base}${lang === "en" ? "en/" : ""}${clean}`;
+  return `/${lang === "en" ? "en/" : ""}${clean}`;
 };
 
 export const workPath = (lang: Lang) => localizePath(lang, `${routeSegments.work[lang]}/`);
@@ -30,7 +26,7 @@ export const clientPath = (lang: Lang, slug: string) =>
 export const categoryPath = (lang: Lang, category: string) =>
   localizePath(lang, `${routeSegments.category[lang]}/${category}/`);
 
-export const legalPath = (page: "impressum" | "datenschutz") => `${base}${page}/`;
+export const legalPath = (page: "impressum" | "datenschutz") => `/${page}/`;
 
 /** Picks the English value when available, otherwise falls back to German. */
 export const pick = (lang: Lang, de: string, en?: string) => (lang === "en" && en ? en : de);
@@ -169,7 +165,6 @@ export const ui = {
     prevClient: "Previous client",
     nextClient: "Next client",
     clientNav: "More clients",
-
 
     contactKicker: "Contact",
     ctaTitle: "Planning a festival, a tour or new merch?",

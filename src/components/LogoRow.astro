@@ -1,11 +1,11 @@
 ---
 // "Ausgewählte Kunden" – one calm line of client logos in the hero that runs endlessly, each linking to the client page.
 import ClientLogo from "./ClientLogo.astro";
-import type { TourStop } from "../lib/content";
+import type { ClientGroup } from "../lib/clients";
 import { clientPath, t, type Lang } from "../lib/i18n";
 
 type Props = {
-  stops: TourStop[];
+  stops: ClientGroup[];
   lang: Lang;
 };
 

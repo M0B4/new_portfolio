@@ -156,9 +156,7 @@ p {
 
 /* Mono metadata, e.g. "WACKEN / SHIRTS / 2026" */
 .spec,
-.section-label,
-.kicker,
-.eyebrow {
+.section-label {
   font-family: var(--mono);
   font-size: 0.85rem;
   font-weight: 400;
@@ -171,9 +169,7 @@ p {
   color: var(--muted);
 }
 
-.section-label,
-.kicker,
-.eyebrow {
+.section-label {
   color: var(--accent-text);
 }
 
@@ -281,14 +277,6 @@ p {
 .btn:disabled {
   cursor: progress;
   opacity: 0.7;
-}
-
-/* ---------- Decoration ---------- */
-
-/* Halftone dots – decoration only, never on top of work images */
-.dot-field {
-  background-image: radial-gradient(circle, var(--dot-color, var(--gold)) 1.3px, transparent 1.7px);
-  background-size: 9px 9px;
 }
 
 /* ---------- Motion (subtle, CSS only) ---------- */

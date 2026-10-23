@@ -1,18 +1,18 @@
 ---
 // Sticker wall on a black band: only the client logos, each a worn sticker cut to its logo and linking to its work.
 import ClientLogo from "./ClientLogo.astro";
-import type { TourStop } from "../lib/content";
+import type { ClientGroup } from "../lib/clients";
 import { clientPath, t, type Lang } from "../lib/i18n";
 
 type Props = {
-  stops: TourStop[];
+  stops: ClientGroup[];
   lang: Lang;
 };
 
 const { stops, lang } = Astro.props;
 const ui = t(lang);
 // The sticker is die-cut to the logo: a pill for wide logos, a disc for round ones, a rounded label otherwise.
-const shapeOf = (stop: TourStop) => {
+const shapeOf = (stop: ClientGroup) => {
   const logo = stop.profile.logo;
   const ratio = logo ? logo.width / logo.height : 3;
   return ratio >= 3.5 ? "pill" : ratio <= 1.25 ? "round" : "label";

@@ -1,51 +1,49 @@
 import { getEntry, type CollectionEntry } from "astro:content";
-import { legalPlaceholders, type CategoryInfo } from "../data/site";
-import { getClientGroups, loadClients, type ClientGroup, type ClientProfile } from "./clients";
-import { loadProjects, projectCategories, type PortfolioProject } from "./projects";
+import { loadClients, type ClientGroup } from "./clients";
+import { loadProjects, type PortfolioProject, type ProjectCategory } from "./projects";
 
-export type SiteSettings = CollectionEntry<"site">["data"];
+export type CategoryInfo = {
+  value: ProjectCategory;
+  label: { de: string; en: string };
+  intro: { de: string; en: string };
+};
 
-export type SiteContent = {
+type SiteContent = {
+  /** All projects in display order. */
   projects: PortfolioProject[];
   categories: CategoryInfo[];
-  /** All known client profiles, including ones without projects yet. */
-  clients: ClientProfile[];
-  settings: SiteSettings;
-  socialLinks: { label: string; url: string }[];
+  /** Every client in display order with its projects, including clients without projects yet. */
+  clients: ClientGroup[];
+  settings: CollectionEntry<"site">["data"];
 };
 
 const loadCategories = async (): Promise<CategoryInfo[]> => {
   const entry = await getEntry("categories", "categories");
   if (!entry) throw new Error("src/content/settings/categories.yaml fehlt.");
 
-  return projectCategories
-    .map((value) => {
-      const doc = entry.data[value];
-      return {
-        value,
-        label: { de: doc.title, en: doc.titleEn ?? doc.title },
-        intro: { de: doc.intro ?? "", en: doc.introEn ?? doc.intro ?? "" },
-        order: doc.order,
-      };
-    })
-    .sort((a, b) => a.order - b.order);
+  return Object.entries(entry.data)
+    .sort(([, a], [, b]) => a.order - b.order)
+    .map(([value, doc]) => ({
+      value: value as ProjectCategory,
+      label: { de: doc.title, en: doc.titleEn ?? doc.title },
+      intro: { de: doc.intro ?? "", en: doc.introEn ?? doc.intro ?? "" },
+    }));
 };
 
 const loadContent = async (): Promise<SiteContent> => {
-  if (legalPlaceholders.length > 0) {
-    console.warn(`[legal] Impressum/Datenschutz enthalten noch Platzhalter: ${legalPlaceholders.join(", ")} (src/data/site.ts)`);
-  }
-
-  const clients = await loadClients();
+  const profiles = await loadClients();
+  const projects = await loadProjects(profiles);
   const site = await getEntry("site", "site");
   if (!site) throw new Error("src/content/settings/site.yaml fehlt.");
 
   return {
-    projects: await loadProjects(clients),
+    projects,
     categories: await loadCategories(),
-    clients,
+    clients: profiles.map((profile) => ({
+      profile,
+      projects: projects.filter((project) => project.clientProfile === profile),
+    })),
     settings: site.data,
-    socialLinks: site.data.socialLinks,
   };
 };
 
@@ -53,11 +51,6 @@ let contentPromise: Promise<SiteContent> | undefined;
 
 /** Loads all site content once per build and shares it across pages. */
 export const getSiteContent = () => (contentPromise ??= loadContent());
-
-export const getClientGroupsWithEmpty = async () => {
-  const { projects, clients } = await getSiteContent();
-  return getClientGroups(projects, clients);
-};
 
 /** Categories that actually contain projects, in display order. */
 export const getActiveCategories = async () => {
@@ -72,27 +65,4 @@ export const yearSpan = (projects: PortfolioProject[]) => {
   const first = Math.min(...years);
   const last = Math.max(...years);
   return first === last ? String(first) : `${first}–${last}`;
-};
-
-export type TourStop = ClientGroup & {
-  years: string;
-  categories: CategoryInfo[];
-};
-
-/**
- * Clients with their year span and fields, in client order (so `stops[i ± 1]` are previous/next).
- * `includeEmpty` also returns clients without projects yet – useful for the logo wall.
- */
-export const getTour = async ({ includeEmpty = false } = {}) => {
-  const { projects, categories } = await getSiteContent();
-  const groups = await getClientGroupsWithEmpty();
-  const stops: TourStop[] = groups
-    .filter((group) => group.projects.length > 0 || (includeEmpty && group.profile.logo))
-    .map((group) => ({
-      ...group,
-      years: yearSpan(group.projects),
-      categories: categories.filter((category) => group.projects.some((project) => project.category === category.value)),
-    }));
-
-  return { stops, years: yearSpan(projects) };
 };

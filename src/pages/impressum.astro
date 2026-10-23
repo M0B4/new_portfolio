@@ -4,7 +4,6 @@ import Header from "../components/Header.astro";
 import { legal } from "../data/site";
 import { legalPath, localizePath } from "../lib/i18n";
 
-// TODO: Angaben in src/data/site.ts (legal) vervollständigen und rechtlich prüfen lassen.
 const alternates = { de: legalPath("impressum") };
 ---
 
@@ -14,7 +13,7 @@ const alternates = { de: legalPath("impressum") };
   <main id="main" class="legal-page">
     <section class="section">
       <div class="container legal-layout">
-        <p class="kicker">Impressum</p>
+        <p class="section-label">Impressum</p>
         <div class="legal-content">
           <h1>Angaben gemäß § 5 DDG</h1>
           <p>

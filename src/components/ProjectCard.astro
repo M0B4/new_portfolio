@@ -7,8 +7,6 @@ type Props = {
   project: PortfolioProject;
   lang: Lang;
   categoryLabel: string;
-  /** Slug of the client, used by the client filter on the "all work" page. */
-  clientSlug?: string;
   eager?: boolean;
   /** Likely LCP element: load with high priority. */
   priority?: boolean;
@@ -19,7 +17,6 @@ const {
   project,
   lang,
   categoryLabel,
-  clientSlug,
   eager = false,
   priority = false,
   sizes = "(min-width: 820px) 33vw, 50vw",
@@ -27,11 +24,10 @@ const {
 const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 72 });
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
-const clientLabel = project.clientProfile.label;
-const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" / ");
+const meta = [project.clientProfile.label, categoryLabel, project.year].filter(Boolean).join(" / ");
 ---
 
-<article class="project-card" data-category={project.category} data-client={clientSlug}>
+<article class="project-card" data-category={project.category} data-client={project.clientProfile.slug}>
   <div class="project-card-body">
     <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img

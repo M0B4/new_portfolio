@@ -6,17 +6,18 @@ import "../styles/base.css";
 import "../styles/components.css";
 import monoFont from "@fontsource/special-elite/files/special-elite-latin-400-normal.woff2?url";
 import sansFont from "@fontsource-variable/archivo/files/archivo-latin-standard-normal.woff2?url";
+import portrait from "../assets/header.jpg";
 import Footer from "../components/Footer.astro";
 import { plausibleDomain, SITE_NAME, OWNER_NAME } from "../data/site";
 import { getSiteContent } from "../lib/content";
+import { getAbsoluteImageUrl } from "../lib/images";
 import { htmlLang, ogLocale, pick, t, type Alternates, type Lang } from "../lib/i18n";
-import { assetUrl, basePath as base } from "../lib/url";
 
 type Props = {
   lang: Lang;
   title?: string;
   description?: string;
-  /** Absolute URL or base-relative path of the Open Graph image. */
+  /** Absolute URL of the Open Graph image; defaults to the portrait. */
   image?: string;
   imageAlt?: string;
   alternates?: Alternates;
@@ -35,7 +36,7 @@ const {
     settings.descriptionEn ||
       "Moritz Barz designs posters, merch and event visuals for festivals, bands and the metal scene, plus functional 3D-printed parts.",
   ),
-  image = "images/header.jpg",
+  image,
   imageAlt = title,
   alternates = {},
   structuredData,
@@ -45,7 +46,7 @@ const {
 const ui = t(lang);
 const origin = Astro.site ?? Astro.url.origin;
 const canonical = new URL(Astro.url.pathname, origin);
-const absoluteImage = new URL(assetUrl(image), origin);
+const absoluteImage = image ?? (await getAbsoluteImageUrl(portrait, origin));
 const alternateLinks = Object.entries(alternates).map(([hreflang, path]) => ({
   hreflang,
   href: new URL(path, origin).toString(),
@@ -104,9 +105,9 @@ const settingsCss = `:root{--texture-opacity:${textureOpacity};}`;
     <meta name="twitter:image" content={absoluteImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
     <!-- No SVG icon link: browsers would scale it down to 16 px instead of using the plain M in the ICO -->
-    <link rel="icon" href={`${base}favicon.ico`} sizes="16x16 32x32 48x48" />
-    <link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
-    <link rel="manifest" href={`${base}manifest.json`} />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
     <style is:inline set:html={settingsCss}></style>
     {structuredData && <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
     {plausibleDomain && <script is:inline defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}

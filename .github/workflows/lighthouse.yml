@@ -23,7 +23,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # The type check used to run in the GitHub Pages deploy; Cloudflare builds without it.
+      # Cloudflare builds without a type check, so it runs here.
       - name: Type check
         run: npm run check
 

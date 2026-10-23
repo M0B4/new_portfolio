@@ -1,6 +1,5 @@
 ---
 import ProjectCard from "./ProjectCard.astro";
-import Lightbox from "./Lightbox.astro";
 import type { CategoryInfo } from "../data/site";
 import type { ClientGroup } from "../lib/clients";
 import { t, type Lang } from "../lib/i18n";
@@ -16,8 +15,6 @@ type Props = {
   clients?: ClientGroup[];
   /** "trio": three equal columns (home highlights); "grid": responsive gallery grid. */
   layout?: "trio" | "grid";
-  /** Render the lightbox dialog. Pages with several grids render it only once. */
-  lightbox?: boolean;
   eagerCount?: number;
   /** First image is the likely LCP element (pages without a hero image). */
   priorityFirst?: boolean;
@@ -30,7 +27,6 @@ const {
   filterable = false,
   clients = [],
   layout = "grid",
-  lightbox = true,
   eagerCount = 1,
   priorityFirst = false,
 } = Astro.props;
@@ -103,10 +99,9 @@ const sizes =
   </div>
   <p class="grid-empty" role="status" hidden>{ui.filterEmpty}</p>
 </div>
-{lightbox && <Lightbox lang={lang} />}
 
 <script>
-  // Filter groups (field, client) combine with AND; the lightbox only pages through visible cards.
+  // Filter groups (field, client) combine with AND.
   document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach((grid) => {
     const groups = [...grid.querySelectorAll<HTMLElement>("[data-filter-group]")];
     const cards = [...grid.querySelectorAll<HTMLElement>(".project-card")];

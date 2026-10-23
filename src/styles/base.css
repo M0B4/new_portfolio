@@ -56,8 +56,7 @@ body::after {
   opacity: min(calc(var(--grain-opacity) * 1.2), 0.32);
 }
 
-body:has(.nav-links.active),
-body:has(.lightbox[open]) {
+body:has(.nav-links.active) {
   overflow: hidden;
 }
 

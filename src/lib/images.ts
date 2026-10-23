@@ -56,7 +56,7 @@ export const getResponsiveImage = async (
   };
 };
 
-/** Single large rendition, e.g. for the lightbox or Open Graph. */
+/** Single large rendition, e.g. for Open Graph. */
 export const getImageUrl = async (image: PortfolioImage, width: number, format: "jpg" | "webp" = "webp") => {
   const result = await getImage({ src: image, width: Math.min(width, image.width), format });
   return result.src;

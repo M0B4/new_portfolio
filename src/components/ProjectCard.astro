@@ -1,6 +1,6 @@
 ---
-import { getImageUrl, getResponsiveImage, isTransparent } from "../lib/images";
-import { pick, t, type Lang } from "../lib/i18n";
+import { getResponsiveImage } from "../lib/images";
+import { pick, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
 
 type Props = {
@@ -24,16 +24,7 @@ const {
   priority = false,
   sizes = "(min-width: 820px) 33vw, 50vw",
 } = Astro.props;
-const ui = t(lang);
 const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 72 });
-const slides = await Promise.all(
-  [{ image: project.previewImage, alt: project.alt }, ...project.gallery].map(async (item) => ({
-    src: await getImageUrl(item.image, 1800),
-    alt: item.alt,
-    cutout: await isTransparent(item.image),
-  })),
-);
-const title = pick(lang, project.title, project.titleEn);
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
 const clientLabel = project.clientProfile.label;
@@ -41,15 +32,7 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
 ---
 
 <article class="project-card" data-category={project.category} data-client={clientSlug}>
-  <button
-    type="button"
-    class="project-card-trigger"
-    data-lightbox-item
-    data-slides={JSON.stringify(slides)}
-    data-title={title}
-    data-meta={[meta, project.specs].filter(Boolean).join(" — ")}
-    data-summary={summary}
-  >
+  <div class="project-card-body">
     <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img
         class={image.transparent ? "is-cutout" : undefined}
@@ -63,13 +46,11 @@ const meta = [clientLabel, categoryLabel, project.year].filter(Boolean).join(" /
         fetchpriority={priority ? "high" : "auto"}
         decoding="async"
       />
-      {slides.length > 1 && <span class="card-badge" aria-hidden="true">+{slides.length - 1}</span>}
     </span>
     <span class="card-info">
       <span class="spec card-meta">{meta}</span>
       <span class="card-title">{shortTitle}</span>
       {summary && <span class="card-summary">{summary}</span>}
-      <span class="sr-only">{ui.openProjectHint}</span>
     </span>
-  </button>
+  </div>
 </article>

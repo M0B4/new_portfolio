@@ -11,6 +11,8 @@ type Props = {
   /** Likely LCP element: load with high priority. */
   priority?: boolean;
   sizes?: string;
+  /** Lean of the print in degrees, see lib/tilt. */
+  tilt: number;
 };
 
 const {
@@ -20,21 +22,16 @@ const {
   eager = false,
   priority = false,
   sizes = "(min-width: 820px) 33vw, 50vw",
+  tilt,
 } = Astro.props;
 const image = await getResponsiveImage(project.previewImage, [400, 560, 640, 720, 960, 1280], { quality: 72 });
 const shortTitle = pick(lang, project.shortTitle, project.shortTitleEn);
 const summary = pick(lang, project.summary, project.summaryEn);
 const meta = [project.clientProfile.label, categoryLabel, project.year].filter(Boolean).join(" / ");
 
-// Pinned up like flyers on a wall: each print hangs a little crooked at its own, random-looking angle.
-// Derived from the title, so a project keeps its angle on every page and in every build.
-let hash = 2166136261;
-for (const char of project.title) hash = Math.imul(hash ^ char.codePointAt(0)!, 16777619) >>> 0;
-const lean = 0.5 + ((hash >>> 8) % 1000) / 1000 * 1.8; // 0.5 to 2.3 degrees
-const tilt = `${hash & 1 ? lean.toFixed(2) : (-lean).toFixed(2)}deg`;
 ---
 
-<article class="project-card" style={`--tilt: ${tilt}`} data-category={project.category} data-client={project.clientProfile.slug}>
+<article class="project-card" style={`--tilt: ${tilt.toFixed(2)}deg`} data-tilt={tilt.toFixed(2)} data-category={project.category} data-client={project.clientProfile.slug}>
   <div class="project-card-body">
     <span class:list={["card-image", { "has-cutout": image.transparent }]}>
       <img

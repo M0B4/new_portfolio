@@ -4,6 +4,7 @@ import type { ClientGroup } from "../lib/clients";
 import type { CategoryInfo } from "../lib/content";
 import { t, type Lang } from "../lib/i18n";
 import type { PortfolioProject } from "../lib/projects";
+import { balanceRows, tiltFor } from "../lib/tilt";
 
 type Props = {
   projects: PortfolioProject[];
@@ -36,6 +37,7 @@ const presentCategories = categories.filter((category) => projects.some((project
 const presentClients = clients.filter((group) => group.projects.some((project) => projects.includes(project)));
 const showFieldFilter = filterable && presentCategories.length > 1;
 const showClientFilter = presentClients.length > 1;
+const tilts = balanceRows(projects.map((project) => tiltFor(project.title)));
 const sizes =
   layout === "trio"
     ? "(min-width: 820px) 31vw, (min-width: 521px) 46vw, calc(100vw - 2.5rem)"
@@ -91,6 +93,7 @@ const sizes =
           eager={index < eagerCount}
           priority={priorityFirst && index === 0}
           sizes={sizes}
+          tilt={tilts[index]}
         />
       ))
     }
@@ -99,6 +102,8 @@ const sizes =
 </div>
 
 <script>
+  import { balanceRows } from "../lib/tilt";
+
   // Filter groups (field, client) combine with AND.
   document.querySelectorAll<HTMLElement>("[data-project-grid]").forEach((grid) => {
     const groups = [...grid.querySelectorAll<HTMLElement>("[data-filter-group]")];
@@ -114,6 +119,11 @@ const sizes =
         if (show) visible += 1;
       });
       if (empty) empty.hidden = visible > 0;
+      // The rows change with the filter, so check again that no row of three leans all one way
+      const shown = cards.filter((card) => !card.hidden);
+      balanceRows(shown.map((card) => Number(card.dataset.tilt))).forEach((tilt, index) =>
+        shown[index].style.setProperty("--tilt", `${tilt.toFixed(2)}deg`),
+      );
     };
 
     groups.forEach((group) => {

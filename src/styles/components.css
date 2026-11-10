@@ -446,16 +446,38 @@
   background-color: var(--print);
   background-size: cover;
   box-shadow: var(--print-shadow);
-  transform: rotate(var(--tilt, -0.8deg));
+  transform: rotate(var(--tilt, -1.6deg));
 }
 
-/* Pinned up like flyers on a wall: a slight, varying tilt */
-.project-card:nth-child(3n + 2) {
-  --tilt: 0.7deg;
+/* Pinned up like flyers on a wall: every print hangs a little crooked, never two the same way in a row.
+   A cycle of seven doesn't line up with the two or three columns, so no column repeats a pattern. */
+.project-card:nth-child(7n + 2) {
+  --tilt: 1.3deg;
 }
 
-.project-card:nth-child(3n) {
-  --tilt: -0.3deg;
+.project-card:nth-child(7n + 3) {
+  --tilt: -0.7deg;
+}
+
+.project-card:nth-child(7n + 4) {
+  --tilt: 2deg;
+}
+
+.project-card:nth-child(7n + 5) {
+  --tilt: -2.2deg;
+}
+
+.project-card:nth-child(7n + 6) {
+  --tilt: 0.8deg;
+}
+
+.project-card:nth-child(7n) {
+  --tilt: -1.2deg;
+}
+
+/* Cut-out shirts hang on their own, without a print around them: a touch less lean reads more natural */
+.card-image img.is-cutout {
+  transform: rotate(calc(var(--tilt, -1.6deg) * 0.75));
 }
 
 /* Cut-out artwork: no print margin, the shadow follows the outline of the shirt */
